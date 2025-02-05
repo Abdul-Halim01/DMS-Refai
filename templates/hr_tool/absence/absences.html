@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Absences List{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="h2">All Absences</h1>
+    {% if request.user.role == 'Moderator' or 'Admin' %}
+    <a href="{% url 'create_absence' %}" class="btn btn-primary">Add +</a>
+    {% endif %}
+</div>
+
+<div class="table-container">
+    <div class="table-controls">
+        <form method="post" action="{% url 'absences-action' %}" class="action-form" id="actionForm">
+            {% csrf_token %}
+            <div class="search-controls">
+                <input type="text" name="q" class="search-input" placeholder="Search by name...">
+            </div>
+            <select name="action" class="action-select">
+                <option value="">Select Action</option>
+                <option value="delete">Delete Selected Records</option>
+            </select>
+            <button type="submit" class="do-action-btn">Do Action</button>
+            <!-- Add hidden input for selected items -->
+            <input type="hidden" name="selected_items" id="selectedItems">
+        </form>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="select-all"></th>
+                <th>ID</th>
+                <th>Username</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for absence in absences %}
+            <tr onclick="clickHandler(event)" data-link="{% url 'absence_info' absence.id %}">
+                <td  onclick="event.stopPropagation();">
+                    <input type="checkbox" class="item-checkbox" value="{{ absence.id }}">
+                </td>
+
+                <td>{{ absence.id }}</td>
+                <td>{{ absence.employee.username }}</td>
+                <td>{{ absence.start }}</td>
+                <td>{{ absence.end }}</td>
+                <td onclick="event.stopPropagation();">
+                    <div class="action-buttons">
+                        <a href="{% url 'delete_absence' absence.id %}" class="delete-btn">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<nav aria-label="Page navigation" class="pagination-container">
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+        {% endif %}
+        
+        {% for i in page_obj.paginator.page_range %}
+            {% if page_obj.number == i %}
+                <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+            {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}HR Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="h2">HR Management</h1>
+</div>
+
+<div class="dashboard-grid">
+    <!-- Absences Management Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">
+            <i class="bi bi-calendar-x"></i>
+        </div>
+        <div class="card-content">
+            <h3>Absences Management</h3>
+            <p>Track and manage employee absences and leaves.</p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-value">{{ total_absences }}</span>
+                    <span class="stat-label">Total</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">{{ pending_absences }}</span>
+                    <span class="stat-label">Pending</span>
+                </div>
+            </div>
+            <a href="{% url 'absences_list' %}" class="card-action">Go to Absences</a>
+        </div>
+    </div>
+
+    <!-- Holiday Management Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">
+            <i class="bi bi-calendar-check"></i>
+        </div>
+        <div class="card-content">
+            <h3>Holiday Management</h3>
+            <p>Manage and allocate holidays to employees.</p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-value">{{ total_holidays }}</span>
+                    <span class="stat-label">Holidays</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">{{ approved_holidays }}</span>
+                    <span class="stat-label">Approved</span>
+                </div>
+            </div>
+            <a href="{% url 'holidays_list' %}" class="card-action">Go to Holidays</a>
+        </div>
+    </div>
+
+    <!-- Employee Management Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">
+            <i class="bi bi-people"></i>
+        </div>
+        <div class="card-content">
+            <h3>Employee Management</h3>
+            <p>Create and manage employee profiles.</p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-value">{{ total_employees }}</span>
+                    <span class="stat-label">Employees</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">{{ active_employees }}</span>
+                    <span class="stat-label">Active</span>
+                </div>
+            </div>
+            <a href="{% url 'employee_list' %}" class="card-action">Go to Employees</a>
+        </div>
+    </div>
+
+    <!-- Recruitment Management Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">
+            <i class="bi bi-person-plus"></i>
+        </div>
+        <div class="card-content">
+            <h3>Recruitment</h3>
+            <p>Manage recruitment process and interviews.</p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-value">{{ total_candidates }}</span>
+                    <span class="stat-label">Candidates</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">{{ open_positions }}</span>
+                    <span class="stat-label">Open Positions</span>
+                </div>
+            </div>
+            <a href="{% url 'recruiters_list' %}" class="card-action">Go to Recruitment</a>
+        </div>
+    </div>
+
+    <!-- Skills Management Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">
+            <i class="bi bi-trophy"></i>
+        </div>
+        <div class="card-content">
+            <h3>Skills & Goals</h3>
+            <p>Track employee skills and goal progress.</p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-value">{{ total_goals }}</span>
+                    <span class="stat-label">Goals</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">{{ completed_goals }}</span>
+                    <span class="stat-label">Completed</span>
+                </div>
+            </div>
+            <a href="{% url 'goals_skills' %}" class="card-action">Go to Goals</a>
+        </div>
+    </div>
+
+    <!-- ٍSetting Management Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">
+            <i class="bi bi-gear"></i>
+        </div>
+        <div class="card-content">
+            <h3>Setting</h3>
+            <p>Hr specific settings</p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-value">test</span>
+                    <span class="stat-label">test</span>
+                </div>
+            </div>
+            <a href="{% url 'hr_settings' %}" class="card-action">Go to settings</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

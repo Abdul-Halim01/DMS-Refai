@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% load task_filters %}
+
+{% block title %}Task Kanban Board{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="h2">Task Board</h1>
+    <div class="view-controls">
+        <a href="{% url 'task-create' %}" class="btn btn-primary">Add Task +</a>
+        <a href="{% url 'tasks-list' %}" class="btn btn-secondary view-toggle">
+            <i class="bi bi-list-ul"></i> List View
+        </a>
+    </div>
+</div>
+
+<div class="kanban-board">
+    <div class="kanban-column">
+        <div class="column-header pending">
+            <h3>Pending</h3>
+            <span class="task-count">{{ tasks|count_by_status:"Pending" }}</span>
+        </div>
+        <div class="column-content">
+            {% for task in tasks %}
+                {% if task.status == 'Pending' %}
+                    <div class="kanban-card">
+                        <div class="card-header">
+                            <h4>{{ task.title }}</h4>
+                            <div class="priority-wrapper">
+                                <span class="label">Priority:</span>
+                                <span class="priority-badge">{{ task.priority }}</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-row">
+                                <span class="label">Description:</span>
+                                <p>{{ task.description }}</p>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Assigned to:</span>
+                                <span>{{ task.user.username}}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Due Date:</span>
+
+                                <span>{{ task.due_date|date:"M d, Y" }}</span>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <a href="{% url 'task-update' task.id %}" class="card-action edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'task-delete' task.id %}" class="card-action delete">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="kanban-column">
+        <div class="column-header in-progress">
+            <h3>In Progress</h3>
+            <span class="task-count">{{ tasks|count_by_status:"In Progress" }}</span>
+        </div>
+        <div class="column-content">
+            {% for task in tasks %}
+                {% if task.status == 'In Progress' %}
+                    <div class="kanban-card">
+                        <div class="card-header">
+                            <h4>{{ task.title }}</h4>
+                            <div class="priority-wrapper">
+                                <span class="label">Priority:</span>
+                                <span class="priority-badge">{{ task.priority }}</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-row">
+                                <span class="label">Description:</span>
+                                <p>{{ task.description }}</p>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Assigned to:</span>
+                                <span>{{ task.user.username }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Due Date:</span>
+
+                                <span>{{ task.due_date|date:"M d, Y" }}</span>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <a href="{% url 'task-update' task.id %}" class="card-action edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'task-delete' task.id %}" class="card-action delete">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="kanban-column">
+        <div class="column-header completed">
+            <h3>Completed</h3>
+            <span class="task-count">{{ tasks|count_by_status:"Completed" }}</span>
+        </div>
+        <div class="column-content">
+            {% for task in tasks %}
+                {% if task.status == 'Completed' %}
+                    <div class="kanban-card">
+                        <div class="card-header">
+                            <h4>{{ task.title }}</h4>
+                            <div class="priority-wrapper">
+                                <span class="label">Priority:</span>
+                                <span class="priority-badge">{{ task.priority }}</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-row">
+                                <span class="label">Description:</span>
+                                <p>{{ task.description }}</p>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Assigned to:</span>
+                                <span>{{ task.user.username }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Due Date:</span>
+
+                                <span>{{ task.due_date|date:"M d, Y" }}</span>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <a href="{% url 'task-update' task.id %}" class="card-action edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'task-delete' task.id %}" class="card-action delete">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

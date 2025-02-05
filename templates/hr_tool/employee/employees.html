@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Employee List{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="h2">All Employees</h1>
+    {% if request.user.role == 'Moderator' or 'Admin' %}
+    <a href="{% url 'create_employee' %}" class="btn btn-primary">Add +</a>
+    {% endif %}
+</div>
+
+<div class="table-container">
+    <div class="table-controls">
+        <form method="post" action="{% url 'employees_action' %}" class="action-form">
+            {% csrf_token %}
+            <div class="search-controls">
+                <input type="text" name="q" class="search-input" placeholder="Search by name...">
+            </div>
+            <div class="action-controls">
+                <select name="action" class="action-select">
+                    <option value="">Select Action</option>
+                    <option value="delete">Delete Selected Employees</option>
+                    <option value="activate">Activate Selected Employees</option>
+                    <option value="deactivate">Deactivate Selected Employees</option>
+                </select>
+                <button type="submit" class="do-action-btn">Do Action</button>
+            </div>
+        </form>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="select-all"></th>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+            <tr>
+                <td><input type="checkbox" name="selected_items" value="{{ employee.id }}"></td>
+                <td><a href="{% url 'employee_profile' employee.id %}" class="user-link">{{ employee.id }}</a></td>
+                <td>{{ employee.username }}</td>
+                <td>{{ employee.email }}</td>
+                <td><span class="role-badge">{{ employee.role }}</span></td>
+                <td>
+                    {% if employee.is_active %}
+                        <span class="status-badge active"><i class="bi bi-check-circle"></i> Active</span>
+                    {% else %}
+                        <span class="status-badge inactive"><i class="bi bi-x-circle"></i> Inactive</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{% url 'delete_employee' employee.id %}" class="delete-btn">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination-container">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a></li>
+                <li><a href="#" class="page-link">{{ page_obj.number|add:'-1' }}</a></li>
+            {% endif %}
+            <li><a href="#" class="page-link active">{{ page_obj.number }}</a></li>
+            {% if page_obj.has_next %}
+                <li><a href="#" class="page-link">{{ page_obj.number|add:'1' }}</a></li>
+                <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

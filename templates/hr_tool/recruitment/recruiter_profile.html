@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Recruiter Profile{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="content-card">
+        <div class="card-header">
+            <h2>Recruiter Profile</h2>
+            <p class="text-muted">View and manage recruiter details</p>
+        </div>
+
+        <div class="card-body">
+            <form method="post" class="profile-form">
+                {% csrf_token %}
+
+                {% if form %}
+                <div class="form-section">
+                    <div class="section-header">
+                        <h3>Profile Information</h3>
+                    </div>
+                    
+                    {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="form-error">
+                                {% for error in field.errors %}
+                                    <span class="error-message">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        {% if field.help_text %}
+                            <small class="form-help-text">{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="form-actions">
+                    {% if form %}
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg"></i>
+                        Save Changes
+                    </button>
+                    {% endif %}
+                    <a href="{% url 'recruiter_list' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i>
+                        Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Add these styles to your dashboard.css or include them here */
+.content-wrapper {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.content-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    background-color: #f8f9fa;
+}
+
+.card-header h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.section-header {
+    margin-bottom: 20px;
+}
+
+.section-header h3 {
+    color: #2c3e50;
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.profile-form .form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-error {
+    margin-top: 4px;
+    color: #dc3545;
+    font-size: 0.875rem;
+}
+
+.form-help-text {
+    display: block;
+    margin-top: 4px;
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+.form-actions {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 10px;
+}
+
+@media (max-width: 768px) {
+    .content-wrapper {
+        padding: 15px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions .btn {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

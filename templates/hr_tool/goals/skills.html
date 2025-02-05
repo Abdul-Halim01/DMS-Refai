@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Skills List{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="h2">All Skills</h1>
+    {% if request.user.role == 'Moderator' or 'Admin' %}
+    <a href="{% url 'create_skill' %}" class="btn btn-primary">Add +</a>
+    {% endif %}
+</div>
+
+<div class="table-container">
+    <div class="table-controls">
+        <form method="post" action="{% url 'skills_action' %}" class="action-form" id="actionForm">
+            {% csrf_token %}
+            <div class="search-controls">
+                <input type="text" name="q" class="search-input" placeholder="Search by name...">
+            </div>
+            <div class="action-controls">
+                <select name="action" class="action-select">
+                    <option value="">Select Action</option>
+                    <option value="delete">Delete Selected Records</option>
+                </select>
+                <button type="submit" class="do-action-btn">Do Action</button>
+            </div>
+            <!-- Add hidden input for selected items -->
+            <input type="hidden" name="selected_items" id="selectedItems">
+        </form>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="select-all"></th>
+                <th>Employee</th>
+                <th>Employee ID</th>
+                <th>Skill Name</th>
+                <th>Proficiency</th>
+                <th>Added</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for skill in skills %}
+            <tr onclick="clickHandler(event)" data-link="{% url 'skill_info' skill.id %}">
+                <td onclick="event.stopPropagation();">
+                    <input type="checkbox" class="item-checkbox" value="{{ skill.id }}">
+                </td>
+                <td>{{ skill.employee.username }}</td>
+                <td>{{ skill.employee.id }}</td>
+                <td>{{ skill.name }}</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar">
+                            {{ skill.proficiency }}
+                        </div>
+                    </div>
+                </td>
+                <td>{{ skill.created }}</td>
+                <td>
+                    {% if skill.is_verified %}
+                        <span class="status-badge active"><i class="bi bi-check-circle"></i> Verified</span>
+                    {% else %}
+                        <span class="status-badge inactive"><i class="bi bi-hourglass-split"></i> Pending</span>
+                    {% endif %}
+                </td>
+                <td onclick="event.stopPropagation();">
+                    <div class="action-buttons">
+                        <a href="{% url 'delete_skill' skill.id %}" class="delete-btn">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if is_paginated %}
+    <div class="pagination-container">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a></li>
+                <li><a href="#" class="page-link">{{ page_obj.number|add:'-1' }}</a></li>
+            {% endif %}
+            <li><a href="#" class="page-link active">{{ page_obj.number }}</a></li>
+            {% if page_obj.has_next %}
+                <li><a href="#" class="page-link">{{ page_obj.number|add:'1' }}</a></li>
+                <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a></li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

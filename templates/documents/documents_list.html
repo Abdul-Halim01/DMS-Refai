@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Documents List{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="h2">Documents</h1>
+    {% if request.user.role == 'Moderator' or 'Admin' %}
+    <a href="{% url 'upload_document' %}" class="btn btn-primary">Upload +</a>
+    {% endif %}
+</div>
+
+<div class="table-container">
+    <div class="table-controls">
+        <form id="documentForm" method="POST" action="{% url 'documents_action' %}" class="action-form">
+            {% csrf_token %}
+            <input type="hidden" name="selected_ids" id="selectedIds">
+            <div class="search-controls">
+                <input type="text" name="q" class="search-input" placeholder="Search documents...">
+            </div>
+            <div class="action-controls">
+                <select name="action" id="actionSelect" class="action-select">
+                    <option value="">Select Action</option>
+                    <option value="archive">Archive Selected</option>
+                    <option value="delete">Delete Selected</option>
+                </select>
+                <button type="submit" class="do-action-btn">Do Action</button>
+            </div>
+        </form>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="selectAll" class="select-all-checkbox"></th>
+                <th>ID</th>
+                <th>Group</th>
+                <th>Private</th>
+                <th>File Type</th>
+                <th>Uploaded By</th>
+                <th>Upload Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for document in documents %}
+            <tr onclick="clickHandler(event)" data-link="{% url 'document_edit' document.id %}">
+                <td onclick="event.stopPropagation();">
+                    <input type="checkbox" class="row-checkbox" value="{{ document.id }}">
+                </td>
+                <td>{{ document.id }}</td>
+                <td>
+                    {% if document.group %}
+                        <span class="group-badge">{{ document.group.name }}</span>
+                    {% else %}
+                        <span class="group-badge no-group">No Group</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if document.is_private %}
+                        <span class="privacy-badge private" title="Private">
+                            <i class="bi bi-shield-lock-fill"></i>
+                        </span>
+                    {% else %}
+                        <span class="privacy-badge public" title="Public">
+                            <i class="bi bi-globe"></i>
+                        </span>
+                    {% endif %}
+                </td>
+                <td>    
+                    <span class="file-type-badge {{ document.file_type }}">
+                        <i class="bi 
+                            {% if document.file_type == 'image' %}bi-image
+                            {% elif document.file_type == 'video' %}bi-camera-video
+                            {% elif document.file_type == 'audio' %}bi-music-note
+                            {% elif 'document_' in document.file_type %}bi-file-text
+                            {% else %}bi-file
+                            {% endif %}">
+                        </i>
+                        {{ document.file_type }}
+                    </span>
+                </td>
+                <td>{{ document.uploaded_by.username }}</td>
+                <td>{{ document.upload_date|date:"M d, Y H:i" }}</td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{{ document.file.url }}" class="view-btn" target="_blank" title="View">
+                            <i class="bi bi-eye"></i>
+                        </a>
+
+                        {% if request.user == document.uploaded_by or request.user.is_staff %}
+                        <a href="{% url 'delete_document' document.id %}" class="delete-btn" title="Delete">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination-container">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a></li>
+                <li><a href="#" class="page-link">{{ page_obj.number|add:'-1' }}</a></li>
+            {% endif %}
+            <li><a href="#" class="page-link active">{{ page_obj.number }}</a></li>
+            {% if page_obj.has_next %}
+                <li><a href="#" class="page-link">{{ page_obj.number|add:'1' }}</a></li>
+                <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+<script>
+function clickHandler(event) {
+    if (!event.target.closest('input[type="checkbox"]') && !event.target.closest('.action-buttons')) {
+        const link = event.currentTarget.dataset.link;
+        if (link) window.location.href = link;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAll = document.getElementById('selectAll');
+    const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+    const form = document.getElementById('documentForm');
+
+    selectAll.addEventListener('change', function() {
+        rowCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+
+    rowCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            selectAll.checked = [...rowCheckboxes].every(cb => cb.checked);
+        });
+    });
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const selectedDocs = [...document.querySelectorAll('.row-checkbox:checked')].map(cb => cb.value);
+        document.getElementById('selectedIds').value = selectedDocs.join(',');
+        if (selectedDocs.length === 0) {
+            alert('Please select at least one document');
+            return;
+        }
+        this.submit();
+    });
+});
+</script>
+{% endblock %}

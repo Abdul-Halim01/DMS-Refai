@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Task List{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="h2">Task List</h1>
+    <div class="view-controls">
+        <a href="{% url 'task-create' %}" class="btn btn-primary">Add Task +</a>
+        <a href="{% url 'task-kanban' %}" class="btn btn-secondary view-toggle">
+            <i class="bi bi-kanban"></i> Kanban View
+        </a>
+    </div>
+</div>
+
+<div class="table-container">
+    <div class="table-controls">
+        <form method="post" action="{% url 'tasks-action' %}" class="action-form" id="actionForm">
+            {% csrf_token %}
+            <div class="search-controls">
+                <input type="text" name="q" class="search-input" placeholder="Search tasks...">
+            </div>
+            <div class="action-controls">
+                <select name="action" class="action-select">
+                    <option value="">Select Action</option>
+                    <option value="delete">Delete Selected Tasks</option>
+                </select>
+                <button type="submit" class="do-action-btn">Do Action</button>
+            </div>
+            <!-- Add hidden input for selected items -->
+            <input type="hidden" name="selected_items" id="selectedItems">
+        </form>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="select-all"></th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr onclick="clickHandler(event)" data-link="{% url 'task-update' task.id %}">
+                <td onclick="event.stopPropagation();">
+                    <input type="checkbox" class="item-checkbox" value="{{ task.id }}">
+                </td>
+
+                <td>{{ task.title }}</td>
+                <td>{{ task.description }}</td>
+                <td><span class="priority-badge">{{ task.priority }}</span></td>
+                <td>
+                    <span class="status-badge {% if task.status == 'Completed' %}active{% elif task.status == 'In Progress' %}in-progress{% else %}inactive{% endif %}">
+                        <i class="bi {% if task.status == 'Completed' %}bi-check-circle{% elif task.status == 'In Progress' %}bi-dash-circle{% else %}bi-x-circle{% endif %}"></i>
+                        {{ task.status }}
+                    </span>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{% url 'task-delete' task.id %}" class="delete-btn">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination-container">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a></li>
+                <li><a href="#" class="page-link">{{ page_obj.number|add:'-1' }}</a></li>
+            {% endif %}
+            <li><a href="#" class="page-link active">{{ page_obj.number }}</a></li>
+            {% if page_obj.has_next %}
+                <li><a href="#" class="page-link">{{ page_obj.number|add:'1' }}</a></li>
+                <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

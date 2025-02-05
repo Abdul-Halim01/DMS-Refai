@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Delete Holiday</h2>
+<form method="post">
+    {% csrf_token %}
+    <p>Are you sure you want to delete holiday for employee "{{ day.employee.username }}"?</p>
+    <button type="submit">Confirm Delete</button>
+</form>
+{% endblock %}

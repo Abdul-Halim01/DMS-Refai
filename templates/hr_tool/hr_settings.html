@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}HR Settings{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="settings-form">
+        <div class="form-header">
+            <h2>HR Settings</h2>
+            <p class="form-subtitle">Configure your HR system preferences</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ form.date_format.id_for_label }}">Date Format</label>
+                {{ form.date_format }}
+                {% if form.date_format.help_text %}
+                    <span class="help-text">{{ form.date_format.help_text }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.time_format.id_for_label }}">Time Format</label>
+                {{ form.time_format }}
+                {% if form.time_format.help_text %}
+                    <span class="help-text">{{ form.time_format.help_text }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.language.id_for_label }}">Language</label>
+                {{ form.language }}
+                {% if form.language.help_text %}
+                    <span class="help-text">{{ form.language.help_text }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.days_in_month.id_for_label }}">Days in Month</label>
+                {{ form.days_in_month }}
+                {% if form.days_in_month.help_text %}
+                    <span class="help-text">{{ form.days_in_month.help_text }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Settings</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

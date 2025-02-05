@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Document{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="styled-form">
+        <div class="form-header">
+            <h2>Edit Document</h2>
+            <p class="form-subtitle">Update the document details</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="user-profile-form">
+            {% csrf_token %}
+            
+            <div class="form-section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.title.id_for_label }}">Title</label>
+                        {{ form.title }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.group.id_for_label }}">Document Group</label>
+                        {{ form.group }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.description.id_for_label }}">Description</label>
+                        {{ form.description }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.comment.id_for_label }}">Comment</label>
+                        {{ form.comment }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.file.id_for_label }}">Document File</label>
+                        {{ form.file }}
+                        <small class="help-text">Current file: {{ document.file.name }}</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.language.id_for_label }}">Language</label>
+                        {{ form.language }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.is_private.id_for_label }}">Private Document</label>
+                        {{ form.is_private }}
+                    </div>  
+                </div>
+            </div>
+
+
+            <div class="form-section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>File Type</label>
+                        <input type="text" value="{{ document.file_type }}" class="form-control" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Size</label>
+                        <input type="text" value="{{ document.size|floatformat:2 }} MB" class="form-control" readonly>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Upload Date</label>
+                        <input type="text" value="{{ document.upload_date|date:'Y-m-d H:i' }}" class="form-control" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Uploaded By</label>
+                        <input type="text" value="{{ document.uploaded_by }}" class="form-control" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Update Document</button>
+                <a href="{% url 'document_list' %}" class="btn btn-secondary">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

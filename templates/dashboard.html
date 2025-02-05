@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="h2">Dashboard</h1>
+</div>
+
+<div class="dashboard-grid">
+    <!-- User Management Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">
+            <i class="bi bi-people"></i>
+        </div>
+        <div class="card-content">
+            <h3>User Management</h3>
+            <p>Manage users and their roles within the system.</p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-value">{{ total_users }}</span>
+                    <span class="stat-label">Total Users</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">{{ active_users }}</span>
+                    <span class="stat-label">Active</span>
+                </div>
+            </div>
+            <a href="{% url 'users_list' %}" class="card-action">Go to Users</a>
+        </div>
+    </div>
+
+    <!-- Document Management Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">
+            <i class="bi bi-folder"></i>
+        </div>
+        <div class="card-content">
+            <h3>Document Management</h3>
+            <p>Upload and manage documents like PDFs, images, and videos.</p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-value">{{ total_documents }}</span>
+                    <span class="stat-label">Documents</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">{{ document_types }}</span>
+                    <span class="stat-label">Types</span>
+                </div>
+            </div>
+            <a href="{% url 'document_list' %}" class="card-action">Go to Documents</a>
+        </div>
+    </div>
+
+    <!-- HR Management Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">
+            <i class="bi bi-briefcase"></i>
+        </div>
+        <div class="card-content">
+            <h3>HR Management</h3>
+            <p>Manage employees, holidays, absences and more...</p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-value">{{ total_employees }}</span>
+                    <span class="stat-label">Employees</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">{{ departments }}</span>
+                    <span class="stat-label">Departments</span>
+                </div>
+            </div>
+            <a href="{% url 'hr' %}" class="card-action">Go to HR</a>
+        </div>
+    </div>
+
+    <!-- Goals Management Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">
+            <i class="bi bi-trophy"></i>
+        </div>
+        <div class="card-content">
+            <h3>Goals Management</h3>
+            <p>Track and manage employee goals and achievements.</p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-value">{{ total_goals }}</span>
+                    <span class="stat-label">Goals</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">{{ completed_goals }}</span>
+                    <span class="stat-label">Completed</span>
+                </div>
+            </div>
+            <a href="{% url 'goals_list' %}" class="card-action">Go to Goals</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

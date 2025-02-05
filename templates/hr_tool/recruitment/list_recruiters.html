@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Recruiters{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="h2">All Recruiters</h1>
+</div>
+
+<div class="table-container">
+    <div class="table-controls">
+        <form method="post" action="{% url 'recruiters_action' %}" class="action-form" id="actionForm">
+            {% csrf_token %}
+            <div class="search-controls">
+                <input type="text" name="q" class="search-input" placeholder="Search by name...">
+            </div>
+            <div class="action-controls">
+                <select name="action" class="action-select">
+                    <option value="">Select Action</option>
+                    <option value="delete">Delete Selected Records</option>
+                </select>
+                <button type="submit" class="do-action-btn">Do Action</button>
+            </div>
+            <!-- Add hidden input for selected items -->
+            <input type="hidden" name="selected_items" id="selectedItems">
+        </form>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="select-all"></th>
+                <th>ID</th>
+                <th>Image</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Birthday</th>
+                <th>Position</th>
+                <th>Department</th>
+                <th>State</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for recruiter in recruiters %}
+            <tr onclick="clickHandler(event)" data-link="{% url 'recruiter_profile' recruiter.id %}">
+                <td onclick="event.stopPropagation();">
+                    <input type="checkbox" class="item-checkbox" value="{{ recruiter.id }}">
+                </td>
+                <td>{{ recruiter.id }}</td>
+                <td><img src="{{ recruiter.image }}" alt=""></td>
+                <td>{{ recruiter.first_name }}</td>
+                <td>{{ recruiter.last_name }}</td>
+                <td>{{ recruiter.birthday }}</td>
+                <td>{{ recruiter.position }}</td>
+                <td>{{ recruiter.department }}</td>
+                <td>
+                    {% if recruiter.is_active %}
+                        <span class="status-badge active"><i class="bi bi-check-circle"></i> Active</span>
+                    {% else %}
+                        <span class="status-badge inactive"><i class="bi bi-x-circle"></i> Inactive</span>
+                    {% endif %}
+                </td>
+                <td onclick="event.stopPropagation();">
+                    <div class="action-buttons">
+                        <a href="{% url 'delete_recruiter' recruiter.id %}" class="delete-btn">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if is_paginated %}
+    <div class="pagination-container">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a></li>
+                <li><a href="#" class="page-link">{{ page_obj.number|add:'-1' }}</a></li>
+            {% endif %}
+            <li><a href="#" class="page-link active">{{ page_obj.number }}</a></li>
+            {% if page_obj.has_next %}
+                <li><a href="#" class="page-link">{{ page_obj.number|add:'1' }}</a></li>
+                <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a></li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

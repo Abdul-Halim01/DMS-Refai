@@ -1,0 +1,33 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h2> Create document group </h2>
+<br>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <h3> Select document:</h3>
+    {% for document in documents %}
+        <label>
+            <input type="checkbox" name="documents" value="{{ document.id }}">
+            {{ document.title }}
+        </label><br>
+    {% endfor %}
+    <button type="submit" class="btn" type="button" style="background-color: #007bff; color: white;">Create group </button>
+    
+    
+
+    <a href="{% url 'groups' %}">
+        <button class="btn" type="button" style="background-color: #007bff; color: white;">
+            View Groups
+        </button>
+    </a>
+
+</form>
+
+{% endblock %}
+
+
+
+

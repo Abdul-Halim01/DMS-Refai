@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Holiday Request{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="styled-form">
+        <div class="form-header">
+            <h2>Create Holiday Request</h2>
+            <p class="form-subtitle">Submit a new holiday request</p>
+        </div>
+
+        <form method="post" class="user-profile-form">
+            {% csrf_token %}
+            
+            <div class="form-section">
+                <h3 class="section-title">Holiday Details</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.employee.id_for_label }}">Employee</label>
+                        {{ form.employee }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.hours.id_for_label }}">Hours</label>
+                        {{ form.hours }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="daterange">Date Range</label>
+                        {{ form.daterange }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Submit Request</button>
+                <a href="{% url 'holidays_list' %}" class="btn btn-secondary">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

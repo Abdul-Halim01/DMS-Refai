@@ -1,0 +1,8 @@
+<form method="post" action="{% url 'perform_action' %}">
+    {% csrf_token %}
+    {% for user in users %}
+        <input type="checkbox" name="selected_users" value="{{ user.username }}">
+        <label for="user_{{ user.username }}">{{ user.username }}</label><br>
+    {% endfor %}
+    <input type="submit" value="Submit">
+</form>

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Document{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="delete-confirmation">
+        <div class="delete-header">
+            <i class="bi bi-exclamation-triangle-fill warning-icon"></i>
+            <h2>Delete Document</h2>
+            <p class="delete-subtitle">This action cannot be undone</p>
+        </div>
+
+        <div class="delete-content">
+            <p class="confirmation-text">
+                Are you sure you want to delete document "<span class="highlight">{{ document.title }}</span>"?
+            </p>
+        </div>
+
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash"></i>
+                    Confirm Delete
+                </button>
+                <a href="{% url 'documents' %}" class="btn btn-secondary">
+                    <i class="bi bi-x"></i>
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

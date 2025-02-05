@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}HR Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="h2">Documents</h1>
+</div>
+
+<div class="dashboard-grid">
+
+    <!-- Dcoument Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">
+            <i class="bi bi-person-plus"></i>
+        </div>
+        <div class="card-content">
+            <h3>Skills</h3>
+            <p>Manage employee skills and development.</p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-value">{{ total_skills }}</span>
+                    <span class="stat-label">Skills</span>
+                </div>
+            </div>
+
+            <a href="{% url 'skills_list' %}" class="card-action">Go to Skills</a>
+        </div>
+
+
+    </div>
+
+
+    <!-- Document Group Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">
+            <i class="bi bi-trophy"></i>
+        </div>
+        <div class="card-content">
+            <h3>Goals</h3>
+            <p>Track employee skills and goal progress.</p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-value">{{ total_goals }}</span>
+                    <span class="stat-label">Goals</span>
+                </div>
+            </div>
+
+            <a href="{% url 'goals_list' %}" class="card-action">Go to Goals</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

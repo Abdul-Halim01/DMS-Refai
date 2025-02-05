@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="styled-form">
+        <div class="form-header">
+            <h2>Profile Settings</h2>
+            <p class="form-subtitle">Manage your account information and preferences</p>
+        </div>
+
+        <form method="post" class="user-profile-form">
+            {% csrf_token %}
+            
+            <div class="form-section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id_username">Username</label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="form-error">{{ form.username.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_email">Email Address</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="form-error">{{ form.email.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id_role">Role</label>
+                        {{ form.role }}
+                        {% if form.role.errors %}
+                            <div class="form-error">{{ form.role.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="{% url 'change_password' user.id %}" class="btn btn-secondary">
+                    <i class="bi bi-key"></i>
+                    Change Password
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Holiday Info{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="styled-form">
+        <div class="form-header">
+            <h2>Holiday Information</h2>
+            <p class="form-subtitle">View and manage holiday details for {{ holiday.employee.username }}</p>
+        </div>
+
+        <form method="post" class="user-profile-form">
+            {% csrf_token %}
+
+            {% if form %}
+            <div class="form-section">
+                <h3 class="section-title">Update Information</h3>
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="form-error">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="form-actions">
+                {% if form %}
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                {% endif %}
+                <a href="{% url 'holidays_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to List
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
