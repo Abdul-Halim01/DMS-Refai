@@ -8,7 +8,7 @@ urlpatterns = [
     path('employees/' , views.ListEmployeesView.as_view() , name="employee_list"),
     path('create-employee/' , views.CreateEmployeeView.as_view() , name="create_employee"),
     path('employee/<str:pk>' , views.UpdateEmployeeView.as_view() , name="employee_profile"),
-    path('employee/action' , views.EmployeesActionView.as_view() , name="employees_action"),
+    path('employee-action' , views.EmployeesActionView.as_view() , name="employees_action"),
     path('delete-employee/<str:pk>' , views.DeleteEmployeeView.as_view() , name="delete_employee"),
 
     # holidays allocated by admin to employees
@@ -20,7 +20,7 @@ urlpatterns = [
 
     # employee's absences with/without reason by admin
     path('absences/' , views.ListAbsenceView.as_view() , name="absences_list"),
-    path('absences/action' , views.AbsenceActionView.as_view() , name="absences-action"),
+    path('absences/action/' , views.AbsenceActionView.as_view() , name="absences_action"),
     path('create-absence/' , views.CreateAbsenceView.as_view() , name="create_absence"),
     path('absence/<str:pk>' , views.UpdateAbsenceView.as_view() , name="absence_info"),
     path('delete-absence/<str:pk>' , views.DeleteAbsenceView.as_view() , name="delete_absence"),

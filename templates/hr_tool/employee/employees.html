@@ -12,20 +12,19 @@
 
 <div class="table-container">
     <div class="table-controls">
-        <form method="post" action="{% url 'employees_action' %}" class="action-form">
+        <form method="post" action="{% url 'employees_action' %}" class="action-form" id="actionForm">
             {% csrf_token %}
             <div class="search-controls">
                 <input type="text" name="q" class="search-input" placeholder="Search by name...">
             </div>
-            <div class="action-controls">
-                <select name="action" class="action-select">
-                    <option value="">Select Action</option>
-                    <option value="delete">Delete Selected Employees</option>
-                    <option value="activate">Activate Selected Employees</option>
-                    <option value="deactivate">Deactivate Selected Employees</option>
-                </select>
-                <button type="submit" class="do-action-btn">Do Action</button>
-            </div>
+            <select name="action" class="action-select">
+                <option value="">Select Action</option>
+                <option value="delete">Delete Selected Employees</option>
+                <option value="export_excel">Export to Excel</option>
+            </select>
+            <button type="submit" class="do-action-btn">Do Action</button>
+            <!-- Add hidden input for selected items -->
+            <input type="hidden" name="selected_items" id="selectedItems">
         </form>
     </div>
 
@@ -43,11 +42,15 @@
         </thead>
         <tbody>
             {% for employee in employees %}
-            <tr>
-                <td><input type="checkbox" name="selected_items" value="{{ employee.id }}"></td>
-                <td><a href="{% url 'employee_profile' employee.id %}" class="user-link">{{ employee.id }}</a></td>
+            <tr onclick="clickHandler(event)" data-link="{% url 'employee_profile' employee.id %}">
+                <td onclick="event.stopPropagation();">
+                    <input type="checkbox" class="item-checkbox" value="{{ employee.id }}">
+                </td>
+                <td>{{ employee.id }}</td>
                 <td>{{ employee.username }}</td>
                 <td>{{ employee.email }}</td>
+
+
                 <td><span class="role-badge">{{ employee.role }}</span></td>
                 <td>
                     {% if employee.is_active %}
@@ -56,7 +59,7 @@
                         <span class="status-badge inactive"><i class="bi bi-x-circle"></i> Inactive</span>
                     {% endif %}
                 </td>
-                <td>
+                <td onclick="event.stopPropagation();">
                     <div class="action-buttons">
                         <a href="{% url 'delete_employee' employee.id %}" class="delete-btn">
                             <i class="bi bi-trash"></i>

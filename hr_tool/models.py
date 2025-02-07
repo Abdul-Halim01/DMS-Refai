@@ -2,15 +2,19 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator , MaxValueValidator
 from utility.types import *
+from django.core.validators import RegexValidator
+
 User = get_user_model()
 
 # Create your models here.
 
 
 class Employee(User):
-    position = models.CharField(max_length=100, choices=Position, default='Full-Time')
-    department = models.CharField(max_length=100, choices=Department, default='HR')
-
+    position = models.CharField(max_length=100, choices=Position)
+    department = models.CharField(max_length=100, choices=Department)
+    address = models.CharField(max_length=100)
+    social_status = models.CharField(max_length=50,choices=SocialStatus)
+    start_date = models.DateField(null=True , blank=True)
     class Meta:
         verbose_name = 'employee'
         verbose_name_plural = 'employees'

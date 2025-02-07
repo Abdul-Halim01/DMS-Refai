@@ -61,6 +61,20 @@
                             <div class="form-error">{{ form.role.errors }}</div>
                         {% endif %}
                     </div>
+                    <div class="form-group">
+                        <label for="id_upload_limit">Upload Limit</label>
+                        {{ form.upload_limit }}
+                        {% if form.upload_limit.errors %}
+                            <div class="form-error">{{ form.upload_limit.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_phonenumber">Phone Number</label>
+                        {{ form.phonenumber }}
+                        {% if form.phonenumber.errors %}
+                            <div class="form-error">{{ form.phonenumber.errors }}</div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
 

@@ -85,4 +85,13 @@ class Priority(models.TextChoices):
     HIGH = 'High'
     CRITICAL = 'Critical'
 
+class Role(models.TextChoices):
+    ADMIN = 'admin', 'Admin'
+    MODERATOR = 'moderator', 'Moderator'
+    NORMAL = 'normal', 'Normal User'
 
+class SocialStatus(models.TextChoices):
+    SINGLE = 'Single'
+    MARRIED = 'Married'
+    DIVORCED = 'Divorced'
+    WIDOWED = 'Widowed'

@@ -4,18 +4,21 @@ from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
 from django.views import View
 from .models import *
+# from users.models import User
 from .forms import EmployeeRegistrationForm , EmployeeUpdateForm , HolidayForm , WorkGoalForm , HRSettingsForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import get_user_model
+import datetime
+from django.http import HttpResponse
+from .resources import EmployeeResource , HolidayResource , AbsenceResource , RecruitmentResource
+from utility.mixins import AdminRequiredMixin, ModeratorRequiredMixin
 from django.views.generic import ListView , DeleteView , CreateView , UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from utility.mixins import ModeratorRequiredMixin
 from utility.helper import change_format , reverse_format
-from django.contrib.auth.decorators import permission_required
 
 User = get_user_model()
+
 
 # Create your views here.
 
@@ -42,38 +45,17 @@ class ListEmployeesView(ModeratorRequiredMixin, ListView):
 
 
 
-
-# @method_decorator(login_required, name='dispatch')
-# class CreateEmployeeView(View):
-#     def get(self,request):
-#         form = EmployeeRegistrationForm()
-#         return render(request , 'hr_tool/create_employee.html' , context={'form':form})
-    
-#     def post(self,request):
-#         form = EmployeeRegistrationForm(request.POST)
-#         if form.is_valid():
-#             user = User.objects.create(
-#                 username = form.cleaned_data['username'],
-#                 email = form.cleaned_data['email'],
-#             )
-#             user.set_password(form.cleaned_data['password1'])
-#             Employee.objects.create(
-#                 user=user,
-#                 department=form.cleaned_data['department'],
-#                 position=form.cleaned_data['position']
-#             )
-#             return redirect('employee_list')
-#         return redirect('create_employee')
-
-
-
-
 class CreateEmployeeView(ModeratorRequiredMixin, CreateView):
     model = Employee
     form_class = EmployeeRegistrationForm
+
     template_name = 'hr_tool/employee/create_employee.html'
     success_url = '/hr/employees/'
-    
+
+    def form_invalid(self, form):
+        # Print form errors for debugging
+        print(form.errors)
+        return super().form_invalid(form)
 
 
 
@@ -105,18 +87,42 @@ class UpdateEmployeeView(ModeratorRequiredMixin, UpdateView):
 
 
 
+
+# class EmployeesActionView(View):
+#     def post(self,request):
+#         selected_items = request.POST.getlist('selected_items')
+#         users = Employee.objects.filter(id__in=selected_items)
+
+#         # perform DB operation depending on the chosen action
+#         if request.POST.get('action') == 'delete':
+#             users.delete()
+        
+#         return redirect('employee_list')
+        
+
+
 class EmployeesActionView(ModeratorRequiredMixin, View):
-    def post(self,request):
+    def post(self, request):
         selected_items = request.POST.getlist('selected_items')
+        
         employees = Employee.objects.filter(id__in=selected_items)
 
-
-
-        # perform DB operation depending on the chosen action
         if request.POST.get('action') == 'delete':
             employees.delete()
+            # return redirect('employees_list')
+            
+        elif request.POST.get('action') == 'export_excel':
+            employee_resource = EmployeeResource()
+            dataset = employee_resource.export(employees)
+            dataset = dataset.export(format='xlsx')
+            response = HttpResponse(
+                dataset,
+                content_type='application/vnd.ms-excel'
+            )
+            response['Content-Disposition'] = f'attachment; filename="employees_{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.xlsx"'
+            return response
+            
         return redirect('employees_list')
-        
 
 
 @method_decorator(login_required, name='dispatch')
@@ -156,7 +162,6 @@ class ListHolidaysView(ModeratorRequiredMixin, ListView):
 
 
 class HolidaysActionView(ModeratorRequiredMixin, View):
-    @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def post(self,request):
         selected_items = request.POST.getlist('selected_items')
         holidays = Holiday.objects.filter(id__in=selected_items)
@@ -164,6 +169,18 @@ class HolidaysActionView(ModeratorRequiredMixin, View):
         # perform DB operation depending on the chosen action
         if request.POST.get('action') == 'delete':
             holidays.delete()
+
+        elif request.POST.get('action') == 'export_excel':
+            holiday_resource = HolidayResource()
+            dataset = holiday_resource.export(holidays)
+            dataset = dataset.export(format='xlsx')
+            response = HttpResponse(
+                dataset,
+                content_type='application/vnd.ms-excel'
+            )
+            response['Content-Disposition'] = f'attachment; filename="holidays_{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.xlsx"'
+            return response
+
         return redirect('holidays_list')
 
 
@@ -234,6 +251,18 @@ class AbsenceActionView(ModeratorRequiredMixin, View):
         # perform DB operation depending on the chosen action
         if request.POST.get('action') == 'delete':
             absences.delete()
+
+        elif request.POST.get('action') == 'export_excel':
+            absence_resource = AbsenceResource()
+            dataset = absence_resource.export(absences)
+            dataset = dataset.export(format='xlsx')
+            response = HttpResponse(
+                dataset,
+                content_type='application/vnd.ms-excel'
+            )
+            response['Content-Disposition'] = f'attachment; filename="absences_{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.xlsx"'
+            return response
+
         return redirect('absences_list')
 
 @method_decorator(login_required, name='dispatch')
@@ -281,6 +310,21 @@ class RecruitersActionView(ModeratorRequiredMixin, View):
         # perform DB operation depending on the chosen action
         if request.POST.get('action') == 'delete':
             recruiters.delete()
+
+        elif request.POST.get('action') == 'export_excel':
+            recruiter_resource = RecruitmentResource()
+            dataset = recruiter_resource.export(recruiters)
+            dataset = dataset.export(format='xlsx')
+
+
+            response = HttpResponse(
+                dataset,
+                content_type='application/vnd.ms-excel'
+            )
+            response['Content-Disposition'] = f'attachment; filename="recruiters_{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.xlsx"'
+            return response
+
+
         return redirect('recruiters_list')
 
 

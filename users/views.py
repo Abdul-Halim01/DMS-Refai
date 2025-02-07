@@ -6,13 +6,12 @@ from django.contrib.auth import authenticate, login , logout
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.forms import AuthenticationForm
-from .models import User
 from .forms import UserRegistrationForm, UserUpdateForm, AdminChangePasswordForm # UserLoginForm will not be used in this snippet
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import get_user_model
 from django.views.generic import ListView , DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from utility.mixins import AdminRequiredMixin , ModeratorRequiredMixin
+
 User = get_user_model()
 
 
@@ -29,7 +28,7 @@ class UserListView(LoginRequiredMixin, ListView):
 
 
 
-class AdminCreateUserView(AdminRequiredMixin,View):
+class AdminCreateUserView(View):
     def get(self, request):
         form = UserRegistrationForm()
         return render(request, 'users/admin_create_user.html', {'form': form})
@@ -88,7 +87,7 @@ class LogoutView(View):
 
 
 
-class ProfileView(AdminRequiredMixin,View):
+class ProfileView(View):
     def get(self, request,user_id):
         try:
             user = User.objects.get(id=user_id)
@@ -107,7 +106,7 @@ class ProfileView(AdminRequiredMixin,View):
         return render(request, 'users/profile.html', {'form': form})
 
 
-class DeleteUserView(AdminRequiredMixin,DeleteView):
+class DeleteUserView(DeleteView):
     model = User
     template_name = 'users/delete_user.html'
     context_object_name = 'user'
@@ -116,7 +115,7 @@ class DeleteUserView(AdminRequiredMixin,DeleteView):
 
 
 # perform bulk operations on users (delete , activate , deactivate)
-class PerformActionView(AdminRequiredMixin,View):
+class PerformActionView(View):
     def post(self,request):
 
         selected_items = request.POST.getlist('selected_items')
@@ -134,7 +133,7 @@ class PerformActionView(AdminRequiredMixin,View):
 
 
 # change password by admin
-class AdminChangePasswordView(AdminRequiredMixin,View):
+class AdminChangePasswordView(View):
     def get(self,request,user_id):
 
         form = AdminChangePasswordForm()

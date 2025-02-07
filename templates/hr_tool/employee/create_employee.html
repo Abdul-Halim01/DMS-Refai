@@ -31,6 +31,14 @@
                             <div class="form-error">{{ form.email.errors }}</div>
                         {% endif %}
                     </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.upload_limit.id_for_label }}">Upload Limit</label>
+                        {{ form.upload_limit }}
+                        {% if form.upload_limit.errors %}
+                            <div class="form-error">{{ form.upload_limit.errors }}</div>
+                        {% endif %}
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -42,6 +50,16 @@
                         {% endif %}
                         {% if form.password.help_text %}
                             <small class="help-text">{{ form.password.help_text }}</small>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.confirm_password.id_for_label }}">Confirm Password</label>
+                        {{ form.confirm_password }}
+                        {% if form.confirm_password.errors %}
+                            <div class="form-error">{{ form.confirm_password.errors }}</div>
+                        {% endif %}
+                        {% if form.confirm_password.help_text %}
+                            <small class="help-text">{{ form.confirm_password.help_text }}</small>
                         {% endif %}
                     </div>
                 </div>
@@ -65,22 +83,50 @@
                             <div class="form-error">{{ form.department.errors }}</div>
                         {% endif %}
                     </div>
-                </div>
-
-                <div class="form-row">
+                    
                     <div class="form-group">
-                        <label for="{{ form.salary.id_for_label }}">Salary</label>
-                        {{ form.salary }}
-                        {% if form.salary.errors %}
-                            <div class="form-error">{{ form.salary.errors }}</div>
+                        <label for="{{ form.position.id_for_label }}">Position</label>
+                        {{ form.position }}
+                        {% if form.position.errors %}
+                            <div class="form-error">{{ form.position.errors }}</div>
                         {% endif %}
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.hire_date.id_for_label }}">Hire Date</label>
-                        {{ form.hire_date }}
-                        {% if form.hire_date.errors %}
-                            <div class="form-error">{{ form.hire_date.errors }}</div>
+                        <label for="{{ form.social_status.id_for_label }}">Social Status</label>
+                        {{ form.social_status }}
+                        {% if form.social_status.errors %}
+                            <div class="form-error">{{ form.social_status.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.start_date.id_for_label }}">Start Date</label>
+                        {{ form.start_date }}
+                        {% if form.start_date.errors %}
+                            <div class="form-error">{{ form.start_date.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-section">
+                <h3 class="section-title">Contact Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.address.id_for_label }}">Address</label>
+                        {{ form.address }}
+                        {% if form.address.errors %}
+                            <div class="form-error">{{ form.address.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.phonenumber.id_for_label }}">Phone</label>
+                        {{ form.phonenumber }}
+                        {% if form.phonenumber.errors %}
+                            <div class="form-error">{{ form.phonenumber.errors }}</div>
                         {% endif %}
                     </div>
                 </div>

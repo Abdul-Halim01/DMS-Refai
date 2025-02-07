@@ -2,15 +2,13 @@
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
+from utility.types import Role
 
 class User(AbstractUser):
-    ROLE_CHOICES = [
-        ('admin', 'Admin'),
-        ('moderator', 'Moderator'),
-        ('normal', 'Normal User'),
-    ]
+    phonenumber = models.CharField(max_length=15, validators=[RegexValidator(regex=r'^\d{7,15}$', message='Phone number must be between 7 and 15 digits')], null=True, blank=True)
     image = models.ImageField(upload_to='users/images',default='placeholder.jpg',null=True,blank=True)       
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='normal')
+    role = models.CharField(max_length=10, choices=Role, default='normal')
     # upload_limit = models.IntegerField(validators=).
     groups = models.ManyToManyField(
         'auth.Group',
@@ -27,6 +25,7 @@ class User(AbstractUser):
         help_text='Specific permissions for this user.',
         related_query_name='custom_user_permissions',
     )
+    upload_limit = models.IntegerField(validators=[MinValueValidator(10)])
 
     @property
     def activate(self):
@@ -37,6 +36,10 @@ class User(AbstractUser):
     def deactivate(self):
         self.is_active = False
         self.save()
+
+    # def check_upload_limit(self, file_size):
+    #     if file_size + self.upload_limit :
+    #         return True
 
     def __str__(self):
         return self.username

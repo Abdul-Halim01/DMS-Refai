@@ -9,7 +9,6 @@ from .forms import DocumentUploadForm, DocumentEditForm
 import mimetypes
 from documents.documentsAI import countent_descraption as fu
 from django.views import generic
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 
 
@@ -209,7 +208,7 @@ class DocumentUploadView(View):
 
 
 @login_required_m
-class PerformActionView(LoginRequiredMixin, View):
+class PerformActionView(View):
     def post(self, request):
         action = request.POST.get('action')
         selected_docs = request.POST.getlist('selected_documents')
@@ -228,9 +227,6 @@ class PerformActionView(LoginRequiredMixin, View):
             else:
                 documents.filter(uploaded_by=request.user).delete()
                 messages.success(request, 'Your selected documents deleted successfully')
-        elif action == 'archive':
-            # Implement archive functionality
-            pass
             
         return redirect('document_list')
 

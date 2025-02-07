@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'hr_tool',
     'finance',
     'tasks',
-    'silk'
+    'silk',
+    'import_export'
 ]
 
 # Add media settings
