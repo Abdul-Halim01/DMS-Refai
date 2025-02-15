@@ -6,3 +6,5 @@ from django.utils.decorators import method_decorator
 @method_decorator(login_required, name='dispatch')
 class DashboardView(TemplateView):
     template_name = 'dashboard.html'
+
+

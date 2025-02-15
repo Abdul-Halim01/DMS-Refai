@@ -6,66 +6,65 @@
 <div class="page-header">
     <h1 class="h2">Document Groups</h1>
     {% if request.user.role == 'Moderator' or 'Admin' %}
-    <a href="{% url 'create_group' %}" class="btn btn-primary">Create Group +</a>
+    <a href="{% url 'create_group' %}" class="btn btn-primary"> Add +</a>
     {% endif %}
 </div>
 
 <div class="table-container">
     <div class="table-controls">
-        <form method="post" action="" class="action-form">
-            {% csrf_token %}
-            <div class="search-controls">
-                <input type="text" name="q" class="search-input" placeholder="Search groups...">
-            </div>
-            <div class="action-controls">
-                <select name="action" class="action-select">
-                    <option value="">Select Action</option>
-                    <option value="delete">Delete Selected Groups</option>
-                    <option value="archive">Archive Selected Groups</option>
-                </select>
-                <button type="submit" class="do-action-btn">Do Action</button>
-            </div>
-        </form>
+        <div class="search-controls">
+            <input type="text" name="q" class="search-input" placeholder="Search groups...">
+        </div>
+        <div class="action-controls">
+            <select id="bulkAction" name="action" class="action-select">
+                <option value="" selected disabled>Select Action</option>
+                <option value="delete">Delete Selected Groups</option>
+            </select>
+            <button type="button" class="do-action-btn" onclick="executeBulkAction()">Do Action</button>
+        </div>
     </div>
 
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th><input type="checkbox" id="select-all"></th>
-                <th>ID</th>
-                <th>Name</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for group in groups %}
-            <tr>
-                <td><input type="checkbox" name="selected_groups" value="{{ group.id }}"></td>
-                <td><a href="" class="user-link">{{ group.id }}</a></td>
-                <td>
-                    <span class="group-badge">{{ group.name }}</span>
-                </td>
-                <td>{{ group.description }}</td>
-                <td>{{ group.created_by.username }}</td>
-                <td>{{ group.created_date|date:"M d, Y H:i" }}</td>
-                <td>{{ group.documents.count }}</td>
-                <td>
-                    <div class="action-buttons">
-                        <a href="" class="view-btn">
-                            <i class="bi bi-eye"></i>
-                        </a>
-                        {% if request.user == group.created_by or request.user.is_staff %}
-                        <a href="{% url 'delete_group' group.id %}" class="delete-btn">
-                            <i class="bi bi-trash"></i>
-                        </a>
-                        {% endif %}
+    <form method="post" action="{% url 'group_action' %}" class="action-form" id="bulkActionForm">
+        {% csrf_token %}
+        <input type="hidden" name="selected_ids" id="selectedIds">
+        <input type="hidden" name="action" id="selectedAction">
 
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="selectAll" class="select-all-checkbox"></th>
+                    <th>ID</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for group in groups %}
+                <tr onclick="clickHandler(event)" data-link="{% url 'group_edit' group.id %}">
+                    <td onclick="event.stopPropagation();">
+                        <input type="checkbox" class="item-checkbox" value="{{ group.id }}">
+                    </td>
+                    <td><a href="" class="user-link">{{ group.id }}</a></td>
+                    <td>
+                        <span class="group-badge">{{ group.name }}</span>
+                    </td>
+                    <td>{{ group.description }}</td>
+                    <td>{{ group.created_by.username }}</td>
+                    <td>{{ group.created_date|date:"M d, Y H:i" }}</td>
+                    <td>{{ group.documents.count }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            {% if request.user == group.created_by or request.user.is_staff %}
+                            <a href="{% url 'group_delete' group.id %}" class="delete-btn">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
     <div class="pagination-container">
         <ul class="pagination">
             {% if page_obj.has_previous %}

@@ -8,8 +8,9 @@ urlpatterns = [
     
     path('groups/' , views.ListGroupsView.as_view() , name="groups"),
     path('create-group/' , views.CreateGroupView.as_view() , name="create_group"),
-    path('update-group/' , views.UpdateGroupView.as_view() , name="update_group"),
-    path('delete-group/<int:pk>' , views.DeleteGroupView.as_view() , name="delete_group"),
+    path('group/<int:pk>/edit/' , views.UpdateGroupView.as_view() , name="group_edit"),
+    path('group/<int:pk>/delete/' , views.DeleteGroupView.as_view() , name="group_delete"),
+    path('group/action/' , views.GroupActionView.as_view() , name="group_action"),
 
     path('list/', views.DocumentListView.as_view(), name='document_list'),
     path('upload/', views.UploadDocumentView.as_view(), name='upload_document'),

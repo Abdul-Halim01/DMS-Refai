@@ -12,66 +12,71 @@
 
 <div class="table-container">
     <div class="table-controls">
-        <form method="post" action="{% url 'holidays_action' %}" class="action-form" id="actionForm">
             {% csrf_token %}
             <div class="search-controls">
                 <input type="text" name="q" class="search-input" placeholder="Search by name...">
             </div>
             <div class="action-controls">
-                <select name="action" class="action-select">
-                    <option value="">Select Action</option>
+                <select id="bulkAction" name="action" class="action-select">
+                    <option value="" selected disabled>Select Action</option>
                     <option value="delete">Delete Selected Records</option>
                     <option value="export_excel">Export to Excel</option>
                 </select>
-                <button type="submit" class="do-action-btn">Do Action</button>
+                <button type="button" class="do-action-btn" onclick="executeBulkAction()">Do Action</button>
             </div>
-            <!-- Add hidden input for selected items -->
-            <input type="hidden" name="selected_items" id="selectedItems">
-        </form>
+
     </div>
 
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th><input type="checkbox" id="select-all"></th>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Hours</th>
-                <th>From</th>
-                <th>To</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for holiday in holidays %}
-            <tr onclick="clickHandler(event)" data-link="{% url 'holiday_info' holiday.id %}">
-                <td onclick="event.stopPropagation();">
-                    <input type="checkbox" class="item-checkbox" value="{{ holiday.id }}">
-                </td>
-                <td>{{ holiday.id }}</td>
-                <td>{{ holiday.employee.username }}</td>
-                <td>{{ holiday.hours }}</td>
-                <td>{{ holiday.start }}</td>
-                <td>{{ holiday.end }}</td>
-                <td>
-                    {% if holiday.is_approved %}
-                        <span class="status-badge active"><i class="bi bi-check-circle"></i> Approved</span>
-                    {% else %}
-                        <span class="status-badge inactive"><i class="bi bi-clock"></i> Pending</span>
-                    {% endif %}
-                </td>
-                <td onclick="event.stopPropagation();">
-                    <div class="action-buttons">
-                        <a href="{% url 'delete_holiday' holiday.id %}" class="delete-btn">
-                            <i class="bi bi-trash"></i>
-                        </a>
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <form method="post" action="{% url 'holidays_action' %}"  id="bulkActionForm">
+        {% csrf_token %}
+        <input type="hidden" name="selected_ids" id="selectedIds">
+        <input type="hidden" name="action" id="selectedAction">
+
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="selectAll" class="select-all-checkbox"></th>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Hours</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for holiday in holidays %}
+                <tr onclick="clickHandler(event)" data-link="{% url 'holiday_info' holiday.id %}">
+                    <td onclick="event.stopPropagation();">
+                        <input type="checkbox" class="item-checkbox" value="{{ holiday.id }}">
+                    </td>
+                    <td>{{ holiday.id }}</td>
+                    <td>{{ holiday.employee.username }}</td>
+                    <td>{{ holiday.hours }}</td>
+                    <td>{{ holiday.start }}</td>
+                    <td>{{ holiday.end }}</td>
+                    <td>
+                        {% if holiday.is_approved %}
+                            <span class="status-badge active"><i class="bi bi-check-circle"></i> Approved</span>
+                        {% else %}
+                            <span class="status-badge inactive"><i class="bi bi-clock"></i> Pending</span>
+                        {% endif %}
+                    </td>
+                    <td onclick="event.stopPropagation();">
+                        <div class="action-buttons">
+                            <a href="{% url 'delete_holiday' holiday.id %}" class="delete-btn">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </form>
 
     {% if is_paginated %}
     <div class="pagination-container">

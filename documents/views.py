@@ -7,9 +7,9 @@ from django.urls import reverse_lazy
 from .models import Document, DocumentGroup
 from .forms import DocumentUploadForm, DocumentEditForm
 import mimetypes
+import json
 from documents.documentsAI import countent_descraption as fu
 from django.views import generic
-from django.contrib import messages
 
 
 
@@ -51,6 +51,15 @@ class UpdateGroupView(generic.UpdateView):
     template_name = 'group/group_form.html'
     success_url = '/documents/groups/'
 
+
+
+class GroupActionView(generic.View):
+    def post(self,request):
+        selected_ids = json.loads(request.POST.get('selected_ids'))
+        group = DocumentGroup.objects.filter(id__in=selected_ids)
+        if request.POST.get('action') == 'delete':
+            group.delete()
+        return redirect('/documents/groups/')
 
 
 
@@ -207,27 +216,16 @@ class DocumentUploadView(View):
 
 
 
-@login_required_m
+# @login_required_m
 class PerformActionView(View):
-    def post(self, request):
-        action = request.POST.get('action')
-        selected_docs = request.POST.getlist('selected_documents')
-        
-        if not selected_docs:
-            messages.error(request, 'No documents selected')
-            return redirect('document_list')
-            
-        documents = Document.objects.filter(id__in=selected_docs)
-        
-        if action == 'delete':
-            # Check permissions
-            if request.user.is_staff:
-                documents.delete()
-                messages.success(request, 'Selected documents deleted successfully')
-            else:
-                documents.filter(uploaded_by=request.user).delete()
-                messages.success(request, 'Your selected documents deleted successfully')
-            
+    def post(self,request):
+
+        selected_ids = json.loads(request.POST.get('selected_ids'))
+        documents = Document.objects.filter(id__in=selected_ids)
+
+        # perform DB operation depending on the chosen action
+        if request.POST.get('action') == 'delete':
+            documents.delete()
         return redirect('document_list')
 
 

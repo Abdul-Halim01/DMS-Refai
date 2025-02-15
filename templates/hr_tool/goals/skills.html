@@ -12,31 +12,27 @@
 
 <div class="table-container">
     <div class="table-controls">
-        <form method="post" action="{% url 'skills_action' %}" class="action-form" id="actionForm">
-            {% csrf_token %}
-            <div class="search-controls">
-                <input type="text" name="q" class="search-input" placeholder="Search by name...">
-            </div>
-            <div class="action-controls">
-                <select name="action" class="action-select">
-                    <option value="">Select Action</option>
-                    <option value="delete">Delete Selected Records</option>
-                </select>
-                <button type="submit" class="do-action-btn">Do Action</button>
-            </div>
-            <!-- Add hidden input for selected items -->
-            <input type="hidden" name="selected_items" id="selectedItems">
-        </form>
+        <div class="search-controls">
+            <input type="text" name="q" class="search-input" placeholder="Search by name...">
+        </div>
+        <div class="action-controls">
+            <select id="bulkAction" name="action" class="action-select">
+                <option value="" selected disabled>Select Action</option>
+                <option value="delete">Delete Selected Records</option>
+            </select>
+            <button type="button" class="do-action-btn" onclick="executeBulkAction()">Do Action</button>
+        </div>
     </div>
 
-    <table class="data-table">
+    <form method="post" action="{% url 'skills_action' %}" class="action-form" id="bulkActionForm">
+        {% csrf_token %}
+        <input type="hidden" name="selected_ids" id="selectedIds">  
+        <input type="hidden" name="action" id="selectedAction">
+        <table class="data-table">
         <thead>
             <tr>
-                <th><input type="checkbox" id="select-all"></th>
-                <th>Employee</th>
-                <th>Employee ID</th>
+                <th><input type="checkbox" id="selectAll" class="select-all-checkbox"></th>
                 <th>Skill Name</th>
-                <th>Proficiency</th>
                 <th>Added</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -48,16 +44,14 @@
                 <td onclick="event.stopPropagation();">
                     <input type="checkbox" class="item-checkbox" value="{{ skill.id }}">
                 </td>
-                <td>{{ skill.employee.username }}</td>
-                <td>{{ skill.employee.id }}</td>
                 <td>{{ skill.name }}</td>
-                <td>
+                <!-- <td>
                     <div class="progress">
                         <div class="progress-bar" role="progressbar">
                             {{ skill.proficiency }}
                         </div>
                     </div>
-                </td>
+                </td> -->
                 <td>{{ skill.created }}</td>
                 <td>
                     {% if skill.is_verified %}
@@ -76,7 +70,8 @@
             </tr>
             {% endfor %}
         </tbody>
-    </table>
+        </table>
+    </form>
 
     {% if is_paginated %}
     <div class="pagination-container">

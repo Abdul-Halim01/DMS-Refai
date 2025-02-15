@@ -7,7 +7,7 @@ from typing import Any
 from django.shortcuts import render
 from django.views import View
 from django.contrib.auth.decorators import user_passes_test
-
+import json
 from django.utils.decorators import method_decorator
 
 
@@ -61,8 +61,8 @@ class TaskDelete(DeleteView):
 class TaskAction(DeleteView): # override
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def post(self,request):
-        selected_items = request.POST.getlist('selected_items')
-        tasks = Task.objects.filter(id__in=selected_items)
+        selected_ids = json.loads(request.POST.get('selected_ids'))
+        tasks = Task.objects.filter(id__in=selected_ids)
 
         # perform DB operation depending on the chosen action
         if request.POST.get('action') == 'delete':

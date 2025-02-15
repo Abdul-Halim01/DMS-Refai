@@ -1,5 +1,6 @@
 # hr_tool/views.py
 from typing import Any
+import json
 from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
 from django.views import View
@@ -163,7 +164,7 @@ class ListHolidaysView(ModeratorRequiredMixin, ListView):
 
 class HolidaysActionView(ModeratorRequiredMixin, View):
     def post(self,request):
-        selected_items = request.POST.getlist('selected_items')
+        selected_items = json.loads(request.POST.get('selected_ids', '[]'))
         holidays = Holiday.objects.filter(id__in=selected_items)
 
         # perform DB operation depending on the chosen action
@@ -245,9 +246,8 @@ class ListAbsenceView(ModeratorRequiredMixin, ListView):
 
 class AbsenceActionView(ModeratorRequiredMixin, View):
     def post(self,request):
-        selected_items = request.POST.getlist('selected_items')
-        absences = Absence.objects.filter(id__in=selected_items)
-
+        selected_ids = json.loads(request.POST.get('selected_ids', '[]'))
+        absences = Absence.objects.filter(id__in=selected_ids)
         # perform DB operation depending on the chosen action
         if request.POST.get('action') == 'delete':
             absences.delete()
@@ -302,10 +302,9 @@ class ListRecruitersView(ModeratorRequiredMixin, ListView):
 
 
 class RecruitersActionView(ModeratorRequiredMixin, View):
-    @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def post(self,request):
-        selected_items = request.POST.getlist('selected_items')
-        recruiters = Recruitment.objects.filter(id__in=selected_items) 
+        selected_ids = json.loads(request.POST.get('selected_ids'))
+        recruiters = Recruitment.objects.filter(id__in=selected_ids) 
 
         # perform DB operation depending on the chosen action
         if request.POST.get('action') == 'delete':
@@ -392,7 +391,7 @@ class DeleteGoalView(ModeratorRequiredMixin, DeleteView):
 class GoalsActionView(ModeratorRequiredMixin, View):
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def post(self,request):
-        selected_items = request.POST.getlist('selected_items')
+        selected_items = json.loads(request.POST.get('selected_ids'))
         goals = WorkGoal.objects.filter(id__in=selected_items)
 
         # perform DB operation depending on the chosen action
@@ -440,7 +439,7 @@ class DeleteSkillView(ModeratorRequiredMixin, DeleteView):
 class SkillsActionView(ModeratorRequiredMixin, View):
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def post(self,request):
-        selected_items = request.POST.getlist('selected_items')
+        selected_items = json.loads(request.POST.get('selected_ids'))
         skills = Skill.objects.filter(id__in=selected_items)
         # perform DB operation depending on the chosen action
         if request.POST.get('action') == 'delete':

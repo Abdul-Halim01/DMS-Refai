@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import get_user_model
 from django.views.generic import ListView , DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+import json
 User = get_user_model()
 
 
@@ -110,7 +110,7 @@ class DeleteUserView(DeleteView):
     model = User
     template_name = 'users/delete_user.html'
     context_object_name = 'user'
-    success_url = '/users/list/'
+    success_url = '/users'
 
 
 
@@ -118,7 +118,7 @@ class DeleteUserView(DeleteView):
 class PerformActionView(View):
     def post(self,request):
 
-        selected_items = request.POST.getlist('selected_items')
+        selected_items = json.loads(request.POST.get('selected_ids', '[]'))
         users = User.objects.filter(id__in=selected_items)
 
         # perform DB operation depending on the chosen action

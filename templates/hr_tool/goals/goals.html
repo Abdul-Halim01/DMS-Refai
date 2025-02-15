@@ -12,71 +12,74 @@
 
 <div class="table-container">
     <div class="table-controls">
-        <form method="post" action="{% url 'goals_action' %}" class="action-form">
-            {% csrf_token %}
-            <div class="search-controls">
-                <input type="text" name="q" class="search-input" placeholder="Search by name...">
-            </div>
-            <div class="action-controls">
-                <select name="action" class="action-select">
-                    <option value="">Select Action</option>
-                    <option value="delete">Delete Selected Records</option>
-                </select>
-                <button type="submit" class="do-action-btn">Do Action</button>
-            </div>
-            <!-- Add hidden input for selected items -->
-            <input type="hidden" name="selected_items" id="selectedItems">
-        </form>
+
+        <div class="search-controls">
+            <input type="text" name="q" class="search-input" placeholder="Search by name...">
+        </div>
+        <div class="action-controls">
+            <select id="bulkAction" name="action" class="action-select">
+                <option value="" selected disabled>Select Action</option>
+                <option value="delete">Delete Selected Records</option>
+            </select>
+            <button type="button" class="do-action-btn" onclick="executeBulkAction()">Do Action</button>
+        </div>
+
     </div>
 
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th><input type="checkbox" id="select-all"></th>
-                <th>Employee</th>
-                <th>Employee ID</th>
-                <th>Skill</th>
-                <th>Progress</th>
-                <th>Created</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for goal in goals %}
-            <tr onclick="clickHandler(event)" data-link="{% url 'goal_info' goal.id %}">
-                <td onclick="event.stopPropagation();">
-                    <input type="checkbox" class="item-checkbox" value="{{ goal.id }}">
-                </td>
-                <td>{{ goal.employee.username }}</td>
-                <td>{{ goal.employee.id }}</td>
-                <td>{{ goal.skill }}</td>
-                <td>
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar">
-                            {{ goal.progress }}
+
+    <form method="post" action="{% url 'goals_action' %}" class="action-form" id="bulkActionForm">
+        {% csrf_token %}
+        <input type="hidden" name="selected_ids" id="selectedIds">
+        <input type="hidden" name="action" id="selectedAction">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="selectAll" class="select-all-checkbox"></th>
+                    <th>Employee</th>
+                    <th>Employee ID</th>
+                    <th>Skill</th>
+                    <th>Progress</th>
+                    <th>Created</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for goal in goals %}
+                <tr onclick="clickHandler(event)" data-link="{% url 'goal_info' goal.id %}">
+                    <td onclick="event.stopPropagation();">
+                        <input type="checkbox" class="item-checkbox" value="{{ goal.id }}">
+                    </td>
+                    <td>{{ goal.employee.username }}</td>
+                    <td>{{ goal.employee.id }}</td>
+                    <td>{{ goal.skill }}</td>
+                    <td>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar">
+                                {{ goal.progress }}
+                            </div>
                         </div>
-                    </div>
-                </td>
-                <td>{{ goal.created }}</td>
-                <td>
-                    {% if goal.is_completed %}
-                        <span class="status-badge active"><i class="bi bi-check-circle"></i> Completed</span>
-                    {% else %}
-                        <span class="status-badge inactive"><i class="bi bi-hourglass-split"></i> In Progress</span>
-                    {% endif %}
-                </td>
-                <td onclick="event.stopPropagation();">
-                    <div class="action-buttons">
-                        <a href="{% url 'delete_goal' goal.id %}" class="delete-btn">
-                            <i class="bi bi-trash"></i>
-                        </a>
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                    </td>
+                    <td>{{ goal.created }}</td>
+                    <td>
+                        {% if goal.is_completed %}
+                            <span class="status-badge active"><i class="bi bi-check-circle"></i> Completed</span>
+                        {% else %}
+                            <span class="status-badge inactive"><i class="bi bi-hourglass-split"></i> In Progress</span>
+                        {% endif %}
+                    </td>
+                    <td onclick="event.stopPropagation();">
+                        <div class="action-buttons">
+                            <a href="{% url 'delete_goal' goal.id %}" class="delete-btn">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
 
     {% if is_paginated %}
     <div class="pagination-container">

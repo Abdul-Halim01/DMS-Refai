@@ -165,62 +165,61 @@
 })();
 
 
+
+
+
+
+function executeBulkAction() {
+  const bulkActionForm = document.getElementById('bulkActionForm');
+  if (!bulkActionForm) {
+      console.error('Bulk action form not found');
+      return;
+  }
+
+  const selectedCheckboxes = document.querySelectorAll('.item-checkbox:checked');
+  const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+  const action = document.getElementById('bulkAction').value;
+
+  if (selectedIds.length === 0) {
+      alert('الرجاء اختيار عنصر واحد على الأقل');
+      return;
+  }
+
+  if (!action) {
+      alert('الرجاء اختيار إجراء');
+      return;
+  }
+
+  if (action === 'delete' && !confirm('هل أنت متأكد من حذف العناصر المحددة؟')) {
+      return;
+  }
+
+  document.getElementById('selectedIds').value = JSON.stringify(selectedIds);
+  document.getElementById('selectedAction').value = action;
+  bulkActionForm.submit();
+}
+
+
+
+
+// Initialize bulk action functionality
 document.addEventListener('DOMContentLoaded', function() {
-  // Get DOM elements
-  const selectAll = document.getElementById('select-all');
-  const itemCheckboxes = document.querySelectorAll('.item-checkbox');
-  const actionForm = document.getElementById('actionForm');
-  const selectedItemsInput = document.getElementById('selectedItems');
-  
-  // Handle "Select All" checkbox
-  selectAll.addEventListener('change', function() {
-      itemCheckboxes.forEach(checkbox => {
-          checkbox.checked = this.checked;
+  const selectAll = document.getElementById('selectAll');
+  if (selectAll) {
+      selectAll.addEventListener('change', function() {
+          const checkboxes = document.querySelectorAll('.item-checkbox');
+          checkboxes.forEach(checkbox => checkbox.checked = this.checked);
       });
-  });
+  }
 
-  // Update "Select All" when individual checkboxes change
-  itemCheckboxes.forEach(checkbox => {
+  // Initialize row checkboxes
+  const rowCheckboxes = document.querySelectorAll('.item-checkbox');
+  rowCheckboxes.forEach(checkbox => {
       checkbox.addEventListener('change', function() {
-          selectAll.checked = [...itemCheckboxes].every(cb => cb.checked);
+          const allChecked = Array.from(rowCheckboxes).every(cb => cb.checked);
+          if (selectAll) {
+              selectAll.checked = allChecked;
+          }
       });
   });
-
-  // Handle form submission
-  actionForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      // Get selected items
-      const selectedItems = [...itemCheckboxes]
-          .filter(cb => cb.checked)
-          .map(cb => cb.value);
-
-      // Validate selection
-      if (selectedItems.length === 0) {
-          alert('Please select at least one user');
-          return;
-      }
-
-      // Get selected action
-      const selectedAction = this.querySelector('.action-select').value;
-      if (!selectedAction) {
-          alert('Please select an action');
-          return;
-      }
-
-      // Update hidden input with selected items
-      selectedItemsInput.value = selectedItems.join(',');
-
-      // Submit the form
-      this.submit();
-  });
-
-  // Row click handler (existing functionality)
-  window.clickHandler = function(event) {
-      if (!event.target.closest('input[type="checkbox"]') && 
-          !event.target.closest('.action-buttons')) {
-          const link = event.currentTarget.dataset.link;
-          if (link) window.location.href = link;
-      }
-  };
 });

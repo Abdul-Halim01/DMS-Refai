@@ -9,3 +9,4 @@ def reverse_format(date):
     original = datetime.strptime(str(date), '%Y-%m-%d').date()
     new_format = original.strftime('%m-%d-%Y')
     return new_format
+
