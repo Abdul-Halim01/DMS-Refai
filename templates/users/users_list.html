@@ -13,7 +13,7 @@
 <div class="table-container">
     <div class="table-controls">
         <div class="search-controls">
-            <input type="text" name="q" class="search-input" placeholder="Search by name...">
+            <input hx-get="{% url 'users_list' %}" hx-push-url="true" hx-target="#users-partial" hx-swap="innerHTML" hx-trigger="keyup changed delay:500ms" type="text" name="q" class="search-input" placeholder="Search by name..." value="{{ request.GET.q }}"/>
         </div>
         <div class="action-controls">
             <select id="bulkAction" name="action" class="action-select">
@@ -30,46 +30,9 @@
         {% csrf_token %}
         <input type="hidden" name="selected_ids" id="selectedIds">
         <input type="hidden" name="action" id="selectedAction">
-
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th><input type="checkbox" id="selectAll" class="select-all-checkbox"></th>
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in users %}
-                <tr onclick="clickHandler(event)" data-link="{% url 'profile' user.id %}">
-                    <td onclick="event.stopPropagation();">
-                        <input type="checkbox" class="item-checkbox" value="{{ user.id }}">
-                    </td>
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.email }}</td>
-                    <td><span class="role-badge">{{ user.role }}</span></td>
-                    <td>
-                        {% if user.is_active %}
-                            <span class="status-badge active"><i class="bi bi-check-circle"></i> Active</span>
-                        {% else %}
-                            <span class="status-badge inactive"><i class="bi bi-x-circle"></i> Inactive</span>
-                        {% endif %}
-                    </td>
-                    <td onclick="event.stopPropagation();">
-                        <div class="action-buttons">
-                            <a href="{% url 'delete_user' user.id %}" class="delete-btn">
-                                <i class="bi bi-trash"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
+        
+        <table class="data-table" id="users-partial">
+            {% include 'partials/users_partial.html' %}
         </table>
 
     </form>

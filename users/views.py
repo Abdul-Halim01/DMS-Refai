@@ -21,10 +21,16 @@ class UserListView(LoginRequiredMixin, ListView):
     model = User
     template_name = 'users/users_list.html'
     context_object_name = 'users'
-    paginate_by = 3  # set pagination to an appropriate number
+    paginate_by = 10  # set pagination to an appropriate number
 
     def get_queryset(self):
-        return User.objects.all()
+        q = self.request.GET.get('q', '')
+        if self.request.htmx:
+            self.template_name = 'partials/users_partial.html'
+            if q:
+                return super().get_queryset().filter(username__icontains=q)
+        else:
+            return super().get_queryset()
 
 
 

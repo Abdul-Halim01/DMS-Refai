@@ -8,6 +8,7 @@
     <title>{% block title %}Dashboard{% endblock %}</title>
 
     <script src="{% static 'js/dashboard.js' %}"></script>
+    <script src="{% static 'js/htmx.min.js' %}"></script>
     <!-- Custom styles -->
     <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -33,6 +34,11 @@
 
       <!-- Update sidebar with id -->
       <nav class="sidebar" id="sidebar">
+        <!-- Add logo section -->
+        <div class="sidebar-logo">
+          <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-img">
+        </div>
+        
         <div class="sidebar-sticky">
           <ul class="nav">
             <li class="nav-item">

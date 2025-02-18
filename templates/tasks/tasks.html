@@ -16,7 +16,7 @@
 <div class="table-container">
     <div class="table-controls">
         <div class="search-controls">
-            <input type="text" name="q" class="search-input" placeholder="Search tasks...">
+            <input hx-get="{% url 'tasks-list' %}" hx-push-url="true" hx-target="#tasks-partial" hx-swap="innerHTML" hx-trigger="keyup changed delay:500ms" type="text" name="q" class="search-input" placeholder="Search tasks..." value="{{ request.GET.q }}"/>
         </div>
         <div class="action-controls">
             <select id="bulkAction" name="action" class="action-select">
@@ -31,43 +31,8 @@
         {% csrf_token %}
         <input type="hidden" name="selected_ids" id="selectedIds">
         <input type="hidden" name="action" id="selectedAction">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th><input type="checkbox" id="selectAll" class="select-all-checkbox"></th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Priority</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for task in tasks %}
-                <tr onclick="clickHandler(event)" data-link="{% url 'task-update' task.id %}">
-                    <td onclick="event.stopPropagation();">
-                        <input type="checkbox" class="item-checkbox" value="{{ task.id }}">
-                    </td>
-
-                    <td>{{ task.title }}</td>
-                    <td>{{ task.description }}</td>
-                    <td><span class="priority-badge">{{ task.priority }}</span></td>
-                    <td>
-                        <span class="status-badge {% if task.status == 'Completed' %}active{% elif task.status == 'In Progress' %}in-progress{% else %}inactive{% endif %}">
-                            <i class="bi {% if task.status == 'Completed' %}bi-check-circle{% elif task.status == 'In Progress' %}bi-dash-circle{% else %}bi-x-circle{% endif %}"></i>
-                            {{ task.status }}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="action-buttons">
-                            <a href="{% url 'task-delete' task.id %}" class="delete-btn">
-                                <i class="bi bi-trash"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
+        <table class="data-table" id="tasks-partial">
+           {% include 'partials/tasks_partial.html' %}
         </table>
 
     </form>

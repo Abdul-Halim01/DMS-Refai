@@ -23,14 +23,14 @@ class TaskList(ListView):
     context_object_name = 'tasks'
     paginate_by = 5
 
-    def get_queryset(self) -> QuerySet[Any]:
-        queryset = super().get_queryset()
-        q = self.request.GET.get('q' , None)
+    def get_queryset(self):
+        q = self.request.GET.get('q', '')
+        if self.request.htmx:
+            self.template_name = 'partials/tasks_partial.html'
         if q:
-            queryset = queryset.filter(
-                title__startswith = q
-            )
-        return queryset
+            return super().get_queryset().filter(title__istartswith=q)
+        else:
+            return super().get_queryset()
 
 
 class TaskKanban(View):
