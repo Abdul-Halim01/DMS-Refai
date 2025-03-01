@@ -164,11 +164,6 @@
   });
 })();
 
-
-
-
-
-
 function executeBulkAction() {
   const bulkActionForm = document.getElementById('bulkActionForm');
   if (!bulkActionForm) {
@@ -199,9 +194,6 @@ function executeBulkAction() {
   bulkActionForm.submit();
 }
 
-
-
-
 // Initialize bulk action functionality
 document.addEventListener('DOMContentLoaded', function() {
   const selectAll = document.getElementById('selectAll');
@@ -223,3 +215,5 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   });
 });
+
+

@@ -20,10 +20,21 @@
             <h3>Pending</h3>
             <span class="task-count">{{ tasks|count_by_status:"Pending" }}</span>
         </div>
-        <div class="column-content">
+        <div class="column-content" 
+             hx-drop="true"
+             hx-drop-target=".kanban-card"
+             hx-trigger="drop"
+             hx-swap="beforeend">
             {% for task in tasks %}
                 {% if task.status == 'Pending' %}
-                    <div class="kanban-card">
+                    <div class="kanban-card" 
+                         draggable="true"
+                         hx-put="/tasks/{{ task.id }}/update-status/"
+                         hx-trigger="dragend"
+                         hx-swap="outerHTML"
+                         hx-vals='{"status": "Pending"}'
+                         hx-drag="true"
+                         hx-drag-data='{"taskId": "{{ task.id }}"}'>
                         <div class="card-header">
                             <h4>{{ task.title }}</h4>
                             <div class="priority-wrapper">
@@ -42,7 +53,6 @@
                             </div>
                             <div class="info-row">
                                 <span class="label">Due Date:</span>
-
                                 <span>{{ task.due_date|date:"M d, Y" }}</span>
                             </div>
                         </div>
@@ -65,10 +75,21 @@
             <h3>In Progress</h3>
             <span class="task-count">{{ tasks|count_by_status:"In Progress" }}</span>
         </div>
-        <div class="column-content">
+        <div class="column-content"
+             hx-drop="true"
+             hx-drop-target=".kanban-card"
+             hx-trigger="drop"
+             hx-swap="beforeend">
             {% for task in tasks %}
                 {% if task.status == 'In Progress' %}
-                    <div class="kanban-card">
+                    <div class="kanban-card"
+                         draggable="true"
+                         hx-put="/tasks/{{ task.id }}/update-status/"
+                         hx-trigger="dragend"
+                         hx-swap="outerHTML"
+                         hx-vals='{"status": "In Progress"}'
+                         hx-drag="true"
+                         hx-drag-data='{"taskId": "{{ task.id }}"}'>
                         <div class="card-header">
                             <h4>{{ task.title }}</h4>
                             <div class="priority-wrapper">
@@ -87,7 +108,6 @@
                             </div>
                             <div class="info-row">
                                 <span class="label">Due Date:</span>
-
                                 <span>{{ task.due_date|date:"M d, Y" }}</span>
                             </div>
                         </div>
@@ -110,10 +130,21 @@
             <h3>Completed</h3>
             <span class="task-count">{{ tasks|count_by_status:"Completed" }}</span>
         </div>
-        <div class="column-content">
+        <div class="column-content"
+             hx-drop="true"
+             hx-drop-target=".kanban-card"
+             hx-trigger="drop"
+             hx-swap="beforeend">
             {% for task in tasks %}
                 {% if task.status == 'Completed' %}
-                    <div class="kanban-card">
+                    <div class="kanban-card"
+                         draggable="true"
+                         hx-put="/tasks/{{ task.id }}/update-status/"
+                         hx-trigger="dragend"
+                         hx-swap="outerHTML"
+                         hx-vals='{"status": "Completed"}'
+                         hx-drag="true"
+                         hx-drag-data='{"taskId": "{{ task.id }}"}'>
                         <div class="card-header">
                             <h4>{{ task.title }}</h4>
                             <div class="priority-wrapper">
@@ -132,7 +163,6 @@
                             </div>
                             <div class="info-row">
                                 <span class="label">Due Date:</span>
-
                                 <span>{{ task.due_date|date:"M d, Y" }}</span>
                             </div>
                         </div>
@@ -150,4 +180,5 @@
         </div>
     </div>
 </div>
+
 {% endblock %}

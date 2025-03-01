@@ -1,6 +1,6 @@
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from .models import Task
 from django.db.models import QuerySet
 from typing import Any
@@ -9,13 +9,21 @@ from django.views import View
 from django.contrib.auth.decorators import user_passes_test
 import json
 from django.utils.decorators import method_decorator
+from django.http import HttpResponse
 
 
 
 # Create your views here.
 
-
-
+class TaskStatusUpdate(View):
+    def put(self, request, pk):
+        task = get_object_or_404(Task, pk=pk)
+        new_status = request.POST.get('status')
+        if new_status in ['Pending', 'In Progress', 'Completed']:
+            task.status = new_status
+            task.save()
+            return HttpResponse(status=200)
+        return HttpResponse(status=400)
 
 class TaskList(ListView):
     model = Task
