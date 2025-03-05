@@ -6,6 +6,17 @@ import json
 from .cursor_db import create_form
 from django.views import View
 from django.utils.decorators import method_decorator
+from .models import *
+from django.views import generic
+
+class ListForms(generic.ListView):
+    model = CustomForm
+    template_name = "form_builder/forms.html"
+
+class FormDetailView(generic.DetailView):
+    model = CustomForm
+    template_name = "form_builder/form_detail.html"
+    context_object_name = 'form'
 
 @method_decorator(ensure_csrf_cookie, name='dispatch')
 class CreateFormView(View):
@@ -36,14 +47,13 @@ class CreateFormView(View):
             if result['success']:
                 return JsonResponse({
                     'success': True,
-                    'redirect_url': f'/forms/{result["form_id"]}'  # You'll need to create this URL pattern
+                    'redirect_url': f'/forms/{result["form_id"]}'
                 })
             else:
                 return JsonResponse({
                     'success': False,
-                    'error': 'Failed to create form'
+                    'error': result.get('error', 'Failed to create form')
                 })
-                
         except json.JSONDecodeError:
             return JsonResponse({
                 'success': False,
@@ -54,20 +64,4 @@ class CreateFormView(View):
                 'success': False,
                 'error': str(e)
             })
-
-
-
-# class FormListView(View):
-#     def get(self, request):
-#         forms = get_all_forms()
-#         return render(request, 'form_builder/form_list.html', {'forms': forms})
-
-
-
-class AddFormView(View):
-    def get(self, request):
-        return render(request, 'form_builder/add_form.html')
-
-
-
-
+                

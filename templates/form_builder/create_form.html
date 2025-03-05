@@ -10,7 +10,7 @@
             <p class="form-subtitle">Add fields to create your custom form</p>
         </div>
 
-        <form id="formBuilder" method="post" hx-post="#" hx-swap="none">
+        <form id="formBuilder" method="post">
             {% csrf_token %}
             <div class="form-section">
                 <div class="form-group">
@@ -24,37 +24,6 @@
                 <div id="formFields">
                     <!-- Dynamic fields will be added here -->
                 </div>
-                
-                <div class="field-template" style="display: none;">
-                    <div class="field-row" data-field-id="__id__">
-                        <div class="form-group">
-                            <label>Field Name</label>
-                            <input type="text" name="fields[__id__][name]" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Field Type</label>
-                            <select name="fields[__id__][type]" class="form-control" required>
-                                <option value="varchar">Text</option>
-                                <option value="integer">Number</option>
-                                <option value="text">Long Text</option>
-                                <option value="date">Date</option>
-                                <option value="boolean">Yes/No</option>
-                                <option value="decimal">Decimal</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Max Length</label>
-                            <input type="number" name="fields[__id__][max_length]" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label>Required</label>
-                            <input type="checkbox" name="fields[__id__][required]" value="true">
-                        </div>
-                        <button type="button" class="btn btn-danger remove-field" onclick="removeField(this)">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                </div>
 
                 <button type="button" class="btn btn-secondary" onclick="addField()">
                     <i class="bi bi-plus"></i> Add Field
@@ -65,6 +34,38 @@
                 <button type="submit" class="btn btn-primary">Create Form</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Field template moved outside the form -->
+<div class="field-template" style="display: none;">
+    <div class="field-row" data-field-id="__id__">
+        <div class="form-group">
+            <label>Field Name</label>
+            <input type="text" name="fields[__id__][name]" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>Field Type</label>
+            <select name="fields[__id__][type]" class="form-control" required>
+                <option value="varchar">Text</option>
+                <option value="integer">Number</option>
+                <option value="text">Long Text</option>
+                <option value="date">Date</option>
+                <option value="boolean">Yes/No</option>
+                <option value="decimal">Decimal</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Max Length</label>
+            <input type="number" name="fields[__id__][max_length]" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Required</label>
+            <input type="checkbox" name="fields[__id__][required]" value="true">
+        </div>
+        <button type="button" class="btn btn-danger remove-field" onclick="removeField(this)">
+            <i class="bi bi-trash"></i>
+        </button>
     </div>
 </div>
 
@@ -112,45 +113,90 @@ document.addEventListener('DOMContentLoaded', function() {
 // Handle form submission
 document.getElementById('formBuilder').addEventListener('submit', function(e) {
     e.preventDefault();
+    
+    // Check if there are any fields
+    const fieldRows = document.querySelectorAll('#formFields .field-row');
+    if (fieldRows.length === 0) {
+        alert('Please add at least one field to your form');
+        return;
+    }
+    
     const formData = new FormData(this);
+    const csrfToken = formData.get('csrfmiddlewaretoken');
+    const formName = formData.get('form_name');
+    
+    if (!formName) {
+        alert('Please enter a form name');
+        return;
+    }
     
     // Convert FormData to a more structured format
     const data = {
-        form_name: formData.get('form_name'),
+        form_name: formName,
         fields: []
     };
     
     // Get all field rows
-    const fieldRows = document.querySelectorAll('.field-row');
-    fieldRows.forEach((row, index) => {
-        data.fields.push({
-            name: formData.get(`fields[${row.dataset.fieldId}][name]`),
-            type: formData.get(`fields[${row.dataset.fieldId}][type]`),
-            max_length: formData.get(`fields[${row.dataset.fieldId}][max_length]`),
-            required: formData.get(`fields[${row.dataset.fieldId}][required]`) === 'true'
-        });
+    fieldRows.forEach((row) => {
+        const fieldId = row.dataset.fieldId;
+        const nameInput = row.querySelector(`input[name="fields[${fieldId}][name]"]`);
+        const typeSelect = row.querySelector(`select[name="fields[${fieldId}][type]"]`);
+        const maxLengthInput = row.querySelector(`input[name="fields[${fieldId}][max_length]"]`);
+        const requiredCheckbox = row.querySelector(`input[name="fields[${fieldId}][required]"]`);
+        
+        if (nameInput && typeSelect) {
+            data.fields.push({
+                name: nameInput.value,
+                type: typeSelect.value,
+                max_length: maxLengthInput ? maxLengthInput.value : null,
+                required: requiredCheckbox ? requiredCheckbox.checked : false
+            });
+        }
     });
+    
+    // Validate fields
+    if (data.fields.length === 0) {
+        alert('Please add at least one field to your form');
+        return;
+    }
+    
+    // Show loading indicator
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = 'Creating...';
+    submitBtn.disabled = true;
 
     // Send the data using fetch
-    fetch(this.getAttribute('hx-post'), {
+    fetch('{% url "add_form" %}', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            'X-CSRFToken': csrfToken
         },
         body: JSON.stringify(data)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             window.location.href = data.redirect_url;
         } else {
-            alert(data.error);
+            alert(data.error || 'An error occurred');
+            // Reset button
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
         }
     })
     .catch(error => {
         console.error('Error:', error);
         alert('An error occurred while creating the form');
+        // Reset button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
     });
 });
 </script>

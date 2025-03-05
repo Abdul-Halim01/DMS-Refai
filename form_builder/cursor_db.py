@@ -1,22 +1,22 @@
 from django.db import connection
 import json
 
+
+
+def list_forms():
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT id, name FROM form_builder_customform")
+        return cursor.fetchall()
+
+
+
+
 def create_form(form_name, fields):
     with connection.cursor() as cursor:
-        # Create the forms metadata table if it doesn't exist
-        cursor.execute(
-            """
-            CREATE TABLE IF NOT EXISTS form_builder (
-                id SERIAL PRIMARY KEY,
-                name VARCHAR(255) NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-            """
-        )
-        
+
         # Insert the form metadata
         cursor.execute(
-            "INSERT INTO form_builder (name) VALUES (%s) RETURNING id",
+            "INSERT INTO form_builder_customform (name) VALUES (%s) RETURNING id",
             [form_name]
         )
         form_id = cursor.fetchone()[0]
