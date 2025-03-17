@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 import json
-from .cursor_db import create_form
+from .cursor_db import create_form, get_form
 from django.views import View
 from django.utils.decorators import method_decorator
 from .models import *
@@ -11,12 +11,19 @@ from django.views import generic
 
 class ListForms(generic.ListView):
     model = CustomForm
+    context_object_name = 'forms'
     template_name = "form_builder/forms.html"
 
-class FormDetailView(generic.DetailView):
-    model = CustomForm
-    template_name = "form_builder/form_detail.html"
-    context_object_name = 'form'
+
+class FormDetailView(View):
+    def get(self, request, pk):
+        # try:
+        form_name = CustomForm.objects.get(id=pk).name
+        form = get_form(form_name)
+        return render(request, 'form_builder/form_detail.html')
+        # except CustomForm.DoesNotExist:
+        #     pass
+
 
 @method_decorator(ensure_csrf_cookie, name='dispatch')
 class CreateFormView(View):
@@ -65,3 +72,27 @@ class CreateFormView(View):
                 'error': str(e)
             })
                 
+
+
+
+class CreateRecordView(View):
+    def get(self, request, pk):
+        form_name = CustomForm.objects.get(id=pk).name
+        return render(request, 'form_builder/create_record.html')
+
+
+
+
+class FormsActionView(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        action = data.get('action')
+        selected_ids = data.get('selected_ids', [])
+        
+        if action == 'delete':
+            CustomForm.objects.filter(id__in=selected_ids).delete()
+            return JsonResponse({
+                'success': True,
+                'message': 'Forms deleted successfully'
+            })
+        

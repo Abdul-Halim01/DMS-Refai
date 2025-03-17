@@ -1,45 +1,79 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}{{ form.name }} Details{% endblock %}
+{% block title %}User List{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="card">
-        <div class="card-header bg-primary text-white">
-            <h2>{{ form.name }}</h2>
+<div class="page-header">
+    <h1 class="h2">Form Detail</h1>
+    {% if request.user.role == 'Moderator' or 'Admin' %}
+    <a href="{% url 'add_record' %}" class="btn btn-primary">Add +</a>
+    {% endif %}
+</div>
+
+<div class="table-container">
+    <div class="table-controls">
+        <div class="search-controls">
+            <input hx-get="{% url 'form_detail' %}" type="text" name="q" class="search-input" placeholder="Search by name..." value="{{ request.GET.q }}"/>
         </div>
-        <div class="card-body">
-            <h4>Form Fields</h4>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Field Name</th>
-                        <th>Field Type</th>
-                        <th>Required</th>
-                        <th>Max Length</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for field in form.fields.all %}
-                    <tr>
-                        <td>{{ field.name }}</td>
-                        <td>{{ field.field_type }}</td>
-                        <td>{% if field.required %}Yes{% else %}No{% endif %}</td>
-                        <td>{{ field.max_length|default:"-" }}</td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" class="text-center">No fields defined</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            
-            <div class="mt-4">
-                <a href="{% url 'form_list' %}" class="btn btn-secondary">Back to Forms</a>
-                <a href="#" class="btn btn-primary">Fill Form</a>
-            </div>
+        <div class="action-controls">
+            <select id="bulkAction" name="action" class="action-select">
+                <option value="" selected disabled>Select Action</option>
+                <option value="delete">Delete Selected Forms</option>
+            </select>
+            <button type="button" class="do-action-btn" onclick="executeBulkAction()">Do Action</button>
         </div>
     </div>
+
+    <form method="post" action="{% url 'forms_action' %}"  id="bulkActionForm">
+        {% csrf_token %}
+        <input type="hidden" name="selected_ids" id="selectedIds">
+        <input type="hidden" name="action" id="selectedAction">
+        
+        <table class="data-table">
+
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="select-all"></th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            {% for form in forms %}
+            <tr onclick="clickHandler(event)" data-link="{% url 'form_detail' form.id %}">
+                <td onclick="event.stopPropagation();">
+                    <input type="checkbox" class="item-checkbox" value="{{ form.id }}">
+                </td>
+                <td>{{ form.id }}</td>
+                <td>{{ form.name }}</td>
+                
+                <td onclick="event.stopPropagation();">
+                    <div class="action-buttons">
+                        <a href="{% url 'form_detail' form.id %}" class="delete-btn">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </form>
+
+    <div class="pagination-container">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a></li>
+                <li><a href="#" class="page-link">{{ page_obj.number|add:'-1' }}</a></li>
+            {% endif %}
+            <li><a href="#" class="page-link active">{{ page_obj.number }}</a></li>
+            {% if page_obj.has_next %}
+                <li><a href="#" class="page-link">{{ page_obj.number|add:'1' }}</a></li>
+                <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a></li>
+            {% endif %}
+        </ul>
+    </div>
 </div>
-{% endblock %} 
+
+{% endblock %}

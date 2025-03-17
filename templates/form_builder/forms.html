@@ -1,42 +1,79 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}Forms{% endblock %}
+{% block title %}User List{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Your Forms</h1>
-        <a href="{% url 'form_builder' %}" class="btn btn-primary">
-            <i class="bi bi-plus"></i> Create New Form
-        </a>
+<div class="page-header">
+    <h1 class="h2">Users</h1>
+    {% if request.user.role == 'Moderator' or 'Admin' %}
+    <a href="{% url 'add_form' %}" class="btn btn-primary">Add +</a>
+    {% endif %}
+</div>
+
+<div class="table-container">
+    <div class="table-controls">
+        <div class="search-controls">
+            <input hx-get="{% url 'users_list' %}" type="text" name="q" class="search-input" placeholder="Search by name..." value="{{ request.GET.q }}"/>
+        </div>
+        <div class="action-controls">
+            <select id="bulkAction" name="action" class="action-select">
+                <option value="" selected disabled>Select Action</option>
+                <option value="delete">Delete Selected Forms</option>
+            </select>
+            <button type="button" class="do-action-btn" onclick="executeBulkAction()">Do Action</button>
+        </div>
     </div>
 
-    <div class="row">
-        {% for form in object_list %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">{{ form.name }}</h5>
-                    <p class="card-text">
-                        {{ form.fields.count }} field{{ form.fields.count|pluralize }}
-                    </p>
-                </div>
-                <div class="card-footer bg-transparent">
-                    <a href="{% url 'form_detail' form.id %}" class="btn btn-sm btn-outline-primary">View Details</a>
-                    <a href="#" class="btn btn-sm btn-outline-success">Fill Form</a>
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <div class="col-12">
-            <div class="alert alert-info">
-                <p class="mb-0">You haven't created any forms yet.</p>
-                <p class="mb-0">
-                    <a href="{% url 'form_builder' %}" class="alert-link">Create your first form</a>
-                </p>
-            </div>
-        </div>
-        {% endfor %}
+    <form method="post" action="{% url 'forms_action' %}"  id="bulkActionForm">
+        {% csrf_token %}
+        <input type="hidden" name="selected_ids" id="selectedIds">
+        <input type="hidden" name="action" id="selectedAction">
+        
+        <table class="data-table">
+
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="select-all"></th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            {% for form in forms %}
+            <tr onclick="clickHandler(event)" data-link="{% url 'form_detail' form.id %}">
+                <td onclick="event.stopPropagation();">
+                    <input type="checkbox" class="item-checkbox" value="{{ form.id }}">
+                </td>
+                <td>{{ form.id }}</td>
+                <td>{{ form.name }}</td>
+                
+                <td onclick="event.stopPropagation();">
+                    <div class="action-buttons">
+                        <a href="{% url 'form_detail' form.id %}" class="delete-btn">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </form>
+
+    <div class="pagination-container">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a></li>
+                <li><a href="#" class="page-link">{{ page_obj.number|add:'-1' }}</a></li>
+            {% endif %}
+            <li><a href="#" class="page-link active">{{ page_obj.number }}</a></li>
+            {% if page_obj.has_next %}
+                <li><a href="#" class="page-link">{{ page_obj.number|add:'1' }}</a></li>
+                <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a></li>
+            {% endif %}
+        </ul>
     </div>
 </div>
+
 {% endblock %}

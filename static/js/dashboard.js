@@ -194,6 +194,15 @@ function executeBulkAction() {
   bulkActionForm.submit();
 }
 
+// Handle row clicks to navigate to data-link URL
+function clickHandler(event) {
+    const row = event.currentTarget;
+    const link = row.getAttribute('data-link');
+    if (link) {
+        window.location.href = link;
+    }
+}
+
 // Initialize bulk action functionality
 document.addEventListener('DOMContentLoaded', function() {
   const selectAll = document.getElementById('selectAll');

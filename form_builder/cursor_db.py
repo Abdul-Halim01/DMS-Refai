@@ -68,3 +68,15 @@ def create_form(form_name, fields):
             'form_id': form_id,
             'table_name': table_name
         }
+
+
+
+def get_form(form_name):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            f"SELECT * FROM {form_name}"
+        )
+
+        return cursor.fetchall()
+
+
