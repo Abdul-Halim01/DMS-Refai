@@ -10,8 +10,22 @@ def list_forms():
 
 
 
+def get_form_fields(form_name):
+    with connection.cursor() as cursor:
+        # Get the table name from the form_builder_customform table
+        cursor.execute("SELECT id FROM form_builder_customform WHERE name = %s", [form_name])
+        form_id = cursor.fetchone()[0]
+        table_name = f"form_{form_id}"
 
-def create_form(form_name, fields):
+        # Get the column names using PRAGMA table_info
+        cursor.execute(f"PRAGMA table_info({table_name})")
+        columns = cursor.fetchall()
+        
+        # Filter out id and created_at columns and return column names
+        return [col[1] for col in columns if col[1] not in ('id', 'created_at')]
+
+
+def add_form(form_name, fields):
     with connection.cursor() as cursor:
 
         # Insert the form metadata
@@ -79,4 +93,29 @@ def get_form(form_name):
 
         return cursor.fetchall()
 
+
+
+
+def add_record(form_name, records: list):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            f"INSERT INTO {form_name} (record) VALUES (%s)",
+            records
+        )
+
+
+def remove_record(form_name, record_id):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            f"DELETE FROM {form_name} WHERE id = %s",
+            [record_id]
+        )
+
+
+def update_record(form_name, record_id, record):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            f"UPDATE {form_name} SET record = %s WHERE id = %s",
+            [record, record_id]
+        )
 
