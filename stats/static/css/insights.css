@@ -1,0 +1,104 @@
+.insights-container {
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.insights-title {
+    color: #2c3e50;
+    font-size: 24px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.insights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.insight-card {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.insight-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.insight-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.insight-type {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+.severity-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Severity colors */
+.severity-badge.high {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+.severity-badge.medium {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.severity-badge.low {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+.insight-message {
+    color: #4b5563;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Card border colors based on severity */
+.severity-high {
+    border-left: 4px solid #dc2626;
+}
+
+.severity-medium {
+    border-left: 4px solid #d97706;
+}
+
+.severity-low {
+    border-left: 4px solid #16a34a;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .insights-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .insights-container {
+        padding: 15px;
+    }
+    
+    .insights-title {
+        font-size: 20px;
+    }
+} 

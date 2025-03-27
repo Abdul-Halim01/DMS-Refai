@@ -1,0 +1,52 @@
+{% load dict_extras %}
+<div id="analysis-content">
+    <h1>Data Overview</h1>
+    <p><strong>Number of Rows:</strong> {{ overview.num_rows }}</p>
+    <p><strong>Number of Columns:</strong> {{ overview.num_columns }}</p>
+    
+    <h2>Columns and Missing Values</h2>
+    <ul>
+        {% for col in overview.columns %}
+            <li>{{ col }} &mdash; Missing: {{ overview.missing_data|get_item:col }}</li>
+        {% endfor %}
+    </ul>
+    
+    <h1>Summary Statistics (Numeric Columns)</h1>
+    {% if summary_stats %}
+    <table>
+        <thead>
+            <tr>
+                <th>Statistic</th>
+                {% for col in summary_stats %}
+                    <th>{{ col }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% with first_stats=summary_stats.values|to_list|first %}
+                {% for stat in first_stats|dict_keys %}
+                <tr>
+                    <td>{{ stat }}</td>
+                    {% for col, stats in summary_stats.items %}
+                        <td>{{ stats|get_item:stat }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            {% endwith %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No numeric summary available.</p>
+    {% endif %}
+    
+    {% comment %} <h1>Automated Insights</h1>
+    <ul>
+        {% if insights %}
+            {% for insight in insights %}
+                <li>{{ insight }}</li>
+            {% endfor %}
+        {% else %}
+            <li>No significant insights found.</li>
+        {% endif %}
+    </ul> {% endcomment %}
+</div>

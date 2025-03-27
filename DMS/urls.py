@@ -30,6 +30,7 @@ urlpatterns = [
     path('tasks/', include('tasks.urls')),
     path('hr/', include('hr_tool.urls')),
     path('form-builder/', include('form_builder.urls')),
+    path('stats/', include('stats.urls')),
     # path('error/' , )
 ]
 

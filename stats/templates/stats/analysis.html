@@ -1,0 +1,1240 @@
+{% load dict_extras %}
+{% load static %}
+{% load json_filters %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>EDA Analysis Report</title>
+  <!-- Load Plotly and jQuery -->
+  <script src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Add modern CSS framework -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body class="bg-gray-100">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Page Header -->
+    <header class="page-header mb-8">
+      <h1 class="text-3xl font-bold text-gray-800">EDA Analysis Report</h1>
+      <p class="text-gray-600">Interactive data analysis and visualization</p>
+    </header>
+    <!-- Add this near your other buttons -->
+        <button id="downloadReport" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+            Download PDF Report
+        </button>
+    <!-- Insights Section -->
+    <section class="insights-section bg-white shadow-lg rounded-lg p-6 mb-8">
+      <h2 class="text-2xl font-bold mb-4 text-gray-800">Data Insights</h2>
+      
+      <!-- Filter buttons -->
+      <div class="flex gap-2 mb-4">
+        <button class="severity-filter px-4 py-2 rounded-lg text-sm font-medium bg-gray-200 hover:bg-gray-300" data-severity="all">
+          All
+        </button>
+        <button class="severity-filter px-4 py-2 rounded-lg text-sm font-medium bg-red-100 text-red-800 hover:bg-red-200" data-severity="high">
+          High Priority
+        </button>
+        <button class="severity-filter px-4 py-2 rounded-lg text-sm font-medium bg-yellow-100 text-yellow-800 hover:bg-yellow-200" data-severity="medium">
+          Medium Priority
+        </button>
+        <button class="severity-filter px-4 py-2 rounded-lg text-sm font-medium bg-blue-100 text-blue-800 hover:bg-blue-200" data-severity="low">
+          Low Priority
+        </button>
+      </div>
+
+      <!-- Insights Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% if insights %}
+          {% for insight in insights %}
+            <div class="insight-card cursor-pointer bg-white rounded-lg border p-4 hover:shadow-lg transition-all duration-200
+              {% if insight.severity == 'high' %}border-red-400 bg-red-50
+              {% elif insight.severity == 'medium' %}border-yellow-400 bg-yellow-50
+              {% else %}border-blue-400 bg-blue-50{% endif %}"
+              data-severity="{{ insight.severity }}">
+              
+              <div class="flex justify-between items-start mb-2">
+                <span class="text-sm font-semibold px-2 py-1 rounded
+                  {% if insight.severity == 'high' %}bg-red-200 text-red-800
+                  {% elif insight.severity == 'medium' %}bg-yellow-200 text-yellow-800
+                  {% else %}bg-blue-200 text-blue-800{% endif %}">
+                  {{ insight.type|title|cut:"_"|capfirst }}
+                </span>
+              </div>
+              
+              <p class="text-gray-700 text-sm mt-2">{{ insight.message }}</p>
+              
+              <!-- Store the insight data -->
+              <div class="hidden insight-data">{{ insight|to_json }}</div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="col-span-full text-center py-8 bg-gray-50 rounded-lg">
+            <p class="text-gray-500">No insights available for this dataset.</p>
+          </div>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- Overview Section -->
+    
+
+    <!-- Global Filters -->
+    <section class="global-filters bg-white shadow-lg rounded-lg p-6 mb-8">
+      <div class="filters-header mb-4">
+        <h2 class="text-xl font-bold text-gray-800">Global Filters</h2>
+        <div class="filter-controls flex gap-2 mt-2">
+          <button id="add-filter" class="btn btn-primary">Add Filter</button>
+          <select id="global-logic" class="w-32">
+            <option value="AND">AND</option>
+            <option value="OR">OR</option>
+          </select>
+          <button id="apply-filters" class="btn btn-primary">Apply Filters</button>
+        </div>
+      </div>
+      <div id="global-filters"></div>
+    </section>
+
+    <!-- Analysis Section -->
+    <section class="analysis-section grid grid-cols-1 md:grid-cols-2 gap-6">
+      {% for col, plot_html in plots.items %}
+        <div class="analysis-card bg-white shadow-lg rounded-lg overflow-hidden">
+          <div class="card-header bg-gray-50 px-6 py-4">
+            <h3 class="text-lg font-semibold text-gray-800">{{ col }}</h3>
+          </div>
+          <div class="card-content p-6">
+            <!-- Plot Container -->
+            <div class="plot-container mb-1" id="plot-container-{{ col }}">
+              {{ plot_html|safe }}
+            </div>
+            
+            <!-- Filter Controls -->
+            <div class="filter-panel space-y-4">
+              <div class="filter-group">
+                <label class="filter-label block text-sm font-medium text-gray-700">Analysis Mode</label>
+                <select class="filter-mode mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
+                        data-target="{{ col }}" id="filter-mode-{{ col }}">
+                  <option value="self">Filter by Value</option>
+                  <option value="other">Filter by Another Column</option>
+                  <option value="compare">Compare with Column</option>
+                </select>
+              </div>
+
+              <div class="filter-group hidden" id="filter-by-other-{{ col }}">
+                <label class="filter-label block text-sm font-medium text-gray-700">Filter Using Column</label>
+                <select class="filter-column mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
+                        data-target="{{ col }}" id="filter-column-{{ col }}">
+                  <option value="">Select Column</option>
+                  {% for other_col in overview.columns %}
+                    {% if other_col != col %}
+                      <option value="{{ other_col }}">{{ other_col }}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="filter-group hidden" id="compare-by-{{ col }}">
+                <label class="filter-label block text-sm font-medium text-gray-700">Compare With Column</label>
+                <select class="compare-column mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
+                        data-target="{{ col }}" id="compare-column-{{ col }}">
+                  <option value="">Select Column</option>
+                  {% for other_col in overview.columns %}
+                    {% if other_col != col %}
+                      <option value="{{ other_col }}">{{ other_col }}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+                
+                <!-- Plot type selector -->
+                <div class="plot-type-selector hidden mt-4">
+                  <label class="filter-label block text-sm font-medium text-gray-700">Plot Type</label>
+                  <select class="plot-type mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
+                          data-target="{{ col }}" id="plot-type-{{ col }}">
+                  </select>
+                </div>
+
+                <!-- Additional plot options -->
+                <div class="plot-options hidden mt-4">
+                  <div class="aggregation-method hidden">
+                    <label class="filter-label block text-sm font-medium text-gray-700">Aggregation Method</label>
+                    <select class="agg-method mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
+                            data-target="{{ col }}" id="agg-method-{{ col }}">
+                      <option value="mean">Mean</option>
+                      <option value="median">Median</option>
+                      <option value="sum">Sum</option>
+                      <option value="count">Count</option>
+                    </select>
+                  </div>
+                  
+                  <div class="color-by hidden mt-4">
+                    <label class="filter-label block text-sm font-medium text-gray-700">Color By</label>
+                    <select class="color-column mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
+                            data-target="{{ col }}" id="color-column-{{ col }}">
+                      <option value="">None</option>
+                      {% for other_col in overview.columns %}
+                        {% if other_col != col %}
+                          <option value="{{ other_col }}">{{ other_col }}</option>
+                        {% endif %}
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <label class="filter-label block text-sm font-medium text-gray-700">Filter Values</label>
+                <select class="filter-values mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
+                        multiple data-target="{{ col }}" id="filter-values-{{ col }}">
+                </select>
+              </div>
+
+              <button class="btn btn-primary w-full" onclick="resetPlot('{{ col }}')">
+                Reset Plot
+              </button>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </section>
+
+    <!-- Insight Modal -->
+    <div id="insightModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 overflow-y-auto">
+      <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="modal-content relative inline-block w-full max-w-4xl bg-white rounded-lg shadow-xl">
+          <!-- Modal Header - Fixed at top -->
+          <div class="modal-header border-b p-4 flex justify-between items-center bg-white sticky top-0 z-10">
+            <h3 id="modalTitle" class="text-xl font-bold text-gray-800"></h3>
+            <button id="closeModal" class="text-gray-400 hover:text-gray-600">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+          
+          <!-- Modal Body - Scrollable content -->
+          <div id="modalBody" class="overflow-y-auto p-6" style="max-height: calc(85vh - 80px);">
+            <!-- Modal content will be inserted here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+   
+
+        {% csrf_token %}
+
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // Global columns for filter builder
+    var globalColumns = {{ overview.columns|safe }};
+  </script>
+  
+  <!-- Include your existing JavaScript files -->
+  <!-- JavaScript for Per-Plot Filtering -->
+  <script>
+    $(document).ready(function() {
+        // ... keep existing global filter code ...
+
+        // Handle filter mode changes
+        $('.filter-mode').change(function() {
+            const target = $(this).data('target');
+            const mode = $(this).val();
+            
+            // Hide all optional filter sections first
+            $(`#filter-by-other-${target}, #compare-by-${target}`).hide();
+            $(`#filter-values-${target}`).parent().show();
+            
+            if (mode === 'self') {
+                // Get values for the target column itself
+                $.get("{% url 'get_unique_values' %}", { 
+                    column: target 
+                }, function(data) {
+                    const filterValues = $(`#filter-values-${target}`);
+                    filterValues.empty();
+                    if (data.values) {
+                        data.values.forEach(function(value) {
+                            filterValues.append(new Option(value, value));
+                        });
+                    }
+                });
+            } else if (mode === 'other') {
+                $(`#filter-by-other-${target}`).show();
+                $(`#filter-values-${target}`).empty();
+                
+                // Reset the filter column selection
+                $(`#filter-column-${target}`).val('');
+            } else if (mode === 'compare') {
+                $(`#compare-by-${target}`).show();
+                $(`#filter-values-${target}`).parent().hide();
+            }
+        });
+
+        // Handle filter column selection
+        $('.filter-column').change(function() {
+            const target = $(this).data('target');
+            const selectedColumn = $(this).val();
+            
+            console.log('Filter column selected:', {
+                target: target,
+                selectedColumn: selectedColumn
+            });
+            
+            if (selectedColumn) {
+                $.get("{% url 'get_unique_values' %}", { 
+                    column: selectedColumn 
+                }, function(data) {
+                    console.log('Received unique values:', data);
+                    const filterValues = $(`#filter-values-${target}`);
+                    filterValues.empty();
+                    if (data.values) {
+                        data.values.forEach(function(value) {
+                            filterValues.append(new Option(value, value));
+                        });
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error fetching values:', textStatus, errorThrown);
+                });
+            } else {
+                $(`#filter-values-${target}`).empty();
+            }
+        });
+
+        // Add handler for compare column selection
+        $('.compare-column').change(function() {
+            const target = $(this).data('target');
+            const compareColumn = $(this).val();
+            
+            if (compareColumn) {
+                // Get column types and update plot options
+                $.get("{% url 'get_column_types' %}", {
+                    target: target,
+                    compare_column: compareColumn
+                }, function(data) {
+                    updatePlotOptions(target, compareColumn, data.column_types);
+                });
+            } else {
+                // Hide plot options if no column selected
+                $(`#compare-by-${target} .plot-type-selector`).hide();
+                $(`#compare-by-${target} .plot-options`).hide();
+            }
+        });
+
+        // Function to update plot options based on column types
+        function updatePlotOptions(target, compareColumn, columnTypes) {
+            const plotTypeSelect = $(`#plot-type-${target}`);
+            const plotTypeContainer = $(`#compare-by-${target} .plot-type-selector`);
+            const plotOptions = $(`#compare-by-${target} .plot-options`);
+            
+            plotTypeSelect.empty();
+            
+            const targetType = columnTypes.target;
+            const compareType = columnTypes.compare;
+            
+            // Add appropriate plot options based on column types
+            if (targetType === 'numeric' && compareType === 'numeric') {
+                plotTypeSelect.append(new Option('Scatter Plot', 'scatter'));
+                plotTypeSelect.append(new Option('Hexbin Plot', 'hexbin'));
+                plotTypeSelect.append(new Option('2D Density', 'density'));
+                plotTypeSelect.append(new Option('Line Plot', 'line'));
+            } else if (targetType === 'numeric' && compareType === 'categorical') {
+                plotTypeSelect.append(new Option('Box Plot', 'box'));
+                plotTypeSelect.append(new Option('Violin Plot', 'violin'));
+                plotTypeSelect.append(new Option('Bar Plot (Mean)', 'bar'));
+                plotTypeSelect.append(new Option('Strip Plot', 'strip'));
+            } else if (targetType === 'categorical' && compareType === 'numeric') {
+                plotTypeSelect.append(new Option('Box Plot', 'box'));
+                plotTypeSelect.append(new Option('Violin Plot', 'violin'));
+                plotTypeSelect.append(new Option('Bar Plot (Mean)', 'bar'));
+                plotTypeSelect.append(new Option('Strip Plot', 'strip'));
+            } else {
+                // Both categorical
+                plotTypeSelect.append(new Option('Heatmap', 'heatmap'));
+                plotTypeSelect.append(new Option('Grouped Bar Plot', 'grouped_bar'));
+                plotTypeSelect.append(new Option('Stacked Bar Plot', 'stacked_bar'));
+                plotTypeSelect.append(new Option('Treemap', 'treemap'));
+            }
+            
+            plotTypeContainer.show();
+            plotOptions.show();
+            
+            // Trigger change to update plot
+            plotTypeSelect.trigger('change');
+        }
+
+        // Handle plot type changes
+        $('.plot-type').change(function() {
+            const target = $(this).data('target');
+            const plotType = $(this).val();
+            const compareColumn = $(`#compare-column-${target}`).val();
+            
+            // Show/hide additional options based on plot type
+            const aggMethodDiv = $(`#compare-by-${target} .aggregation-method`);
+            const colorByDiv = $(`#compare-by-${target} .color-by`);
+            
+            if (['bar', 'grouped_bar', 'stacked_bar'].includes(plotType)) {
+                aggMethodDiv.show();
+            } else {
+                aggMethodDiv.hide();
+            }
+            
+            if (['scatter', 'strip'].includes(plotType)) {
+                colorByDiv.show();
+            } else {
+                colorByDiv.hide();
+            }
+            
+            // Update plot
+            updateComparisonPlot(target, compareColumn, plotType);
+        });
+
+        // Function to update the comparison plot
+        function updateComparisonPlot(target, compareColumn, plotType) {
+            const aggMethod = $(`#agg-method-${target}`).val();
+            const colorColumn = $(`#color-column-${target}`).val();
+            
+            $.ajax({
+                url: "{% url 'compare_plot' %}",
+                data: {
+                    target: target,
+                    compare_column: compareColumn,
+                    plot_type: plotType,
+                    agg_method: aggMethod,
+                    color_column: colorColumn
+                },
+                success: function(response) {
+                    if (response.plot_html) {
+                        $(`#plot-container-${target}`).html(response.plot_html);
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Error updating plot:', xhr.responseText);
+                }
+            });
+        }
+
+        // Initialize filter values for 'self' mode on page load
+        $('.filter-mode').each(function() {
+            const target = $(this).data('target');
+            $.get("{% url 'get_unique_values' %}", { 
+                column: target 
+            }, function(data) {
+                const filterValues = $(`#filter-values-${target}`);
+                filterValues.empty();
+                if (data.values) {
+                    data.values.forEach(function(value) {
+                        filterValues.append(new Option(value, value));
+                    });
+                }
+            });
+        });
+
+        // Update the filter values change handler
+        $('.filter-values').change(function() {
+            const target = $(this).data('target');
+            const mode = $(`#filter-mode-${target}`).val();
+            const selectedValues = $(this).val();
+            
+            console.log('Filter values changed:', {
+                target: target,
+                mode: mode,
+                selectedValues: selectedValues
+            });
+            
+            if (selectedValues && selectedValues.length > 0) {
+                let filterData = {
+                    target: target,
+                    mode: mode,
+                    'values[]': selectedValues
+                };
+
+                if (mode === 'other') {
+                    filterData.filter_column = $(`#filter-column-${target}`).val();
+                }
+
+                console.log('Sending filter request:', filterData);
+
+                $.ajax({
+                    url: "{% url 'filter_plot' %}",
+                    method: 'GET',
+                    data: filterData,
+                    success: function(response) {
+                        if (response.plot_html) {
+                            $(`#plot-container-${target}`).html(response.plot_html);
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Error updating plot:', xhr.responseText);
+                    }
+                });
+            }
+        });
+
+        // Reset plot functionality
+        window.resetPlot = function(col) {
+            const container = $(`#plot-container-${col}`);
+            const originalPlot = container.data('original-plot');
+            
+            // Reset the plot to original state
+            container.html(originalPlot);
+            
+            // Reset filter controls
+            $(`#filter-mode-${col}`).val('self');
+            $(`#filter-by-other-${col}, #compare-by-${col}`).hide();
+            
+            // Reset and update filter values
+            $.get("{% url 'get_unique_values' %}", { 
+                column: col 
+            }, function(data) {
+                const filterValues = $(`#filter-values-${col}`);
+                filterValues.empty();
+                if (data.values) {
+                    data.values.forEach(function(value) {
+                        filterValues.append(new Option(value, value));
+                    });
+                }
+            });
+        };
+    });
+  </script>
+  
+  <!-- Add this just before the closing </body> tag -->
+  <script>
+    $(document).ready(function() {
+        // Store original plots
+        $('.plot-container').each(function() {
+            $(this).data('original-plot', $(this).html());
+        });
+
+        // Handle adding new filter rows
+        $('#add-filter').click(function() {
+            const filterRow = `
+                <div class="filter-row">
+                    <select class="global-filter-column">
+                        <option value="">Select Column</option>
+                        {% for col in overview.columns %}
+                            <option value="{{ col }}">{{ col }}</option>
+                        {% endfor %}
+                    </select>
+                    <select class="global-filter-values" multiple>
+                    </select>
+                    <button class="btn btn-secondary remove-filter">Remove</button>
+                </div>
+            `;
+            $('#global-filters').append(filterRow);
+        });
+
+        // Handle removing filter rows
+        $(document).on('click', '.remove-filter', function() {
+            $(this).closest('.filter-row').remove();
+        });
+
+        // Handle column selection for global filters
+        $(document).on('change', '.global-filter-column', function() {
+            const column = $(this).val();
+            const valuesSelect = $(this).siblings('.global-filter-values');
+            
+            if (column) {
+                $.get("{% url 'get_unique_values' %}", { column: column }, function(data) {
+                    valuesSelect.empty();
+                    data.values.forEach(function(value) {
+                        valuesSelect.append(new Option(value, value));
+                    });
+                });
+            }
+        });
+
+        // Handle apply filters button
+        $('#apply-filters').click(function() {
+            const filters = [];
+            $('.filter-row').each(function() {
+                const column = $(this).find('.global-filter-column').val();
+                const values = $(this).find('.global-filter-values').val();
+                if (column && values && values.length > 0) {
+                    filters.push({ column: column, values: values });
+                }
+            });
+
+            const logic = $('#global-logic').val();
+
+            $.ajax({
+                url: "{% url 'apply_global_filters' %}",
+                method: 'POST',
+                data: {
+                    filters: JSON.stringify(filters),
+                    logic: logic,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (response.plots) {
+                        // Update each plot with the new filtered version
+                        Object.keys(response.plots).forEach(function(col) {
+                            const plotContainer = $(`#plot-container-${col}`);
+                            plotContainer.html(response.plots[col]);
+                            // Store the filtered state
+                            plotContainer.data('filtered-plot', response.plots[col]);
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Error applying filters:', xhr.responseText);
+                    alert('Error applying filters. Please check the console for details.');
+                }
+            });
+        });
+    });
+  </script>
+
+  
+  <!-- Insight Modal JavaScript -->
+  <script>
+    $(document).ready(function() {
+      // Add this function to handle plot resize
+      function resizePlots() {
+        $('.js-plotly-plot').each(function() {
+          if (this._fullLayout) {
+            Plotly.Plots.resize(this);
+          }
+        });
+      }
+
+      // Insight card click handler
+      $('.insight-card').on('click', function() {
+        try {
+          const insightDataString = $(this).find('.insight-data').text();
+          const insightData = JSON.parse(insightDataString);
+          
+          $('#modalTitle').text(insightData.type.replace(/_/g, ' ').toUpperCase());
+          $('#modalBody').html(generateModalContent(insightData));
+          $('#insightModal').removeClass('hidden');
+          $('body').addClass('modal-open');
+          
+          // Resize plots after modal is shown
+          setTimeout(resizePlots, 100);
+          
+        } catch (error) {
+          console.error('Error processing insight:', error);
+        }
+      });
+      
+        // Close modal handlers
+        $('#closeModal').on('click', function() {
+        $('#insightModal').addClass('hidden');
+        $('body').removeClass('modal-open');
+        });
+
+        $('#insightModal').on('click', function(e) {
+        if (e.target === this) {
+            $('#insightModal').addClass('hidden');
+            $('body').removeClass('modal-open');
+        }
+        });
+
+      
+      // Prevent modal content clicks from closing the modal
+      $('.modal-content').on('click', function(e) {
+        e.stopPropagation();
+      });
+      
+      // Handle ESC key
+      $(document).keydown(function(e) {
+        if (e.keyCode === 27) { // ESC key
+          $('#insightModal').addClass('hidden');
+          $('body').removeClass('modal-open');
+        }
+      });
+      
+      // Filter insights by severity
+      $('.severity-filter').on('click', function() {
+        const severity = $(this).data('severity');
+        $('.insight-card').each(function() {
+          if (severity === 'all' || $(this).data('severity') === severity) {
+            $(this).show();
+          } else {
+            $(this).hide();
+          }
+        });
+      });
+
+      // Add window resize handler
+      $(window).on('resize', resizePlots);
+    });
+
+    function generateModalContent(insightData) {
+      let content = `
+        <div class="space-y-6">
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <p class="text-lg font-medium">${insightData.message}</p>
+          </div>
+      `;
+      
+      if (insightData.details) {
+        if (insightData.details.metrics && insightData.details.metrics.sections) {
+          content += `
+            <div class="bg-white p-6 rounded-lg shadow-sm space-y-6">
+              <h4 class="text-xl font-semibold text-gray-800 mb-4">Key Metrics</h4>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                ${insightData.details.metrics.sections.map(section => `
+                  <div class="bg-gray-50 p-4 rounded-lg">
+                    <h5 class="text-lg font-semibold text-gray-700 mb-3">${section.title}</h5>
+                    <div class="space-y-2">
+                      ${section.items.map(item => `
+                        <div class="flex justify-between items-center p-2 bg-white rounded">
+                          <span class="font-medium">${item.month}</span>
+                          <span class="${item.color}">$${item.amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                        </div>
+                      `).join('')}
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        } else if (insightData.details.metrics) {
+          content += `
+            <div class="bg-blue-50 p-4 rounded-lg">
+              <h4 class="text-lg font-semibold text-blue-800 mb-2">Key Metrics</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                ${Object.entries(insightData.details.metrics).map(([key, value]) => `
+                  <div class="metric-item">
+                    <span class="text-sm text-blue-600">${key.replace(/_/g, ' ').toUpperCase()}:</span>
+                    <span class="font-medium">${typeof value === 'number' ? value.toLocaleString() : value}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
+        
+        if (insightData.details.plot) {
+          content += `
+            <div class="bg-white p-4 rounded-lg shadow">
+              <div class="plot-container">
+                ${insightData.details.plot}
+              </div>
+            </div>
+          `;
+        }
+        
+        if (insightData.details.history) {
+          content += generateHistoryTable(insightData.details.history);
+        }
+        
+        if (insightData.details.recommendations) {
+          content += `
+            <div class="bg-green-50 p-4 rounded-lg">
+              <h4 class="text-lg font-semibold text-green-800 mb-2">Recommendations</h4>
+              <ul class="list-disc pl-5 space-y-1">
+                ${insightData.details.recommendations.map(rec => 
+                  `<li class="text-green-700">${rec}</li>`
+                ).join('')}
+              </ul>
+            </div>
+          `;
+        }
+      }
+      
+      content += '</div>';
+      return content;
+    }
+
+    function generateHistoryTable(history) {
+      return `
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Month</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Current</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Previous</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Change</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              ${Object.entries(history).map(([month, data]) => {
+                const change = ((data.current - data.previous) / (data.previous || 1) * 100);
+                return `
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">${month}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">$${data.current.toLocaleString()}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">$${data.previous.toLocaleString()}</td>
+                    <td class="px-6 py-4 whitespace-nowrap ${change >= 0 ? 'text-green-600' : 'text-red-600'}">
+                      ${change >= 0 ? '+' : ''}${change.toFixed(1)}%
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+  </script>
+
+  <style>
+    /* Modal styles */
+    .modal-content {
+        max-height: 85vh;
+        width: 95%;  /* Increased from default */
+        max-width: 1200px;  /* Increased for larger screens */
+        margin: 0 auto;
+    }
+    
+    #modalBody {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Fix for plot container width */
+    .plot-container {
+        width: 100% !important;  /* Force full width */
+        max-width: 100% !important;
+        min-height: 400px;
+    }
+    
+    /* Fix for plotly specific elements */
+    .js-plotly-plot, .plot-container .plotly {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    .main-svg {
+        width: 100% !important;
+    }
+    
+    /* Ensure tables are responsive */
+    .overflow-x-auto {
+        max-width: 100%;
+        margin: 1rem 0;
+    }
+    
+    /* Prevent body scroll when modal is open */
+    body.modal-open {
+        overflow: hidden;
+    }
+  </style>
+
+  <!-- Add this JavaScript -->
+  <script>
+  let originalFile = null;  // Global variable to store the file
+
+  $(document).ready(function() {
+      // Store the file when it's uploaded
+      
+       originalFile ="donations.csv";
+      $('#downloadReport').click(function() {
+          console.log('Download button clicked');
+          
+          const formData = new FormData();
+          formData.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
+          
+          $.ajax({
+              url: "{% url 'generate_report' %}",
+              type: 'POST',
+              data: formData,
+              processData: false,
+              contentType: false,
+              xhrFields: {
+                  responseType: 'blob'
+              },
+              beforeSend: function() {
+                  console.log('Sending request for PDF generation...');
+              },
+              success: function(response) {
+                  console.log('PDF generated successfully');
+                  const pdfBlob = new Blob([response], { type: 'application/pdf' });
+                  const url = window.URL.createObjectURL(pdfBlob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = 'donor_analysis_report.pdf';
+                  document.body.appendChild(a);
+                  a.click();
+                  window.URL.revokeObjectURL(url);
+                  document.body.removeChild(a);
+              },
+              error: function(xhr, status, error) {
+                  console.error('Error details:', {
+                      status: status,
+                      error: error,
+                      response: xhr.responseText,
+                      headers: xhr.getAllResponseHeaders()
+                  });
+                  
+                  try {
+                      const errorResponse = JSON.parse(xhr.responseText);
+                      alert(errorResponse.error || 'Error generating PDF report.');
+                  } catch (e) {
+                      console.error('Error parsing response:', e);
+                      alert('Error generating PDF report. Please check console for details.');
+                  }
+              }
+          });
+      });
+  });
+  </script>
+
+
+ <script>
+    // Modern Dashboard UI Enhancements
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add modern UI enhancements
+    enhanceUI();
+    
+    // Add animations to elements
+    animateElements();
+    
+    // Add responsive behaviors
+    makeResponsive();
+    
+    // Enhance plot containers
+    enhancePlots();
+    
+    // Update download button
+    stylizeDownloadButton();
+    
+    // Add file upload enhancement
+    enhanceFileUpload();
+    
+   
+   
+  });
+
+  // Function to enhance UI elements
+  function enhanceUI() {
+    // Enhance the header with a subtle animation
+    const header = document.querySelector('.page-header');
+    if (header) {
+      header.classList.add('enhanced-header');
+    }
+    
+    // Enhance cards with hover effects
+    document.querySelectorAll('.analysis-card').forEach(card => {
+      card.classList.add('enhanced-card');
+    });
+    
+    // Enhance buttons
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('mouseenter', function() {
+        this.classList.add('btn-hover');
+      });
+      btn.addEventListener('mouseleave', function() {
+        this.classList.remove('btn-hover');
+      });
+    });
+    
+    // Add animated badges to insights
+    document.querySelectorAll('.insight-card').forEach(card => {
+      const severity = card.dataset.severity;
+      let badgeClass = 'badge-low';
+      
+      if (severity === 'high') {
+        badgeClass = 'badge-high';
+      } else if (severity === 'medium') {
+        badgeClass = 'badge-medium';
+      }
+      
+      const badge = document.createElement('div');
+      badge.classList.add('severity-badge', badgeClass);
+      badge.textContent = severity.charAt(0).toUpperCase() + severity.slice(1);
+      card.querySelector('div').appendChild(badge);
+    });
+    
+    // Enhance filter buttons
+    document.querySelectorAll('.severity-filter').forEach(filter => {
+      filter.classList.add('enhanced-filter');
+    });
+    
+    // Add shadow scroll to tables
+    document.querySelectorAll('.overflow-x-auto').forEach(container => {
+      container.classList.add('shadow-scroll');
+    });
+    
+    // Add ripple effect to buttons
+    document.querySelectorAll('.btn, .severity-filter').forEach(btn => {
+      btn.addEventListener('click', createRipple);
+    });
+  }
+
+  // Function to add ripple effect to buttons
+  function createRipple(event) {
+    const button = event.currentTarget;
+    
+    const circle = document.createElement('span');
+    const diameter = Math.max(button.clientWidth, button.clientHeight);
+    const radius = diameter / 2;
+    
+    circle.style.width = circle.style.height = `${diameter}px`;
+    circle.style.left = `${event.clientX - button.getBoundingClientRect().left - radius}px`;
+    circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
+    circle.classList.add('ripple');
+    
+    const ripple = button.getElementsByClassName('ripple')[0];
+    
+    if (ripple) {
+      ripple.remove();
+    }
+    
+    button.appendChild(circle);
+  }
+
+  // Function to add entrance animations to elements
+  function animateElements() {
+    // Add staggered animation to cards
+    const cards = document.querySelectorAll('.analysis-card, .insight-card');
+    cards.forEach((card, index) => {
+      card.style.animationDelay = `${index * 0.1}s`;
+    });
+    
+    // Add scroll-triggered animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('.analysis-card, .insight-card, .global-filters').forEach(el => {
+      el.classList.add('animate-on-scroll');
+      observer.observe(el);
+    });
+  }
+
+  // Function to make the UI responsive
+  function makeResponsive() {
+    // Adjust card layouts based on screen size
+    function adjustLayout() {
+      const width = window.innerWidth;
+      
+      if (width < 768) {
+        document.querySelectorAll('.filter-row').forEach(row => {
+          row.classList.add('filter-row-stacked');
+        });
+      } else {
+        document.querySelectorAll('.filter-row').forEach(row => {
+          row.classList.remove('filter-row-stacked');
+        });
+      }
+      
+      // Adjust plot heights based on width
+      document.querySelectorAll('.plot-container').forEach(plot => {
+        if (width < 768) {
+          plot.style.height = '300px';
+        } else {
+          plot.style.height = '400px';
+        }
+      });
+    }
+    
+    // Call initially and on resize
+    adjustLayout();
+    window.addEventListener('resize', adjustLayout);
+  }
+
+  // Function to enhance plot containers
+  function enhancePlots() {
+    // Add refresh button to plots
+    document.querySelectorAll('.plot-container').forEach(plot => {
+      const refreshBtn = document.createElement('button');
+      refreshBtn.className = 'plot-refresh-btn';
+      refreshBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38"/></svg>';
+      refreshBtn.title = 'Refresh Plot';
+      
+      // Position the button
+      refreshBtn.style.position = 'absolute';
+      refreshBtn.style.top = '8px';
+      refreshBtn.style.right = '8px';
+      refreshBtn.style.zIndex = '10';
+      
+      // Make the plot container position relative for absolute positioning
+      plot.style.position = 'relative';
+      
+      // Add click handler to refresh the plot
+      refreshBtn.addEventListener('click', function() {
+        const col = plot.id.replace('plot-container-', '');
+        resetPlot(col);
+        this.classList.add('spinning');
+        setTimeout(() => {
+          this.classList.remove('spinning');
+        }, 1000);
+      });
+      
+      plot.appendChild(refreshBtn);
+    });
+  }
+
+  // Function to stylize download button
+  function stylizeDownloadButton() {
+    const downloadBtn = document.getElementById('downloadReport');
+    if (downloadBtn) {
+    
+      // Add loading state
+      downloadBtn.addEventListener('click', function() {
+        this.classList.add('is-loading');
+        this.innerHTML = '<div class="spinner"></div> Generating...';
+        
+        // Reset button after timeout (will be overridden by AJAX success/error)
+        setTimeout(() => {
+          if (this.classList.contains('is-loading')) {
+            this.classList.remove('is-loading');
+            this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Download PDF Report';
+          }
+        }, 30000); // 30 second timeout
+      });
+    }
+  }
+
+  // Function to enhance file upload functionality
+  function enhanceFileUpload() {
+    const fileInput = document.getElementById('file-upload');
+    if (fileInput) {
+      // Create a custom file upload button
+      const uploadWrapper = document.createElement('div');
+      uploadWrapper.className = 'file-upload-wrapper';
+      
+      const uploadLabel = document.createElement('label');
+      uploadLabel.className = 'file-upload-label';
+      uploadLabel.htmlFor = 'file-upload';
+      uploadLabel.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> Upload Dataset';
+      
+      const fileNameDisplay = document.createElement('span');
+      fileNameDisplay.className = 'file-name';
+      fileNameDisplay.textContent = 'No file selected';
+      
+      uploadWrapper.appendChild(uploadLabel);
+      uploadWrapper.appendChild(fileNameDisplay);
+      
+      fileInput.parentNode.insertBefore(uploadWrapper, fileInput.nextSibling);
+      
+      // Update the file name display when a file is selected
+      fileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+          fileNameDisplay.textContent = this.files[0].name;
+          fileNameDisplay.classList.add('file-selected');
+        } else {
+          fileNameDisplay.textContent = 'No file selected';
+          fileNameDisplay.classList.remove('file-selected');
+        }
+      });
+    }
+  }
+
+  // Function to initialize tooltips
+  function initializeTooltips() {
+    // Create tooltip element
+    const tooltip = document.createElement('div');
+    tooltip.className = 'tooltip';
+    document.body.appendChild(tooltip);
+    
+    // Add tooltips to elements with data-tooltip attribute
+    document.querySelectorAll('[data-tooltip]').forEach(element => {
+      element.addEventListener('mouseenter', function(e) {
+        const tooltipText = this.getAttribute('data-tooltip');
+        tooltip.textContent = tooltipText;
+        tooltip.style.display = 'block';
+        
+        // Position the tooltip
+        const rect = this.getBoundingClientRect();
+        tooltip.style.top = `${rect.top - tooltip.offsetHeight - 10 + window.scrollY}px`;
+        tooltip.style.left = `${rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2)}px`;
+      });
+      
+      element.addEventListener('mouseleave', function() {
+        tooltip.style.display = 'none';
+      });
+    });
+  }
+
+  // Function to set up dark mode toggle
+  function setupDarkModeToggle() {
+    // Create dark mode toggle button
+    const toggleContainer = document.createElement('div');
+    toggleContainer.className = 'dark-mode-toggle';
+    toggleContainer.innerHTML = `
+      <input type="checkbox" id="dark-mode-toggle">
+      <label for="dark-mode-toggle">
+        <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      </label>
+    `;
+    
+    // Insert the toggle at the top of the page
+    const container = document.querySelector('.container');
+    if (container) {
+      container.insertBefore(toggleContainer, container.firstChild);
+    }
+    
+    // Add dark mode toggle functionality
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    if (darkModeToggle) {
+      // Check for saved user preference
+      const isDarkMode = localStorage.getItem('darkMode') === 'true';
+      
+      // Set initial state
+      if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+        darkModeToggle.checked = true;
+      }
+      
+      // Add toggle handler
+      darkModeToggle.addEventListener('change', function() {
+        if (this.checked) {
+          document.body.classList.add('dark-mode');
+          localStorage.setItem('darkMode', 'true');
+        } else {
+          document.body.classList.remove('dark-mode');
+          localStorage.setItem('darkMode', 'false');
+        }
+        
+        // Force plotly to redraw charts
+        setTimeout(() => {
+          window.dispatchEvent(new Event('resize'));
+        }, 100);
+      });
+    }
+  }
+</script>
+
+<style>
+  .enhanced-header {
+    transition: transform 0.3s ease-in-out;
+  }
+
+  * Component-specific styles for EDA Dashboard */
+
+  /* Enhanced Header with Gradient */
+  .enhanced-header h1 {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.75rem;
+    font-weight: 800;
+  }
+
+  /* Card Enhancements */
+  .enhanced-card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .enhanced-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+  
+</style>
+
+
+</body>
+</html>

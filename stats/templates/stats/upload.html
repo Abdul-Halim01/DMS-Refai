@@ -1,0 +1,60 @@
+<!-- stats/templates/stats/upload.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload CSV - EDA Tool</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styleupload.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="upload-container">
+            <h2 class="upload-title">
+                <i class="fas fa-upload me-2"></i>
+                Upload Your CSV File
+            </h2>
+            
+            <form method="POST" action="{% url 'analyze_csv' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Display form errors if any -->
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="file-input-container">
+                    {{ form.csv_file }}
+                    <small class="form-text text-muted">{{ form.csv_file.help_text }}</small>
+                </div>
+                
+                <button type="submit" class="upload-btn">
+                    Start Analysis
+                </button>
+            </form>
+
+            <div class="file-requirements">
+                <h5 class="mb-3">File Requirements:</h5>
+                <ul class="mb-0">
+                    <li>File must be in CSV format</li>
+                    <li>Maximum file size: 10MB</li>
+                    <li>First row should contain column headers</li>
+                    <li>Data should be properly formatted</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

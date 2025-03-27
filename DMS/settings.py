@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'documents',
     'hr_tool',
     'finance',
+    'stats',
     'form_builder',
     'tasks',
     'silk',
