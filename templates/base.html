@@ -123,5 +123,9 @@
         document.getElementById('sidebarOverlay').classList.remove('show');
       });
     </script>
+    
+    {% block extra_js %}
+    <!-- Additional JavaScript can be added by templates that extend base.html -->
+    {% endblock %}
   </body>
 </html>

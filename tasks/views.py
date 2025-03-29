@@ -10,15 +10,20 @@ from django.contrib.auth.decorators import user_passes_test
 import json
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 
 
 # Create your views here.
-
+@method_decorator(csrf_exempt, name='dispatch')
 class TaskStatusUpdate(View):
     def put(self, request, pk):
         task = get_object_or_404(Task, pk=pk)
-        new_status = request.POST.get('status')
+        
+        # Get the status from HTMX request
+        data = json.loads(request.body.decode('utf-8'))
+        new_status = data.get('status')
+        print(new_status)
         if new_status in ['Pending', 'In Progress', 'Completed']:
             task.status = new_status
             task.save()

@@ -20,21 +20,13 @@
             <h3>Pending</h3>
             <span class="task-count">{{ tasks|count_by_status:"Pending" }}</span>
         </div>
-        <div class="column-content" 
-             hx-drop="true"
-             hx-drop-target=".kanban-card"
-             hx-trigger="drop"
-             hx-swap="beforeend">
+        <div class="column-content" data-status="Pending">
             {% for task in tasks %}
                 {% if task.status == 'Pending' %}
                     <div class="kanban-card" 
                          draggable="true"
-                         hx-put="/tasks/{{ task.id }}/update-status/"
-                         hx-trigger="dragend"
-                         hx-swap="outerHTML"
-                         hx-vals='{"status": "Pending"}'
-                         hx-drag="true"
-                         hx-drag-data='{"taskId": "{{ task.id }}"}'>
+                         data-task-id="{{ task.id }}"
+                         data-status="Pending">
                         <div class="card-header">
                             <h4>{{ task.title }}</h4>
                             <div class="priority-wrapper">
@@ -75,21 +67,13 @@
             <h3>In Progress</h3>
             <span class="task-count">{{ tasks|count_by_status:"In Progress" }}</span>
         </div>
-        <div class="column-content"
-             hx-drop="true"
-             hx-drop-target=".kanban-card"
-             hx-trigger="drop"
-             hx-swap="beforeend">
+        <div class="column-content" data-status="In Progress">
             {% for task in tasks %}
                 {% if task.status == 'In Progress' %}
                     <div class="kanban-card"
                          draggable="true"
-                         hx-put="/tasks/{{ task.id }}/update-status/"
-                         hx-trigger="dragend"
-                         hx-swap="outerHTML"
-                         hx-vals='{"status": "In Progress"}'
-                         hx-drag="true"
-                         hx-drag-data='{"taskId": "{{ task.id }}"}'>
+                         data-task-id="{{ task.id }}"
+                         data-status="In Progress">
                         <div class="card-header">
                             <h4>{{ task.title }}</h4>
                             <div class="priority-wrapper">
@@ -130,21 +114,13 @@
             <h3>Completed</h3>
             <span class="task-count">{{ tasks|count_by_status:"Completed" }}</span>
         </div>
-        <div class="column-content"
-             hx-drop="true"
-             hx-drop-target=".kanban-card"
-             hx-trigger="drop"
-             hx-swap="beforeend">
+        <div class="column-content" data-status="Completed">
             {% for task in tasks %}
                 {% if task.status == 'Completed' %}
                     <div class="kanban-card"
                          draggable="true"
-                         hx-put="/tasks/{{ task.id }}/update-status/"
-                         hx-trigger="dragend"
-                         hx-swap="outerHTML"
-                         hx-vals='{"status": "Completed"}'
-                         hx-drag="true"
-                         hx-drag-data='{"taskId": "{{ task.id }}"}'>
+                         data-task-id="{{ task.id }}"
+                         data-status="Completed">
                         <div class="card-header">
                             <h4>{{ task.title }}</h4>
                             <div class="priority-wrapper">
@@ -181,4 +157,113 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all kanban cards and columns
+    const cards = document.querySelectorAll('.kanban-card');
+    const columns = document.querySelectorAll('.column-content');
+    
+    let draggedItem = null;
+    
+    // Add event listeners to cards
+    cards.forEach(card => {
+        // When drag starts
+        card.addEventListener('dragstart', function(e) {
+            draggedItem = card;
+            setTimeout(() => {
+                card.style.opacity = '0.5';
+            }, 0);
+        });
+        
+        // When drag ends
+        card.addEventListener('dragend', function() {
+            setTimeout(() => {
+                card.style.opacity = '1';
+                draggedItem = null;
+            }, 0);
+        });
+    });
+    
+    // Add event listeners to columns
+    columns.forEach(column => {
+        // When item is dragged over column
+        column.addEventListener('dragover', function(e) {
+            e.preventDefault();
+        });
+        
+        // When item is dragged and enters column
+        column.addEventListener('dragenter', function(e) {
+            e.preventDefault();
+            this.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+        });
+        
+        // When item leaves column
+        column.addEventListener('dragleave', function() {
+            this.style.backgroundColor = 'transparent';
+        });
+        
+        // When item is dropped in column
+        column.addEventListener('drop', function(e) {
+            this.style.backgroundColor = 'transparent';
+            
+            if (draggedItem) {
+                // Get current column's status
+                const newStatus = this.getAttribute('data-status');
+                const taskId = draggedItem.getAttribute('data-task-id');
+                
+                // Update the card's status attribute
+                draggedItem.setAttribute('data-status', newStatus);
+                
+                // Append the card to the new column
+                this.appendChild(draggedItem);
+                
+                // Update the task status via AJAX
+                updateTaskStatus(taskId, newStatus);
+            }
+        });
+    });
+    
+    // Function to update task status via AJAX
+    function updateTaskStatus(taskId, newStatus) {
+        // Create a fetch request to update status
+        fetch(`/tasks/${taskId}/update-status/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ status: newStatus })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to update task status');
+            }
+            
+            // Update the task count for each column
+            updateTaskCounts();
+            
+            return response;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to update task status. Please try again.');
+        });
+    }
+    
+    // Function to update task counts
+    function updateTaskCounts() {
+        const counts = {
+            'Pending': document.querySelectorAll('[data-status="Pending"] .kanban-card').length,
+            'In Progress': document.querySelectorAll('[data-status="In Progress"] .kanban-card').length,
+            'Completed': document.querySelectorAll('[data-status="Completed"] .kanban-card').length
+        };
+        
+        document.querySelector('.column-header.pending .task-count').textContent = counts['Pending'];
+        document.querySelector('.column-header.in-progress .task-count').textContent = counts['In Progress'];
+        document.querySelector('.column-header.completed .task-count').textContent = counts['Completed'];
+    }
+});
+</script>
 {% endblock %}
