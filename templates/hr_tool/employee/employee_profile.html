@@ -1,23 +1,23 @@
 {% extends "base.html" %}
 
-{% block title %}Employee Profile{% endblock %}
+{% block title %}ملف الموظف{% endblock %}
 
 {% block content %}
 <div class="form-container">
     <div class="styled-form">
         <div class="form-header">
-            <h2>Profile Settings</h2>
-            <p class="form-subtitle">Manage employee account information and preferences</p>
+            <h2>إعدادات الملف الشخصي</h2>
+            <p class="form-subtitle">إدارة معلومات حساب الموظف والتفضيلات</p>
         </div>
 
         <form method="post" class="user-profile-form">
             {% csrf_token %}
             
             <div class="form-section">
-                <h3 class="section-title">Account Information</h3>
+                <h3 class="section-title">معلومات الحساب</h3>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.username.id_for_label }}">Username</label>
+                        <label for="{{ form.username.id_for_label }}">اسم المستخدم</label>
                         {{ form.username }}
                         {% if form.username.errors %}
                             <div class="form-error">{{ form.username.errors }}</div>
@@ -25,7 +25,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.email.id_for_label }}">Email</label>
+                        <label for="{{ form.email.id_for_label }}">البريد الإلكتروني</label>
                         {{ form.email }}
                         {% if form.email.errors %}
                             <div class="form-error">{{ form.email.errors }}</div>
@@ -35,10 +35,10 @@
             </div>
 
             <div class="form-section">
-                <h3 class="section-title">Employee Details</h3>
+                <h3 class="section-title">تفاصيل الموظف</h3>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.role.id_for_label }}">Role</label>
+                        <label for="{{ form.role.id_for_label }}">الدور</label>
                         {{ form.role }}
                         {% if form.role.errors %}
                             <div class="form-error">{{ form.role.errors }}</div>
@@ -46,7 +46,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.department.id_for_label }}">Department</label>
+                        <label for="{{ form.department.id_for_label }}">القسم</label>
                         {{ form.department }}
                         {% if form.department.errors %}
                             <div class="form-error">{{ form.department.errors }}</div>
@@ -56,7 +56,7 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.salary.id_for_label }}">Salary</label>
+                        <label for="{{ form.salary.id_for_label }}">الراتب</label>
                         {{ form.salary }}
                         {% if form.salary.errors %}
                             <div class="form-error">{{ form.salary.errors }}</div>
@@ -64,17 +64,17 @@
                     </div>
                     
                     <div class="form-group">
-                        <label>Days Off</label>
+                        <label>أيام الإجازة</label>
                         <input type="text" value="{{ days_off }}" class="form-control" readonly>
                     </div>
                 </div>
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
                 <a href="{% url 'change_password' employee.id %}" class="btn btn-secondary">
                     <i class="bi bi-key"></i>
-                    Change Password
+                    تغيير كلمة المرور
                 </a>
             </div>
         </form>

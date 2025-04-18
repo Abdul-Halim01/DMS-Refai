@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Employee List{% endblock %}
+{% block title %}قائمة الموظفين{% endblock %}
 
 {% block content %}
 <div class="page-header">
-    <h1 class="h2">All Employees</h1>
+    <h1 class="h2">جميع الموظفين</h1>
     {% if request.user.role == 'Moderator' or 'Admin' %}
-    <a href="{% url 'create_employee' %}" class="btn btn-primary">Add +</a>
+    <a href="{% url 'create_employee' %}" class="btn btn-primary">إضافة +</a>
     {% endif %}
 </div>
 
@@ -15,14 +15,14 @@
         <form method="post" action="{% url 'employees_action' %}" class="action-form" id="actionForm">
             {% csrf_token %}
             <div class="search-controls">
-                <input type="text" name="q" class="search-input" placeholder="Search by name...">
+                <input type="text" name="q" class="search-input" placeholder="البحث بالاسم...">
             </div>
             <select name="action" class="action-select">
-                <option value="">Select Action</option>
-                <option value="delete">Delete Selected Employees</option>
-                <option value="export_excel">Export to Excel</option>
+                <option value="">اختر إجراء</option>
+                <option value="delete">حذف الموظفين المحددين</option>
+                <option value="export_excel">تصدير إلى إكسل</option>
             </select>
-            <button type="submit" class="do-action-btn">Do Action</button>
+            <button type="submit" class="do-action-btn">تنفيذ الإجراء</button>
             <!-- Add hidden input for selected items -->
             <input type="hidden" name="selected_items" id="selectedItems">
         </form>
@@ -32,12 +32,12 @@
         <thead>
             <tr>
                 <th><input type="checkbox" id="select-all"></th>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>الرقم التعريفي</th>
+                <th>اسم المستخدم</th>
+                <th>البريد الإلكتروني</th>
+                <th>الدور</th>
+                <th>الحالة</th>
+                <th>الإجراءات</th>
             </tr>
         </thead>
         <tbody>
@@ -54,9 +54,9 @@
                 <td><span class="role-badge">{{ employee.role }}</span></td>
                 <td>
                     {% if employee.is_active %}
-                        <span class="status-badge active"><i class="bi bi-check-circle"></i> Active</span>
+                        <span class="status-badge active"><i class="bi bi-check-circle"></i> نشط</span>
                     {% else %}
-                        <span class="status-badge inactive"><i class="bi bi-x-circle"></i> Inactive</span>
+                        <span class="status-badge inactive"><i class="bi bi-x-circle"></i> غير نشط</span>
                     {% endif %}
                 </td>
                 <td onclick="event.stopPropagation();">
@@ -74,13 +74,13 @@
     <div class="pagination-container">
         <ul class="pagination">
             {% if page_obj.has_previous %}
-                <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a></li>
+                <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">السابق</a></li>
                 <li><a href="#" class="page-link">{{ page_obj.number|add:'-1' }}</a></li>
             {% endif %}
             <li><a href="#" class="page-link active">{{ page_obj.number }}</a></li>
             {% if page_obj.has_next %}
                 <li><a href="#" class="page-link">{{ page_obj.number|add:'1' }}</a></li>
-                <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a></li>
+                <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">التالي</a></li>
             {% endif %}
         </ul>
     </div>

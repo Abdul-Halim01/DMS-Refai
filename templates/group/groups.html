@@ -1,26 +1,26 @@
 {% extends "base.html" %}
 
-{% block title %}Groups List{% endblock %}
+{% block title %}قائمة المجموعات{% endblock %}
 
 {% block content %}
 <div class="page-header">
-    <h1 class="h2">Document Groups</h1>
+    <h1 class="h2">مجموعات المستندات</h1>
     {% if request.user.role == 'Moderator' or 'Admin' %}
-    <a href="{% url 'create_group' %}" class="btn btn-primary"> Add +</a>
+    <a href="{% url 'create_group' %}" class="btn btn-primary"> إضافة +</a>
     {% endif %}
 </div>
 
 <div class="table-container">
     <div class="table-controls">
         <div class="search-controls">
-            <input type="text" name="q" class="search-input" placeholder="Search groups...">
+            <input type="text" name="q" class="search-input" placeholder="البحث عن مجموعات...">
         </div>
         <div class="action-controls">
             <select id="bulkAction" name="action" class="action-select">
-                <option value="" selected disabled>Select Action</option>
-                <option value="delete">Delete Selected Groups</option>
+                <option value="" selected disabled>اختر إجراء</option>
+                <option value="delete">حذف المجموعات المحددة</option>
             </select>
-            <button type="button" class="do-action-btn" onclick="executeBulkAction()">Do Action</button>
+            <button type="button" class="do-action-btn" onclick="executeBulkAction()">تنفيذ الإجراء</button>
         </div>
     </div>
 
@@ -33,8 +33,8 @@
             <thead>
                 <tr>
                     <th><input type="checkbox" id="selectAll" class="select-all-checkbox"></th>
-                    <th>ID</th>
-                    <th>Name</th>
+                    <th>المعرف</th>
+                    <th>الاسم</th>
                 </tr>
             </thead>
             <tbody>
@@ -68,13 +68,13 @@
     <div class="pagination-container">
         <ul class="pagination">
             {% if page_obj.has_previous %}
-                <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a></li>
+                <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">السابق</a></li>
                 <li><a href="#" class="page-link">{{ page_obj.number|add:'-1' }}</a></li>
             {% endif %}
             <li><a href="#" class="page-link active">{{ page_obj.number }}</a></li>
             {% if page_obj.has_next %}
                 <li><a href="#" class="page-link">{{ page_obj.number|add:'1' }}</a></li>
-                <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a></li>
+                <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">التالي</a></li>
             {% endif %}
         </ul>
     </div>

@@ -1,0 +1,501 @@
+organization_name,donation_amount,donation_date,donation_frequency,donation_type,donor_category,first_donation_date,campaign_name,donation_purpose,contact_person,region
+Charity Connect,37363.88,19/04/2021,Annual,Recurring,Corporate,20/02/2020,Disaster Relief,Environmental,Alex Davis,Middle East
+Hope Partners,17459.8,22/03/2021,Monthly,One-time,Foundation,18/01/2018,Year End Campaign,Environmental,Sophia Brown,Europe
+Future Enterprises,27445.48,16/08/2023,Monthly,Recurring,Non-profit,19/05/2023,Disaster Relief,Disaster Relief,Laura Jones,Middle East
+Global Foundation,20880.28,07/08/2019,Quarterly,One-time,Corporate,25/09/2017,Year End Campaign,Environmental,Michael Anderson,Asia
+Hope Partners,30541.07,19/10/2017,Quarterly,One-time,Corporate,10/01/2015,Healthcare Fund,Arts and Culture,John Williams,Middle East
+Charity Connect,39669.04,01/04/2024,Annual,Recurring,Corporate,13/03/2020,Arts Support,Education,David Brown,Asia
+Charity Connect,16982.77,25/01/2025,Monthly,Recurring,Foundation,27/09/2022,Spring Drive,Healthcare,Michael Taylor,North America
+Community Builders,27175.99,12/04/2021,Annual,One-time,Foundation,07/03/2020,Arts Support,Disaster Relief,John Garcia,Asia
+Charity Connect,31054.39,12/10/2018,Monthly,One-time,Non-profit,09/07/2018,Summer Giving,Healthcare,Alex Jones,Middle East
+Community Builders,21763.82,18/02/2021,Annual,Recurring,Non-profit,13/11/2019,Education Initiative,Arts and Culture,David Brown,Middle East
+Evergreen Impact,44886.9,13/10/2020,Monthly,Recurring,Non-profit,14/06/2018,Disaster Relief,Environmental,Emily Garcia,South America
+Global Foundation,28593.91,29/03/2023,Annual,Recurring,Corporate,26/01/2019,Education Initiative,Education,Emily Smith,South America
+Pioneer Philanthropy,22778.01,06/12/2023,Annual,Special Event,Non-profit,02/06/2017,Holiday Appeal,Community Support,Jane Taylor,Africa
+Community Builders,19489.75,26/01/2021,Annual,One-time,Corporate,18/11/2015,Community Outreach,Environmental,Michael Smith,North America
+Community Builders,48651.3,31/05/2018,Quarterly,Recurring,Foundation,27/08/2015,Spring Drive,Arts and Culture,Emily Smith,Africa
+Evergreen Impact,43432.75,05/09/2024,Annual,One-time,Non-profit,19/07/2023,Education Initiative,Community Support,Sophia Wilson,South America
+Evergreen Impact,29254.52,10/09/2022,Annual,Special Event,Foundation,10/03/2020,Research Grant,Healthcare,Robert Williams,Oceania
+Future Enterprises,1415.96,11/03/2022,Quarterly,Special Event,Corporate,21/01/2018,Arts Support,Healthcare,Olivia Miller,Oceania
+Community Builders,11371.42,10/11/2022,Quarterly,One-time,Non-profit,22/07/2022,Education Initiative,Research,Sarah Taylor,North America
+Global Foundation,689.92,26/09/2021,Quarterly,One-time,Foundation,27/05/2021,Spring Drive,Arts and Culture,Olivia Garcia,North America
+United Charities,47841.91,24/01/2019,Quarterly,Special Event,Corporate,06/04/2016,Summer Giving,Healthcare,Alex Williams,Middle East
+Future Enterprises,36078.74,26/01/2024,Quarterly,Recurring,Non-profit,03/02/2023,Holiday Appeal,Environmental,Alex Brown,Europe
+United Charities,14116.4,10/01/2024,Annual,Special Event,Corporate,21/07/2023,Year End Campaign,Research,Daniel Brown,Middle East
+Solidarity Trust,42467.97,20/09/2019,Annual,Special Event,Corporate,22/04/2016,Holiday Appeal,Environmental,Daniel Davis,North America
+Evergreen Impact,25895.79,11/03/2025,Annual,Recurring,Corporate,28/07/2023,Healthcare Fund,Arts and Culture,Robert Williams,Africa
+Community Builders,27075.67,31/10/2017,Quarterly,One-time,Non-profit,16/08/2017,Summer Giving,Community Support,David Davis,Africa
+Community Builders,39906.01,29/09/2022,Annual,One-time,Corporate,10/10/2019,Arts Support,Social Services,Sarah Davis,Europe
+Visionary Solutions,20368.11,03/10/2022,Monthly,One-time,Non-profit,21/05/2022,Arts Support,Environmental,Michael Miller,Asia
+Solidarity Trust,35322.82,07/12/2022,Annual,One-time,Foundation,04/04/2022,Education Initiative,Environmental,Daniel Wilson,North America
+Solidarity Trust,12378.32,03/03/2020,Quarterly,Special Event,Non-profit,19/10/2015,Community Outreach,Social Services,Laura Johnson,Oceania
+Evergreen Impact,33752.02,22/11/2023,Quarterly,One-time,Non-profit,27/04/2019,Disaster Relief,Education,Robert Williams,Europe
+Innovative Giving,7007.95,10/10/2023,Annual,Recurring,Foundation,10/02/2023,Summer Giving,Social Services,Laura Wilson,South America
+Visionary Solutions,29259.38,29/07/2024,Annual,One-time,Corporate,02/06/2021,Community Outreach,Research,Alex Williams,South America
+United Charities,20793.94,18/01/2024,Monthly,Special Event,Non-profit,15/11/2022,Summer Giving,Social Services,Daniel Taylor,Africa
+United Charities,1607.51,22/06/2024,Annual,Recurring,Corporate,11/05/2021,Research Grant,Education,Robert Garcia,North America
+Global Foundation,9222.17,21/03/2021,Quarterly,One-time,Foundation,09/01/2021,Arts Support,Arts and Culture,Alex Miller,South America
+Global Foundation,4223.6,11/10/2022,Monthly,Recurring,Corporate,01/04/2022,Summer Giving,Community Support,Sarah Johnson,Africa
+United Charities,44500.5,12/06/2021,Monthly,One-time,Foundation,10/01/2016,Arts Support,Disaster Relief,Daniel Anderson,North America
+Future Enterprises,36449.73,25/05/2024,Monthly,One-time,Foundation,05/05/2021,Holiday Appeal,Disaster Relief,Sarah Wilson,North America
+Hope Partners,29299.12,25/08/2023,Annual,One-time,Corporate,05/04/2023,Education Initiative,Healthcare,Jane Garcia,Asia
+United Charities,24347.21,23/03/2020,Quarterly,Special Event,Non-profit,16/12/2015,Year End Campaign,Environmental,John Wilson,Oceania
+Charity Connect,23021.8,16/04/2017,Annual,Special Event,Foundation,31/08/2016,Community Outreach,Community Support,Jane Smith,Oceania
+Evergreen Impact,219.55,19/05/2022,Monthly,Special Event,Foundation,21/02/2020,Arts Support,Social Services,Olivia Miller,North America
+United Charities,568.34,10/11/2024,Monthly,One-time,Corporate,09/03/2023,Community Outreach,Environmental,Emily Rodriguez,Africa
+Visionary Solutions,28786.02,05/12/2021,Monthly,Recurring,Foundation,27/03/2016,Summer Giving,Arts and Culture,Olivia Garcia,Middle East
+Evergreen Impact,31924.44,03/02/2024,Quarterly,Special Event,Foundation,04/02/2021,Arts Support,Community Support,Sophia Garcia,North America
+Community Builders,38134.28,08/09/2023,Annual,One-time,Non-profit,27/08/2023,Healthcare Fund,Community Support,Michael Johnson,South America
+Charity Connect,27111.82,16/03/2024,Annual,One-time,Non-profit,23/04/2018,Spring Drive,Disaster Relief,Laura Brown,Asia
+Pioneer Philanthropy,43851.29,29/08/2018,Annual,Recurring,Foundation,25/02/2017,Disaster Relief,Education,John Johnson,Middle East
+Acme Corp,10318.39,22/02/2018,Annual,Recurring,Non-profit,09/06/2015,Holiday Appeal,Education,David Garcia,Europe
+Global Foundation,11114.35,15/06/2023,Quarterly,One-time,Non-profit,04/07/2022,Community Outreach,Healthcare,Emily Smith,Africa
+Pioneer Philanthropy,21160.02,05/11/2024,Quarterly,One-time,Foundation,15/11/2021,Disaster Relief,Healthcare,David Garcia,Asia
+Charity Connect,19401.34,03/04/2021,Quarterly,One-time,Non-profit,26/04/2019,Research Grant,Education,Olivia Rodriguez,South America
+Hope Partners,42466.36,23/02/2020,Monthly,Recurring,Non-profit,04/04/2018,Disaster Relief,Arts and Culture,Michael Anderson,Middle East
+Future Enterprises,33654.07,08/12/2024,Monthly,Special Event,Corporate,13/03/2021,Spring Drive,Community Support,Emily Johnson,Europe
+Future Enterprises,5480.23,10/03/2019,Quarterly,One-time,Corporate,08/09/2018,Arts Support,Arts and Culture,Laura Johnson,South America
+Future Enterprises,47937.66,09/12/2022,Annual,Special Event,Corporate,16/08/2022,Year End Campaign,Environmental,Robert Miller,Oceania
+Solidarity Trust,34239.44,06/12/2024,Monthly,Special Event,Non-profit,28/12/2023,Education Initiative,Arts and Culture,John Garcia,South America
+Charity Connect,7055.08,01/10/2024,Monthly,Recurring,Corporate,19/11/2020,Arts Support,Arts and Culture,Emily Brown,Asia
+Acme Corp,39791.88,26/08/2019,Monthly,Special Event,Corporate,04/02/2017,Summer Giving,Community Support,Michael Smith,Oceania
+Solidarity Trust,39526.81,30/08/2020,Annual,One-time,Corporate,21/03/2018,Disaster Relief,Community Support,David Taylor,Oceania
+Solidarity Trust,40483.05,03/08/2022,Annual,Special Event,Foundation,12/08/2019,Summer Giving,Research,Emily Taylor,South America
+United Charities,41218.9,07/04/2021,Annual,Special Event,Non-profit,21/02/2018,Year End Campaign,Environmental,Daniel Anderson,South America
+Evergreen Impact,13073.41,31/05/2022,Quarterly,Special Event,Foundation,11/04/2021,Education Initiative,Arts and Culture,David Smith,South America
+Community Builders,13194.86,23/02/2024,Annual,Recurring,Non-profit,17/08/2019,Healthcare Fund,Community Support,Alex Taylor,Asia
+Global Foundation,10302.81,29/01/2022,Annual,Recurring,Corporate,15/02/2019,Holiday Appeal,Education,Michael Wilson,Oceania
+Solidarity Trust,49207.56,19/02/2025,Quarterly,Recurring,Corporate,15/09/2016,Year End Campaign,Arts and Culture,Jane Williams,Asia
+Community Builders,958.79,23/06/2023,Monthly,Special Event,Corporate,14/05/2019,Disaster Relief,Education,Daniel Miller,Europe
+Evergreen Impact,24087.25,13/09/2024,Annual,One-time,Foundation,07/03/2022,Arts Support,Arts and Culture,Olivia Davis,Africa
+Future Enterprises,6559.62,25/10/2023,Annual,Special Event,Foundation,21/08/2022,Spring Drive,Disaster Relief,Daniel Davis,Oceania
+Hope Partners,8064.65,30/07/2018,Monthly,One-time,Foundation,31/12/2017,Year End Campaign,Research,Jane Anderson,South America
+Evergreen Impact,10206.25,17/04/2024,Monthly,Special Event,Corporate,05/03/2023,Year End Campaign,Community Support,Sophia Anderson,Asia
+Innovative Giving,29529.72,03/02/2017,Quarterly,Special Event,Corporate,21/11/2016,Education Initiative,Education,Jane Miller,Africa
+Charity Connect,48772.96,05/12/2015,Annual,Recurring,Corporate,24/02/2015,Summer Giving,Research,Emily Wilson,Europe
+Global Foundation,33541.38,15/04/2019,Annual,Recurring,Foundation,12/03/2019,Education Initiative,Arts and Culture,Daniel Williams,Asia
+Community Builders,8169.2,22/12/2019,Quarterly,One-time,Corporate,17/04/2017,Research Grant,Healthcare,Sarah Wilson,South America
+Visionary Solutions,37032.05,27/05/2024,Quarterly,Special Event,Foundation,19/05/2019,Arts Support,Disaster Relief,Laura Taylor,Africa
+Solidarity Trust,45981.27,05/08/2021,Quarterly,Special Event,Corporate,25/02/2021,Arts Support,Education,Michael Miller,Middle East
+Acme Corp,6331.61,19/01/2024,Quarterly,One-time,Corporate,24/02/2022,Arts Support,Social Services,Emily Smith,Asia
+United Charities,5302.16,03/07/2024,Quarterly,One-time,Non-profit,01/08/2021,Research Grant,Education,Jane Rodriguez,Asia
+Evergreen Impact,44314.19,28/05/2024,Annual,Recurring,Foundation,10/02/2023,Disaster Relief,Environmental,Robert Rodriguez,Asia
+Global Foundation,13146.35,04/05/2024,Annual,One-time,Non-profit,14/06/2019,Education Initiative,Community Support,Michael Jones,Europe
+Acme Corp,33213.22,21/12/2022,Annual,Recurring,Corporate,21/04/2017,Spring Drive,Environmental,Alex Davis,Oceania
+Pioneer Philanthropy,41350.75,07/04/2021,Annual,One-time,Non-profit,27/05/2020,Year End Campaign,Community Support,Laura Davis,South America
+Charity Connect,30513.81,27/06/2019,Annual,Recurring,Non-profit,03/08/2018,Healthcare Fund,Community Support,Sarah Taylor,North America
+United Charities,7494.79,28/01/2025,Quarterly,Special Event,Corporate,14/08/2023,Holiday Appeal,Environmental,Michael Anderson,North America
+Innovative Giving,14564.45,09/07/2020,Monthly,Special Event,Corporate,24/09/2015,Arts Support,Disaster Relief,Laura Johnson,Asia
+Pioneer Philanthropy,1886.48,25/01/2024,Monthly,Special Event,Foundation,29/09/2023,Community Outreach,Social Services,Sophia Williams,North America
+Future Enterprises,2942.09,25/07/2024,Annual,Recurring,Foundation,18/04/2019,Community Outreach,Arts and Culture,David Rodriguez,North America
+United Charities,5769.42,21/03/2021,Quarterly,Recurring,Foundation,30/08/2020,Spring Drive,Social Services,Jane Wilson,Africa
+Future Enterprises,46980.09,27/03/2024,Annual,Special Event,Non-profit,21/02/2021,Summer Giving,Social Services,John Miller,Oceania
+Visionary Solutions,15965.84,22/05/2024,Monthly,One-time,Foundation,31/08/2023,Healthcare Fund,Research,Emily Miller,North America
+Acme Corp,39262.48,03/12/2023,Annual,Special Event,Corporate,22/10/2021,Summer Giving,Disaster Relief,David Anderson,Oceania
+Charity Connect,28779.64,31/12/2015,Quarterly,Special Event,Corporate,06/05/2015,Holiday Appeal,Research,Alex Brown,Europe
+Acme Corp,5755.75,29/09/2020,Monthly,One-time,Foundation,15/12/2018,Spring Drive,Arts and Culture,John Wilson,Europe
+Global Foundation,36713.76,12/12/2023,Annual,One-time,Non-profit,25/03/2020,Holiday Appeal,Healthcare,Laura Brown,Asia
+Future Enterprises,14474.85,22/10/2018,Quarterly,Special Event,Foundation,11/02/2015,Year End Campaign,Healthcare,Robert Johnson,North America
+Innovative Giving,39177.2,15/01/2025,Annual,Special Event,Corporate,12/12/2020,Research Grant,Arts and Culture,Daniel Jones,North America
+Acme Corp,47419.83,17/04/2020,Annual,Special Event,Corporate,11/11/2017,Healthcare Fund,Research,Daniel Garcia,Europe
+Acme Corp,40664.82,31/07/2022,Annual,Recurring,Corporate,23/07/2017,Healthcare Fund,Environmental,Laura Brown,Oceania
+United Charities,19524.72,09/05/2024,Monthly,Special Event,Corporate,23/07/2022,Education Initiative,Education,John Taylor,South America
+Visionary Solutions,4361.97,23/05/2024,Monthly,Special Event,Corporate,23/08/2015,Year End Campaign,Healthcare,Sarah Davis,Africa
+Solidarity Trust,48785.53,24/05/2021,Quarterly,Special Event,Foundation,12/10/2015,Holiday Appeal,Education,Olivia Jones,Oceania
+Future Enterprises,6151.25,07/12/2024,Quarterly,One-time,Non-profit,03/02/2021,Spring Drive,Healthcare,John Williams,North America
+Future Enterprises,1777.19,09/10/2020,Annual,Recurring,Corporate,26/03/2019,Disaster Relief,Arts and Culture,Emily Davis,Oceania
+Innovative Giving,26865.32,16/08/2021,Annual,Special Event,Non-profit,25/02/2019,Disaster Relief,Research,John Williams,Africa
+United Charities,41333.72,12/10/2022,Annual,One-time,Non-profit,29/04/2018,Spring Drive,Environmental,Olivia Anderson,Oceania
+Evergreen Impact,30585.39,24/11/2022,Annual,Recurring,Foundation,20/05/2018,Year End Campaign,Community Support,Alex Brown,Africa
+United Charities,2772.25,12/03/2024,Monthly,Recurring,Non-profit,06/08/2023,Disaster Relief,Environmental,Sarah Garcia,Africa
+Visionary Solutions,27369.34,18/11/2023,Quarterly,Special Event,Corporate,26/12/2019,Research Grant,Community Support,Jane Anderson,Europe
+Acme Corp,2909.41,05/02/2024,Annual,One-time,Foundation,18/08/2016,Community Outreach,Research,Sarah Johnson,Oceania
+Acme Corp,38141.32,09/06/2018,Annual,Special Event,Non-profit,06/03/2017,Research Grant,Arts and Culture,Sarah Williams,North America
+Global Foundation,16877.96,01/05/2024,Annual,Special Event,Corporate,08/12/2021,Healthcare Fund,Education,Sarah Johnson,Africa
+Community Builders,31967.42,11/02/2023,Quarterly,Recurring,Corporate,26/06/2018,Disaster Relief,Education,John Wilson,Asia
+Pioneer Philanthropy,41091.19,04/03/2023,Monthly,Special Event,Non-profit,27/09/2017,Community Outreach,Disaster Relief,Michael Anderson,Oceania
+Global Foundation,16700.19,23/05/2020,Quarterly,Recurring,Foundation,30/03/2015,Disaster Relief,Social Services,Laura Smith,South America
+Solidarity Trust,41550.24,04/11/2021,Monthly,One-time,Corporate,05/06/2020,Year End Campaign,Healthcare,David Rodriguez,South America
+Evergreen Impact,3669.91,02/09/2024,Monthly,One-time,Non-profit,02/04/2023,Community Outreach,Education,Sophia Rodriguez,Middle East
+Acme Corp,5888.08,05/07/2024,Monthly,One-time,Non-profit,01/05/2022,Spring Drive,Healthcare,Daniel Taylor,Asia
+Visionary Solutions,2759.3,27/05/2023,Annual,Recurring,Non-profit,04/01/2022,Holiday Appeal,Community Support,Michael Jones,South America
+Future Enterprises,29551.98,11/05/2019,Quarterly,Special Event,Corporate,25/05/2017,Year End Campaign,Disaster Relief,Sophia Wilson,Oceania
+Charity Connect,32044.92,30/03/2016,Monthly,One-time,Foundation,09/03/2015,Summer Giving,Arts and Culture,Emily Taylor,Europe
+Acme Corp,41851.83,09/06/2021,Quarterly,Recurring,Foundation,17/03/2019,Community Outreach,Disaster Relief,Daniel Wilson,Asia
+Pioneer Philanthropy,42460.65,05/02/2021,Quarterly,Special Event,Corporate,30/12/2020,Summer Giving,Disaster Relief,Alex Williams,North America
+Future Enterprises,47993.56,30/08/2024,Annual,Special Event,Corporate,22/05/2023,Healthcare Fund,Education,Jane Brown,Europe
+Solidarity Trust,10119.76,18/06/2021,Quarterly,One-time,Non-profit,05/11/2016,Disaster Relief,Disaster Relief,Jane Jones,Middle East
+Global Foundation,29849.46,17/11/2024,Monthly,Special Event,Corporate,07/12/2023,Community Outreach,Community Support,Sarah Jones,Africa
+Solidarity Trust,5064.03,01/12/2023,Annual,Recurring,Non-profit,05/02/2017,Disaster Relief,Arts and Culture,Jane Smith,Africa
+Charity Connect,13247.44,24/08/2024,Monthly,Recurring,Non-profit,09/10/2021,Summer Giving,Social Services,Sophia Williams,Oceania
+Charity Connect,8065.66,13/09/2023,Annual,Recurring,Non-profit,12/03/2018,Holiday Appeal,Arts and Culture,Sarah Rodriguez,Middle East
+Innovative Giving,28875.11,10/04/2024,Quarterly,One-time,Non-profit,22/10/2015,Research Grant,Community Support,Sophia Rodriguez,North America
+Hope Partners,36740.14,12/02/2022,Monthly,Special Event,Foundation,24/11/2020,Summer Giving,Disaster Relief,David Rodriguez,North America
+Innovative Giving,2126.41,25/09/2024,Monthly,Recurring,Non-profit,19/10/2019,Disaster Relief,Education,Sarah Brown,South America
+Global Foundation,6230.69,31/05/2022,Monthly,Recurring,Corporate,30/05/2015,Holiday Appeal,Healthcare,Alex Smith,Middle East
+United Charities,3263.86,31/10/2022,Annual,Recurring,Corporate,03/06/2021,Year End Campaign,Education,Robert Wilson,Middle East
+Evergreen Impact,6265.7,12/02/2023,Quarterly,Recurring,Corporate,18/01/2016,Holiday Appeal,Environmental,Sophia Rodriguez,Europe
+Evergreen Impact,38987.99,19/12/2023,Annual,One-time,Corporate,15/11/2015,Community Outreach,Environmental,Daniel Rodriguez,South America
+Hope Partners,36293.1,27/07/2024,Monthly,Special Event,Corporate,15/04/2018,Research Grant,Community Support,Daniel Taylor,Europe
+Solidarity Trust,40728.41,18/01/2020,Annual,Special Event,Non-profit,10/01/2017,Community Outreach,Environmental,Emily Garcia,Africa
+Innovative Giving,38024.19,19/07/2020,Quarterly,Recurring,Non-profit,09/10/2016,Summer Giving,Community Support,Sarah Johnson,Africa
+Hope Partners,34661.73,23/06/2023,Annual,Recurring,Corporate,22/04/2023,Research Grant,Education,Sophia Miller,Middle East
+Global Foundation,18994.78,27/06/2022,Quarterly,Recurring,Non-profit,01/03/2021,Spring Drive,Education,Laura Johnson,Europe
+Global Foundation,37578.48,28/12/2021,Quarterly,One-time,Corporate,17/08/2020,Community Outreach,Community Support,Sophia Anderson,Europe
+Acme Corp,30104.1,03/12/2020,Monthly,Special Event,Non-profit,06/11/2015,Spring Drive,Research,Alex Miller,Africa
+Future Enterprises,8996.68,02/07/2021,Annual,Recurring,Corporate,24/09/2018,Summer Giving,Social Services,Jane Jones,Oceania
+Visionary Solutions,47493.1,20/11/2021,Annual,One-time,Corporate,30/09/2018,Spring Drive,Environmental,Robert Smith,Asia
+Hope Partners,30656.67,14/04/2019,Annual,Recurring,Non-profit,18/02/2017,Holiday Appeal,Arts and Culture,Michael Rodriguez,North America
+United Charities,32346.98,29/03/2023,Annual,Special Event,Non-profit,11/08/2021,Year End Campaign,Social Services,Michael Wilson,North America
+Hope Partners,31892.61,16/10/2020,Quarterly,Recurring,Corporate,08/09/2020,Summer Giving,Community Support,Sarah Miller,Middle East
+Hope Partners,36164.5,26/01/2023,Annual,One-time,Foundation,04/08/2022,Community Outreach,Healthcare,Laura Davis,Middle East
+Acme Corp,25102.98,15/06/2021,Annual,One-time,Corporate,15/02/2019,Research Grant,Healthcare,Laura Rodriguez,Oceania
+United Charities,48692.92,09/10/2024,Annual,One-time,Non-profit,23/02/2021,Research Grant,Arts and Culture,David Davis,Europe
+Visionary Solutions,20587.33,07/11/2023,Quarterly,Special Event,Foundation,22/01/2015,Year End Campaign,Education,Michael Johnson,Africa
+Acme Corp,28024.24,23/02/2021,Annual,Special Event,Non-profit,09/09/2017,Summer Giving,Social Services,David Brown,South America
+Charity Connect,28655.72,01/11/2022,Quarterly,Recurring,Foundation,22/05/2017,Community Outreach,Community Support,Michael Rodriguez,Oceania
+Solidarity Trust,35382.62,08/02/2017,Annual,One-time,Foundation,03/02/2015,Healthcare Fund,Healthcare,Jane Anderson,Asia
+Hope Partners,40025.24,23/01/2023,Quarterly,Recurring,Foundation,17/11/2018,Holiday Appeal,Arts and Culture,Laura Smith,Oceania
+Solidarity Trust,31121.15,13/05/2024,Monthly,One-time,Foundation,25/07/2022,Community Outreach,Environmental,Robert Taylor,Oceania
+Evergreen Impact,44140.39,11/01/2025,Monthly,Special Event,Foundation,05/10/2020,Education Initiative,Disaster Relief,Daniel Rodriguez,South America
+Evergreen Impact,16643.7,17/02/2025,Monthly,Recurring,Corporate,28/12/2021,Research Grant,Disaster Relief,Emily Jones,Oceania
+Acme Corp,49065.5,08/07/2021,Monthly,Special Event,Corporate,05/08/2016,Education Initiative,Environmental,Robert Anderson,Africa
+Charity Connect,23594.33,12/10/2024,Quarterly,Recurring,Non-profit,12/02/2018,Spring Drive,Education,Jane Garcia,Europe
+Charity Connect,30803.94,12/03/2019,Quarterly,Recurring,Corporate,19/08/2015,Summer Giving,Research,David Smith,South America
+Global Foundation,34031.27,23/10/2023,Quarterly,One-time,Corporate,05/04/2017,Healthcare Fund,Research,Robert Jones,North America
+United Charities,42636.18,14/07/2024,Annual,Special Event,Non-profit,18/01/2018,Year End Campaign,Research,Alex Garcia,Europe
+United Charities,42983.37,08/04/2023,Monthly,Recurring,Non-profit,14/06/2022,Holiday Appeal,Healthcare,Michael Davis,North America
+Community Builders,6592.15,29/09/2020,Monthly,Recurring,Non-profit,12/09/2020,Disaster Relief,Research,Sarah Taylor,North America
+Pioneer Philanthropy,1991.62,17/02/2023,Quarterly,One-time,Non-profit,14/09/2015,Disaster Relief,Social Services,John Garcia,Asia
+Visionary Solutions,31768.46,28/09/2020,Annual,Special Event,Foundation,26/05/2020,Summer Giving,Arts and Culture,Olivia Williams,Africa
+United Charities,33556.4,27/06/2022,Quarterly,Special Event,Corporate,05/06/2017,Education Initiative,Environmental,Robert Miller,Oceania
+Innovative Giving,33642.42,06/04/2024,Monthly,Recurring,Foundation,29/10/2023,Arts Support,Social Services,Daniel Anderson,Middle East
+Community Builders,24356.85,13/08/2023,Monthly,Recurring,Foundation,29/05/2022,Education Initiative,Education,Olivia Williams,Asia
+Charity Connect,31056.53,24/07/2024,Monthly,Recurring,Non-profit,23/08/2021,Education Initiative,Healthcare,John Wilson,Oceania
+Charity Connect,410.5,24/05/2022,Quarterly,Recurring,Non-profit,19/03/2020,Healthcare Fund,Social Services,Michael Brown,South America
+Global Foundation,24090.42,22/08/2024,Monthly,Special Event,Foundation,31/07/2020,Holiday Appeal,Community Support,Emily Wilson,Middle East
+Community Builders,8176.26,23/04/2021,Monthly,Special Event,Non-profit,21/03/2017,Disaster Relief,Healthcare,Olivia Anderson,South America
+Innovative Giving,37758.97,19/10/2015,Annual,One-time,Non-profit,19/09/2015,Arts Support,Education,Sarah Brown,Europe
+Solidarity Trust,37320.65,30/10/2024,Annual,Special Event,Non-profit,11/03/2018,Holiday Appeal,Disaster Relief,John Rodriguez,North America
+Future Enterprises,3026.21,20/02/2022,Quarterly,Recurring,Corporate,25/01/2022,Summer Giving,Community Support,Sarah Rodriguez,South America
+Evergreen Impact,18233.78,26/04/2020,Monthly,Recurring,Non-profit,31/01/2017,Arts Support,Arts and Culture,Laura Rodriguez,Europe
+Hope Partners,21566.27,02/03/2022,Quarterly,Special Event,Non-profit,29/09/2020,Community Outreach,Environmental,Michael Taylor,Europe
+Global Foundation,47743.8,20/11/2021,Monthly,Special Event,Foundation,19/08/2021,Community Outreach,Disaster Relief,Jane Johnson,Oceania
+Hope Partners,28445.46,24/10/2021,Quarterly,Recurring,Corporate,05/05/2019,Holiday Appeal,Research,Jane Davis,Africa
+Acme Corp,9782.51,28/01/2023,Annual,Special Event,Corporate,19/05/2022,Summer Giving,Education,Laura Williams,Middle East
+Pioneer Philanthropy,3628.27,28/08/2024,Annual,One-time,Foundation,19/12/2023,Year End Campaign,Social Services,David Jones,Europe
+United Charities,36060.79,04/09/2023,Monthly,Special Event,Corporate,06/10/2019,Arts Support,Environmental,John Miller,South America
+Innovative Giving,16561.67,28/05/2023,Quarterly,Special Event,Corporate,25/05/2022,Community Outreach,Research,David Miller,Europe
+United Charities,15553.62,16/11/2022,Annual,Special Event,Non-profit,16/10/2016,Research Grant,Social Services,Sophia Rodriguez,South America
+Pioneer Philanthropy,21500.73,04/08/2020,Annual,Recurring,Corporate,22/02/2018,Year End Campaign,Healthcare,Daniel Anderson,South America
+Innovative Giving,12247.1,06/04/2023,Monthly,Recurring,Foundation,03/01/2021,Research Grant,Social Services,David Smith,Africa
+United Charities,15745.64,07/09/2022,Annual,Special Event,Foundation,01/02/2015,Holiday Appeal,Arts and Culture,Daniel Wilson,Oceania
+Acme Corp,17988.78,12/01/2023,Monthly,One-time,Corporate,04/11/2020,Community Outreach,Social Services,Daniel Wilson,North America
+Visionary Solutions,14984.94,15/10/2021,Annual,One-time,Corporate,15/04/2019,Research Grant,Community Support,David Johnson,Asia
+Pioneer Philanthropy,29300.31,16/09/2023,Monthly,Recurring,Non-profit,04/07/2023,Education Initiative,Arts and Culture,Olivia Rodriguez,Middle East
+Charity Connect,32875.14,15/10/2019,Annual,Recurring,Non-profit,16/03/2018,Healthcare Fund,Education,Michael Miller,North America
+United Charities,1244.1,07/01/2016,Quarterly,Recurring,Non-profit,27/09/2015,Research Grant,Research,Jane Brown,Oceania
+Acme Corp,5065.91,02/02/2022,Quarterly,Special Event,Foundation,29/08/2019,Research Grant,Healthcare,David Taylor,Asia
+Future Enterprises,1827.52,07/05/2023,Quarterly,Special Event,Corporate,24/06/2019,Holiday Appeal,Arts and Culture,Laura Wilson,North America
+United Charities,40219.26,04/04/2024,Quarterly,Special Event,Foundation,05/05/2021,Education Initiative,Research,Laura Smith,Africa
+Visionary Solutions,32326.59,10/09/2018,Monthly,Recurring,Corporate,21/05/2018,Year End Campaign,Social Services,Sophia Jones,Oceania
+United Charities,15484.29,27/12/2024,Annual,Special Event,Foundation,05/10/2016,Community Outreach,Education,Emily Miller,Middle East
+Acme Corp,48023.96,09/02/2024,Annual,Special Event,Non-profit,03/04/2019,Holiday Appeal,Disaster Relief,Robert Wilson,Oceania
+Acme Corp,30170.99,01/10/2015,Monthly,One-time,Non-profit,20/06/2015,Research Grant,Social Services,Emily Miller,North America
+Innovative Giving,23831.76,11/02/2023,Annual,One-time,Non-profit,24/12/2016,Healthcare Fund,Disaster Relief,Robert Smith,Oceania
+Global Foundation,41852.33,31/07/2020,Quarterly,One-time,Foundation,21/07/2015,Summer Giving,Environmental,Laura Smith,North America
+Solidarity Trust,24689.48,14/10/2023,Monthly,Recurring,Non-profit,08/12/2022,Education Initiative,Healthcare,Laura Wilson,Asia
+Evergreen Impact,11526.99,30/09/2022,Annual,One-time,Foundation,02/07/2019,Disaster Relief,Community Support,Michael Rodriguez,Europe
+Future Enterprises,14226.5,17/10/2023,Monthly,One-time,Foundation,05/04/2023,Holiday Appeal,Disaster Relief,Daniel Rodriguez,Europe
+Evergreen Impact,12185.08,06/12/2020,Monthly,One-time,Corporate,30/01/2018,Research Grant,Social Services,Sophia Brown,Africa
+Innovative Giving,43994.13,17/10/2023,Quarterly,Recurring,Corporate,05/10/2020,Research Grant,Environmental,Sophia Brown,North America
+Innovative Giving,17117.01,03/03/2019,Quarterly,Recurring,Foundation,20/11/2017,Holiday Appeal,Community Support,John Wilson,Europe
+United Charities,39223.58,27/08/2023,Annual,Special Event,Corporate,15/10/2015,Disaster Relief,Community Support,Sarah Taylor,Europe
+Visionary Solutions,9363.66,11/09/2024,Annual,One-time,Corporate,08/12/2017,Healthcare Fund,Arts and Culture,Laura Johnson,Asia
+United Charities,32359.45,24/07/2020,Monthly,Special Event,Non-profit,02/05/2015,Year End Campaign,Arts and Culture,Emily Smith,North America
+Charity Connect,3366.35,14/03/2020,Annual,Recurring,Foundation,30/07/2019,Holiday Appeal,Research,Olivia Anderson,Europe
+Visionary Solutions,19360.41,13/10/2017,Annual,One-time,Foundation,04/02/2017,Disaster Relief,Community Support,Michael Taylor,Asia
+Global Foundation,43604.79,27/03/2024,Monthly,Special Event,Non-profit,03/06/2015,Summer Giving,Community Support,Emily Brown,Asia
+Global Foundation,25055.67,03/04/2017,Annual,Special Event,Non-profit,17/06/2015,Year End Campaign,Disaster Relief,John Brown,Africa
+Innovative Giving,42779.21,30/11/2021,Annual,Recurring,Foundation,30/03/2019,Research Grant,Community Support,John Rodriguez,Oceania
+Solidarity Trust,16694.81,02/09/2022,Annual,Recurring,Foundation,22/11/2019,Summer Giving,Disaster Relief,Alex Rodriguez,Oceania
+Pioneer Philanthropy,37989.96,22/06/2020,Monthly,One-time,Corporate,16/02/2016,Year End Campaign,Environmental,Olivia Williams,Asia
+Hope Partners,16437.33,17/02/2024,Quarterly,Special Event,Non-profit,20/11/2023,Healthcare Fund,Healthcare,Robert Miller,South America
+Community Builders,47286.83,11/06/2023,Quarterly,Special Event,Non-profit,17/01/2016,Year End Campaign,Community Support,Alex Taylor,Europe
+Global Foundation,40753.85,07/11/2017,Quarterly,One-time,Foundation,27/08/2017,Spring Drive,Social Services,Robert Rodriguez,North America
+Future Enterprises,1869.71,17/01/2024,Monthly,Special Event,Non-profit,20/01/2023,Summer Giving,Education,John Taylor,Asia
+Visionary Solutions,14410.8,18/03/2023,Quarterly,Recurring,Foundation,07/08/2020,Community Outreach,Research,David Miller,Europe
+Visionary Solutions,40362.52,16/09/2019,Quarterly,Special Event,Non-profit,29/07/2018,Healthcare Fund,Arts and Culture,Michael Williams,South America
+United Charities,4104.1,21/07/2024,Annual,Special Event,Non-profit,20/01/2015,Arts Support,Environmental,Robert Jones,Asia
+Acme Corp,23218.06,22/04/2024,Quarterly,Recurring,Non-profit,29/08/2016,Community Outreach,Arts and Culture,Michael Williams,Asia
+Charity Connect,39493.27,16/11/2024,Annual,Recurring,Foundation,11/07/2016,Disaster Relief,Research,John Anderson,Africa
+Charity Connect,21353.06,31/08/2023,Monthly,Special Event,Non-profit,12/06/2021,Arts Support,Social Services,John Wilson,Middle East
+Acme Corp,4155.98,06/10/2024,Monthly,Recurring,Corporate,13/03/2023,Disaster Relief,Education,John Wilson,Middle East
+Pioneer Philanthropy,1520.62,05/07/2024,Quarterly,Recurring,Foundation,13/04/2023,Disaster Relief,Research,Alex Davis,North America
+Community Builders,5137.88,14/03/2023,Monthly,One-time,Foundation,16/11/2020,Healthcare Fund,Healthcare,Laura Williams,Africa
+Evergreen Impact,45816.19,18/10/2023,Monthly,Special Event,Foundation,07/05/2022,Summer Giving,Research,John Jones,Europe
+Acme Corp,48095.03,13/01/2023,Monthly,One-time,Non-profit,13/12/2020,Year End Campaign,Arts and Culture,Sophia Williams,Europe
+Innovative Giving,30316.31,24/08/2024,Quarterly,Recurring,Corporate,04/05/2021,Spring Drive,Education,Laura Miller,Europe
+Charity Connect,45898.33,14/06/2020,Annual,One-time,Foundation,03/08/2019,Healthcare Fund,Disaster Relief,Sarah Taylor,Oceania
+Community Builders,33275.57,16/02/2020,Quarterly,One-time,Foundation,03/12/2019,Spring Drive,Community Support,Alex Brown,Middle East
+Future Enterprises,973.6,25/11/2024,Monthly,Recurring,Corporate,23/08/2023,Disaster Relief,Community Support,John Anderson,Europe
+Global Foundation,749.84,24/11/2022,Monthly,Recurring,Corporate,22/03/2022,Research Grant,Environmental,Michael Anderson,Middle East
+Evergreen Impact,47308.82,11/06/2024,Annual,One-time,Corporate,10/01/2023,Year End Campaign,Research,Daniel Smith,Europe
+Future Enterprises,45109.52,16/02/2019,Monthly,One-time,Foundation,18/07/2016,Education Initiative,Education,David Rodriguez,Africa
+Visionary Solutions,23273.05,07/12/2021,Monthly,One-time,Corporate,23/12/2019,Year End Campaign,Arts and Culture,John Miller,Africa
+Acme Corp,36023.35,28/01/2023,Quarterly,Special Event,Corporate,11/02/2021,Arts Support,Community Support,Alex Johnson,Africa
+Solidarity Trust,25549.68,07/04/2022,Monthly,Recurring,Non-profit,03/04/2022,Healthcare Fund,Disaster Relief,Robert Wilson,North America
+Community Builders,31714.5,05/11/2021,Annual,Recurring,Foundation,13/06/2019,Healthcare Fund,Environmental,Michael Smith,Asia
+Visionary Solutions,24805.74,29/11/2023,Quarterly,One-time,Foundation,07/11/2022,Spring Drive,Community Support,Olivia Brown,Asia
+Acme Corp,35860.55,12/05/2024,Quarterly,Recurring,Non-profit,15/10/2017,Year End Campaign,Social Services,John Garcia,Europe
+Community Builders,13744.71,24/12/2022,Monthly,One-time,Non-profit,24/11/2017,Research Grant,Healthcare,David Wilson,Oceania
+Evergreen Impact,2088.59,03/02/2021,Annual,Special Event,Non-profit,21/12/2015,Arts Support,Environmental,Michael Anderson,Africa
+Innovative Giving,8868.7,15/08/2018,Monthly,Recurring,Foundation,06/02/2018,Disaster Relief,Research,Jane Taylor,Europe
+Innovative Giving,31168.55,10/10/2020,Monthly,One-time,Foundation,22/08/2015,Research Grant,Social Services,Emily Rodriguez,Asia
+Charity Connect,14213.72,01/01/2024,Monthly,Special Event,Non-profit,24/12/2023,Healthcare Fund,Education,Robert Rodriguez,Oceania
+Community Builders,22386.69,23/08/2024,Quarterly,One-time,Foundation,18/03/2019,Spring Drive,Arts and Culture,Emily Johnson,Middle East
+Future Enterprises,22278.66,31/12/2023,Quarterly,Recurring,Non-profit,22/12/2020,Community Outreach,Environmental,Michael Brown,South America
+Visionary Solutions,4327.86,29/05/2020,Annual,Special Event,Foundation,09/01/2019,Year End Campaign,Education,Olivia Johnson,Asia
+Acme Corp,19584.86,30/09/2023,Quarterly,Special Event,Non-profit,22/07/2023,Spring Drive,Disaster Relief,Jane Smith,Oceania
+Community Builders,2054.11,25/12/2019,Annual,Special Event,Corporate,29/04/2017,Year End Campaign,Disaster Relief,Daniel Anderson,Middle East
+Pioneer Philanthropy,7367.29,10/04/2023,Annual,Recurring,Foundation,21/06/2017,Holiday Appeal,Education,Robert Garcia,Europe
+Community Builders,43970.16,16/01/2022,Annual,Special Event,Non-profit,24/09/2015,Holiday Appeal,Arts and Culture,Alex Johnson,Europe
+Acme Corp,24956.68,23/09/2019,Monthly,Special Event,Non-profit,08/11/2018,Research Grant,Disaster Relief,Sophia Garcia,Oceania
+Evergreen Impact,26079.7,05/05/2019,Quarterly,One-time,Non-profit,19/08/2017,Summer Giving,Arts and Culture,Olivia Brown,North America
+Acme Corp,10758.6,06/10/2024,Quarterly,Special Event,Corporate,14/06/2023,Summer Giving,Social Services,John Anderson,Asia
+Evergreen Impact,39933.37,03/11/2023,Quarterly,One-time,Corporate,26/08/2022,Holiday Appeal,Social Services,Jane Anderson,Oceania
+Innovative Giving,23208.13,09/12/2024,Quarterly,Recurring,Foundation,02/07/2015,Education Initiative,Research,Sarah Rodriguez,Oceania
+Community Builders,28623.35,16/10/2019,Annual,Special Event,Non-profit,05/12/2015,Arts Support,Arts and Culture,Olivia Miller,Asia
+Acme Corp,19557.26,18/05/2024,Annual,Special Event,Non-profit,08/12/2022,Spring Drive,Environmental,Olivia Davis,Oceania
+Hope Partners,38517.28,17/05/2022,Quarterly,Special Event,Non-profit,13/09/2021,Education Initiative,Environmental,Alex Rodriguez,Middle East
+Global Foundation,49941.96,23/01/2022,Quarterly,Recurring,Foundation,19/07/2019,Disaster Relief,Research,Sophia Davis,Oceania
+Evergreen Impact,26324.77,13/09/2022,Monthly,Recurring,Non-profit,27/12/2021,Community Outreach,Environmental,Laura Smith,Asia
+Acme Corp,45276.67,06/05/2024,Annual,Special Event,Non-profit,04/01/2021,Holiday Appeal,Environmental,John Johnson,North America
+Visionary Solutions,16990.21,27/12/2024,Annual,Special Event,Corporate,05/02/2023,Healthcare Fund,Environmental,Emily Brown,Europe
+Charity Connect,6342.71,01/01/2024,Quarterly,Recurring,Foundation,27/08/2023,Year End Campaign,Community Support,Alex Davis,Asia
+Innovative Giving,47224.97,02/02/2025,Monthly,Special Event,Foundation,06/02/2023,Research Grant,Community Support,Jane Taylor,North America
+Innovative Giving,21274.89,21/01/2024,Monthly,One-time,Non-profit,20/10/2016,Disaster Relief,Social Services,Michael Miller,Africa
+Acme Corp,15360.28,25/11/2019,Annual,Recurring,Non-profit,27/01/2019,Holiday Appeal,Environmental,Michael Anderson,Oceania
+Pioneer Philanthropy,38628.94,25/09/2024,Monthly,One-time,Foundation,31/05/2020,Summer Giving,Education,David Anderson,Middle East
+Hope Partners,18030.14,07/11/2023,Monthly,Recurring,Foundation,17/03/2022,Arts Support,Social Services,Michael Anderson,South America
+Future Enterprises,10227.87,07/06/2018,Quarterly,One-time,Corporate,12/10/2015,Healthcare Fund,Arts and Culture,Olivia Miller,South America
+Acme Corp,6276.16,01/08/2024,Monthly,Special Event,Corporate,19/01/2022,Spring Drive,Community Support,Robert Smith,North America
+Acme Corp,1411.46,07/02/2021,Quarterly,One-time,Corporate,11/12/2019,Spring Drive,Research,Jane Smith,South America
+Hope Partners,16927.9,03/04/2023,Annual,Recurring,Non-profit,02/04/2018,Research Grant,Disaster Relief,Sarah Brown,Asia
+Pioneer Philanthropy,12652.92,27/09/2017,Monthly,Special Event,Non-profit,28/09/2016,Spring Drive,Education,Sarah Miller,Africa
+Future Enterprises,24679.7,29/04/2022,Monthly,One-time,Corporate,26/04/2020,Arts Support,Environmental,Sarah Garcia,Middle East
+Future Enterprises,8801.07,01/11/2023,Annual,Special Event,Corporate,16/10/2023,Year End Campaign,Arts and Culture,Emily Miller,North America
+Solidarity Trust,31691.11,30/09/2024,Annual,Recurring,Non-profit,14/12/2023,Disaster Relief,Research,Sophia Johnson,South America
+Hope Partners,16233.06,09/09/2018,Quarterly,One-time,Non-profit,28/01/2015,Community Outreach,Environmental,Michael Davis,Africa
+Pioneer Philanthropy,10313.03,29/08/2024,Annual,Recurring,Non-profit,27/07/2022,Research Grant,Education,Sophia Smith,Africa
+Charity Connect,43174.37,11/07/2024,Quarterly,Recurring,Corporate,02/10/2020,Year End Campaign,Education,Sophia Rodriguez,Europe
+Global Foundation,12952,22/01/2024,Quarterly,Recurring,Non-profit,23/02/2022,Education Initiative,Arts and Culture,Michael Anderson,Europe
+Global Foundation,25609.4,07/10/2023,Quarterly,One-time,Non-profit,05/10/2017,Healthcare Fund,Arts and Culture,Daniel Wilson,North America
+Community Builders,14491.93,20/05/2024,Quarterly,Special Event,Foundation,17/06/2020,Summer Giving,Environmental,Alex Williams,North America
+Pioneer Philanthropy,39367.2,09/03/2020,Quarterly,One-time,Non-profit,01/10/2018,Research Grant,Disaster Relief,Robert Rodriguez,Africa
+Global Foundation,33845.78,17/12/2021,Monthly,Recurring,Corporate,08/07/2017,Year End Campaign,Education,David Davis,Asia
+Future Enterprises,32903.74,07/10/2020,Annual,Recurring,Foundation,10/05/2020,Holiday Appeal,Education,Emily Brown,North America
+Evergreen Impact,35567.78,31/07/2021,Annual,One-time,Foundation,10/09/2015,Healthcare Fund,Healthcare,David Brown,Europe
+Evergreen Impact,24386.1,04/05/2023,Monthly,One-time,Corporate,28/04/2022,Healthcare Fund,Healthcare,John Davis,Europe
+Pioneer Philanthropy,3564.62,15/11/2022,Monthly,One-time,Foundation,07/04/2020,Summer Giving,Community Support,Sophia Wilson,Europe
+Global Foundation,46977.01,15/06/2022,Quarterly,Special Event,Foundation,24/01/2022,Spring Drive,Environmental,David Brown,Middle East
+Charity Connect,38162.42,11/06/2019,Quarterly,Recurring,Foundation,25/01/2018,Disaster Relief,Research,Emily Smith,Europe
+Solidarity Trust,46541.31,03/11/2020,Quarterly,One-time,Foundation,22/03/2019,Disaster Relief,Community Support,Robert Smith,South America
+United Charities,47203.7,26/07/2022,Quarterly,One-time,Foundation,31/10/2021,Disaster Relief,Social Services,Sarah Jones,Oceania
+United Charities,8804.56,28/03/2022,Quarterly,Special Event,Foundation,16/11/2020,Healthcare Fund,Environmental,Emily Wilson,Middle East
+Charity Connect,47496.48,27/02/2022,Monthly,Special Event,Foundation,09/11/2016,Disaster Relief,Social Services,Daniel Taylor,Europe
+Pioneer Philanthropy,34868.68,11/03/2022,Quarterly,Recurring,Non-profit,06/08/2020,Healthcare Fund,Social Services,Daniel Brown,South America
+Visionary Solutions,9491.65,02/06/2024,Annual,Special Event,Corporate,14/12/2023,Healthcare Fund,Community Support,Alex Wilson,Oceania
+Future Enterprises,42268.73,22/10/2023,Quarterly,One-time,Foundation,31/01/2018,Summer Giving,Arts and Culture,Alex Miller,Europe
+Acme Corp,8975.24,07/03/2025,Monthly,Recurring,Foundation,19/08/2017,Healthcare Fund,Education,Sophia Garcia,Oceania
+Future Enterprises,7355.97,31/08/2023,Monthly,One-time,Corporate,19/01/2022,Year End Campaign,Environmental,Alex Anderson,Oceania
+Global Foundation,15209.62,18/02/2021,Monthly,Recurring,Non-profit,26/08/2019,Holiday Appeal,Disaster Relief,David Jones,Africa
+Global Foundation,38188.85,19/05/2024,Quarterly,Special Event,Corporate,07/11/2020,Year End Campaign,Social Services,Emily Johnson,North America
+Visionary Solutions,24082.86,11/01/2023,Quarterly,One-time,Corporate,03/10/2021,Spring Drive,Disaster Relief,Olivia Johnson,Africa
+Evergreen Impact,34338.68,07/09/2018,Quarterly,One-time,Corporate,02/01/2017,Summer Giving,Disaster Relief,John Smith,Oceania
+United Charities,32289.36,04/10/2024,Monthly,Special Event,Foundation,07/04/2023,Community Outreach,Education,Robert Miller,North America
+Community Builders,27654.24,17/12/2016,Annual,One-time,Foundation,12/12/2016,Spring Drive,Arts and Culture,Olivia Jones,Middle East
+Hope Partners,47353.8,28/09/2021,Quarterly,Recurring,Non-profit,13/01/2017,Healthcare Fund,Arts and Culture,Laura Davis,North America
+Solidarity Trust,28432.76,20/11/2024,Annual,One-time,Non-profit,21/03/2023,Summer Giving,Research,Jane Davis,North America
+Community Builders,32674.6,16/09/2021,Annual,One-time,Foundation,17/01/2021,Arts Support,Arts and Culture,Olivia Smith,Asia
+United Charities,10820.73,13/10/2018,Quarterly,Recurring,Corporate,15/02/2018,Holiday Appeal,Education,Michael Davis,Asia
+Visionary Solutions,20157.29,10/02/2024,Annual,Recurring,Foundation,03/06/2021,Year End Campaign,Healthcare,Emily Garcia,Asia
+United Charities,18175.64,08/03/2025,Annual,One-time,Foundation,20/11/2018,Healthcare Fund,Environmental,Daniel Smith,North America
+Pioneer Philanthropy,37151.59,03/11/2016,Quarterly,Recurring,Non-profit,21/02/2016,Arts Support,Healthcare,Laura Davis,Oceania
+Global Foundation,37575.41,06/03/2023,Monthly,Special Event,Foundation,16/02/2022,Research Grant,Healthcare,Alex Miller,Africa
+Pioneer Philanthropy,27809.34,21/06/2023,Monthly,One-time,Foundation,23/11/2017,Healthcare Fund,Education,Sophia Wilson,Middle East
+Innovative Giving,37994.75,03/10/2021,Monthly,Recurring,Non-profit,10/01/2019,Summer Giving,Healthcare,Laura Taylor,Africa
+Global Foundation,33539,11/03/2020,Monthly,One-time,Foundation,24/03/2018,Research Grant,Education,John Johnson,Oceania
+Solidarity Trust,44673.65,22/12/2024,Annual,One-time,Foundation,12/04/2022,Summer Giving,Education,Alex Davis,Middle East
+Global Foundation,27292.37,08/08/2024,Monthly,One-time,Non-profit,19/03/2021,Disaster Relief,Disaster Relief,Michael Rodriguez,South America
+Charity Connect,12035.31,08/11/2021,Quarterly,Recurring,Corporate,04/12/2017,Spring Drive,Arts and Culture,Sophia Johnson,North America
+Future Enterprises,11270.74,27/02/2025,Quarterly,One-time,Non-profit,12/03/2018,Education Initiative,Education,Robert Miller,South America
+Solidarity Trust,2887.73,09/12/2021,Annual,One-time,Corporate,17/08/2021,Arts Support,Education,Alex Taylor,South America
+Innovative Giving,49250.19,20/07/2023,Annual,One-time,Non-profit,20/05/2019,Spring Drive,Social Services,Sophia Johnson,Africa
+Hope Partners,40073.03,10/02/2024,Annual,One-time,Non-profit,14/04/2017,Holiday Appeal,Community Support,Emily Rodriguez,Africa
+Visionary Solutions,5967.62,05/10/2024,Annual,One-time,Corporate,25/09/2022,Disaster Relief,Arts and Culture,Jane Anderson,South America
+Hope Partners,27146.89,23/07/2019,Quarterly,One-time,Non-profit,20/01/2019,Year End Campaign,Healthcare,John Smith,Asia
+Innovative Giving,45097.97,25/02/2024,Annual,One-time,Foundation,02/12/2022,Holiday Appeal,Healthcare,Daniel Smith,Africa
+Innovative Giving,28402.47,18/12/2024,Monthly,One-time,Corporate,02/10/2020,Disaster Relief,Research,Laura Williams,Europe
+Hope Partners,11180.64,29/03/2020,Monthly,One-time,Non-profit,21/09/2019,Disaster Relief,Community Support,John Johnson,South America
+Pioneer Philanthropy,14819.65,04/11/2020,Monthly,Recurring,Foundation,02/03/2017,Healthcare Fund,Community Support,Emily Rodriguez,Middle East
+United Charities,25050.29,08/06/2024,Monthly,Special Event,Corporate,30/12/2019,Arts Support,Healthcare,Robert Rodriguez,Asia
+Charity Connect,22920.07,25/03/2023,Monthly,One-time,Corporate,07/01/2020,Holiday Appeal,Community Support,Jane Davis,Europe
+United Charities,44820.74,10/01/2021,Monthly,One-time,Non-profit,01/10/2020,Arts Support,Community Support,Robert Brown,South America
+Community Builders,30755.32,20/06/2021,Annual,Special Event,Foundation,26/12/2020,Disaster Relief,Education,Daniel Taylor,Middle East
+Solidarity Trust,2275.83,10/01/2025,Quarterly,One-time,Non-profit,31/01/2017,Community Outreach,Arts and Culture,Sarah Williams,North America
+Pioneer Philanthropy,32785.5,08/02/2020,Quarterly,Recurring,Non-profit,16/01/2020,Research Grant,Healthcare,Olivia Smith,Middle East
+Evergreen Impact,743.51,28/03/2019,Monthly,Recurring,Corporate,30/05/2016,Year End Campaign,Social Services,Robert Anderson,South America
+Future Enterprises,9256.06,26/09/2024,Annual,Special Event,Corporate,24/07/2023,Year End Campaign,Disaster Relief,Laura Jones,Asia
+Community Builders,43510.65,09/09/2023,Quarterly,One-time,Non-profit,25/07/2020,Year End Campaign,Arts and Culture,Olivia Williams,Middle East
+Hope Partners,33093.64,11/06/2019,Annual,Special Event,Foundation,25/05/2019,Community Outreach,Arts and Culture,Emily Smith,Oceania
+Solidarity Trust,6731.02,13/04/2023,Monthly,Recurring,Non-profit,12/04/2020,Summer Giving,Environmental,Emily Rodriguez,Middle East
+Hope Partners,8237.51,12/12/2022,Annual,Recurring,Corporate,13/03/2022,Education Initiative,Education,David Garcia,Europe
+Global Foundation,8879.52,19/06/2024,Monthly,Recurring,Corporate,01/08/2015,Disaster Relief,Environmental,Daniel Smith,North America
+Community Builders,39899.49,15/02/2024,Monthly,Special Event,Corporate,20/02/2023,Arts Support,Research,Sophia Garcia,Asia
+United Charities,17576.51,05/03/2022,Quarterly,Recurring,Foundation,17/06/2021,Education Initiative,Social Services,Laura Miller,North America
+Visionary Solutions,25863.71,07/11/2019,Quarterly,Special Event,Corporate,25/03/2017,Spring Drive,Social Services,Sophia Garcia,Middle East
+Acme Corp,48345.23,06/09/2015,Quarterly,One-time,Non-profit,29/08/2015,Arts Support,Disaster Relief,David Smith,Oceania
+Pioneer Philanthropy,30786.79,05/05/2023,Quarterly,Recurring,Corporate,06/10/2021,Holiday Appeal,Arts and Culture,Michael Wilson,Asia
+Community Builders,17339.01,22/12/2023,Monthly,Recurring,Foundation,23/05/2017,Summer Giving,Environmental,Sarah Johnson,North America
+Global Foundation,24035.49,18/10/2017,Monthly,Recurring,Foundation,05/01/2017,Summer Giving,Environmental,Laura Williams,Asia
+Pioneer Philanthropy,26831.73,15/03/2024,Monthly,Recurring,Corporate,16/11/2020,Healthcare Fund,Research,Sarah Davis,Asia
+Evergreen Impact,21249.48,11/04/2024,Monthly,Recurring,Corporate,12/05/2019,Holiday Appeal,Disaster Relief,Daniel Wilson,South America
+Visionary Solutions,38604.67,23/08/2023,Monthly,Special Event,Foundation,30/03/2022,Summer Giving,Social Services,Alex Taylor,South America
+Charity Connect,7344.09,30/03/2017,Annual,One-time,Non-profit,10/11/2015,Spring Drive,Research,John Garcia,Oceania
+Visionary Solutions,46907.91,25/10/2024,Quarterly,Recurring,Foundation,18/03/2023,Research Grant,Healthcare,Olivia Garcia,North America
+United Charities,43735.63,24/05/2023,Annual,Special Event,Foundation,14/02/2019,Spring Drive,Social Services,Sophia Taylor,Asia
+Hope Partners,38493.61,09/03/2018,Annual,Recurring,Non-profit,28/04/2015,Research Grant,Research,Sophia Brown,South America
+Innovative Giving,43077.16,22/09/2023,Quarterly,Special Event,Foundation,02/03/2016,Research Grant,Community Support,Olivia Jones,North America
+Charity Connect,15886.66,14/06/2024,Annual,Recurring,Foundation,30/10/2022,Education Initiative,Social Services,Emily Anderson,Europe
+Global Foundation,48857.86,22/06/2017,Quarterly,One-time,Corporate,05/11/2016,Year End Campaign,Disaster Relief,Michael Garcia,North America
+Future Enterprises,2800.97,05/03/2025,Quarterly,Recurring,Corporate,11/05/2019,Research Grant,Arts and Culture,Alex Miller,Middle East
+Evergreen Impact,27750.26,29/08/2022,Monthly,Recurring,Corporate,21/12/2018,Summer Giving,Social Services,Olivia Rodriguez,Asia
+Evergreen Impact,41409.99,28/03/2021,Annual,Special Event,Non-profit,17/01/2021,Research Grant,Education,Jane Davis,Africa
+Visionary Solutions,5558.43,16/11/2023,Annual,Recurring,Foundation,23/11/2022,Community Outreach,Healthcare,John Jones,South America
+Acme Corp,48025.71,26/12/2021,Quarterly,One-time,Non-profit,17/06/2017,Disaster Relief,Social Services,Olivia Garcia,South America
+Innovative Giving,32055.66,06/08/2022,Quarterly,Recurring,Corporate,22/07/2022,Holiday Appeal,Disaster Relief,Emily Brown,Oceania
+United Charities,16817.42,23/07/2022,Monthly,Recurring,Non-profit,23/01/2021,Research Grant,Disaster Relief,Olivia Williams,Oceania
+Community Builders,12922.56,07/06/2022,Monthly,Special Event,Foundation,30/07/2021,Research Grant,Social Services,Jane Jones,Oceania
+Pioneer Philanthropy,31491.46,21/11/2023,Quarterly,One-time,Corporate,07/03/2022,Summer Giving,Community Support,Laura Smith,Africa
+Pioneer Philanthropy,15623.12,22/10/2023,Annual,Recurring,Corporate,04/07/2022,Education Initiative,Research,Jane Johnson,North America
+Pioneer Philanthropy,36062.05,07/09/2024,Annual,One-time,Corporate,23/10/2021,Holiday Appeal,Disaster Relief,Michael Brown,Oceania
+Future Enterprises,47509.83,08/03/2023,Quarterly,Recurring,Foundation,28/09/2020,Disaster Relief,Environmental,David Rodriguez,Middle East
+Solidarity Trust,23782.67,17/07/2019,Annual,Recurring,Foundation,31/10/2018,Research Grant,Disaster Relief,Jane Brown,Africa
+Visionary Solutions,7082.13,24/08/2023,Monthly,One-time,Corporate,31/05/2020,Community Outreach,Social Services,Sophia Taylor,North America
+Global Foundation,28964.09,05/10/2016,Monthly,Special Event,Non-profit,01/12/2015,Year End Campaign,Disaster Relief,Daniel Williams,Middle East
+Solidarity Trust,18400.96,01/07/2024,Monthly,Special Event,Corporate,16/10/2022,Spring Drive,Healthcare,Olivia Garcia,Oceania
+Pioneer Philanthropy,32288.75,11/05/2024,Annual,Recurring,Non-profit,27/09/2023,Disaster Relief,Social Services,John Wilson,Middle East
+Evergreen Impact,1312.66,16/05/2024,Quarterly,Recurring,Corporate,02/03/2021,Research Grant,Education,Jane Smith,Middle East
+Hope Partners,20993.37,26/05/2023,Quarterly,Special Event,Foundation,25/02/2023,Spring Drive,Disaster Relief,Emily Davis,Middle East
+Innovative Giving,30617.11,20/02/2024,Quarterly,Special Event,Non-profit,07/08/2017,Disaster Relief,Research,Jane Wilson,South America
+Future Enterprises,47119.29,05/07/2017,Monthly,Recurring,Non-profit,12/09/2015,Disaster Relief,Disaster Relief,Emily Jones,Asia
+Innovative Giving,2690.44,27/05/2021,Annual,One-time,Foundation,03/01/2015,Community Outreach,Education,David Johnson,Oceania
+Global Foundation,43172.19,12/03/2017,Quarterly,Special Event,Corporate,24/12/2016,Healthcare Fund,Healthcare,John Brown,Africa
+Hope Partners,3348.24,23/05/2023,Quarterly,One-time,Corporate,10/03/2021,Healthcare Fund,Research,Sophia Johnson,Africa
+Global Foundation,48240.04,20/02/2020,Monthly,One-time,Non-profit,20/06/2018,Holiday Appeal,Healthcare,Daniel Smith,Europe
+Innovative Giving,36847.32,31/05/2024,Monthly,Special Event,Corporate,23/12/2021,Arts Support,Disaster Relief,John Anderson,Africa
+Evergreen Impact,27426.59,14/03/2021,Annual,One-time,Foundation,04/09/2015,Summer Giving,Social Services,Alex Jones,Middle East
+Future Enterprises,25117.37,05/02/2024,Monthly,Special Event,Non-profit,17/06/2021,Research Grant,Social Services,Daniel Brown,Europe
+Acme Corp,45917.54,19/09/2019,Monthly,Recurring,Corporate,01/03/2016,Holiday Appeal,Education,Olivia Jones,Middle East
+Solidarity Trust,8408.7,16/02/2021,Quarterly,Recurring,Non-profit,07/03/2018,Disaster Relief,Environmental,Daniel Rodriguez,Oceania
+Charity Connect,39311.19,25/02/2023,Annual,Special Event,Non-profit,14/01/2018,Arts Support,Arts and Culture,John Anderson,Middle East
+Solidarity Trust,49572.07,02/05/2023,Monthly,Recurring,Foundation,03/01/2019,Education Initiative,Research,David Miller,Africa
+Hope Partners,45363.97,19/12/2016,Annual,Special Event,Foundation,29/11/2016,Community Outreach,Social Services,Robert Davis,South America
+Hope Partners,3244.18,23/12/2023,Monthly,One-time,Non-profit,09/02/2022,Community Outreach,Research,Emily Smith,Europe
+United Charities,20550.07,21/01/2024,Annual,One-time,Corporate,04/07/2022,Holiday Appeal,Arts and Culture,John Miller,Asia
+Community Builders,43763.57,22/11/2022,Annual,Recurring,Corporate,05/03/2019,Holiday Appeal,Healthcare,John Smith,Africa
+United Charities,12182.28,30/12/2020,Quarterly,One-time,Non-profit,25/10/2019,Community Outreach,Community Support,Laura Garcia,Oceania
+Pioneer Philanthropy,24497.94,07/04/2022,Monthly,Recurring,Non-profit,10/11/2021,Education Initiative,Education,Jane Rodriguez,Middle East
+Evergreen Impact,21547.06,20/04/2020,Quarterly,Recurring,Foundation,24/06/2019,Year End Campaign,Social Services,Daniel Jones,Oceania
+Evergreen Impact,48002.61,17/07/2018,Quarterly,One-time,Corporate,26/06/2018,Year End Campaign,Arts and Culture,Sophia Garcia,Africa
+Evergreen Impact,9910.05,22/01/2019,Monthly,One-time,Foundation,02/05/2017,Research Grant,Community Support,Jane Smith,Europe
+Innovative Giving,24942.85,03/03/2017,Quarterly,One-time,Non-profit,13/05/2015,Arts Support,Social Services,David Anderson,Asia
+Innovative Giving,16934.48,28/05/2023,Monthly,Special Event,Corporate,18/07/2018,Community Outreach,Social Services,Olivia Jones,Europe
+Visionary Solutions,45495.3,21/04/2023,Monthly,One-time,Corporate,24/09/2020,Research Grant,Disaster Relief,Jane Jones,Africa
+Pioneer Philanthropy,33382.12,25/01/2025,Monthly,Special Event,Non-profit,11/06/2022,Healthcare Fund,Arts and Culture,Robert Wilson,Europe
+United Charities,37221.61,13/07/2024,Quarterly,Special Event,Foundation,03/12/2020,Arts Support,Education,Olivia Miller,Oceania
+Solidarity Trust,41808.11,04/12/2024,Annual,Recurring,Foundation,09/09/2023,Summer Giving,Healthcare,Emily Johnson,Africa
+Solidarity Trust,30852.55,17/11/2024,Monthly,Recurring,Foundation,25/04/2022,Year End Campaign,Community Support,Sophia Rodriguez,North America
+Innovative Giving,34686.83,18/02/2023,Annual,One-time,Foundation,27/02/2022,Disaster Relief,Healthcare,John Smith,Oceania
+Evergreen Impact,42785.84,10/04/2019,Annual,Recurring,Corporate,05/05/2015,Spring Drive,Healthcare,Sarah Anderson,Oceania
+Innovative Giving,7595.18,13/08/2022,Monthly,Special Event,Foundation,26/12/2021,Education Initiative,Disaster Relief,Michael Taylor,Asia
+Visionary Solutions,30829.59,09/03/2024,Monthly,Special Event,Foundation,16/10/2018,Disaster Relief,Research,Daniel Johnson,North America
+Hope Partners,13150.83,17/08/2024,Monthly,One-time,Foundation,18/10/2015,Arts Support,Arts and Culture,Jane Brown,Africa
+Visionary Solutions,3404.7,27/01/2024,Quarterly,Recurring,Corporate,28/03/2020,Disaster Relief,Healthcare,John Garcia,Asia
+Pioneer Philanthropy,21327.98,30/01/2022,Monthly,Special Event,Foundation,20/09/2021,Summer Giving,Research,Emily Williams,Europe
+Hope Partners,19741.42,11/04/2021,Quarterly,Special Event,Foundation,22/08/2020,Spring Drive,Disaster Relief,David Miller,Oceania
+United Charities,4638.38,07/07/2022,Monthly,Special Event,Corporate,08/01/2019,Research Grant,Arts and Culture,Sarah Taylor,Europe
+Future Enterprises,40913.32,03/05/2021,Monthly,Recurring,Foundation,21/01/2021,Healthcare Fund,Education,Robert Davis,Africa
+Evergreen Impact,6782.28,27/12/2023,Quarterly,Recurring,Foundation,03/08/2019,Education Initiative,Arts and Culture,Olivia Taylor,Africa
+Evergreen Impact,10783.14,21/08/2018,Annual,One-time,Foundation,22/01/2017,Healthcare Fund,Healthcare,David Jones,Africa
+Future Enterprises,1864.54,17/01/2024,Monthly,One-time,Corporate,02/05/2022,Summer Giving,Education,Sarah Garcia,North America
+Evergreen Impact,3072.61,05/01/2020,Quarterly,Special Event,Foundation,28/11/2019,Spring Drive,Education,Daniel Rodriguez,South America
+Innovative Giving,28070.56,20/10/2024,Annual,Special Event,Foundation,01/05/2018,Holiday Appeal,Healthcare,David Miller,Middle East
+Acme Corp,16337.66,05/08/2018,Quarterly,Recurring,Foundation,03/06/2016,Education Initiative,Social Services,Robert Jones,Europe
+Acme Corp,5484.34,20/04/2024,Monthly,Special Event,Non-profit,04/05/2023,Summer Giving,Arts and Culture,Jane Johnson,North America
+United Charities,31097.66,14/09/2017,Quarterly,Special Event,Non-profit,10/09/2017,Holiday Appeal,Research,Sarah Taylor,Middle East
+Hope Partners,17225.83,05/07/2024,Annual,One-time,Corporate,25/12/2021,Community Outreach,Environmental,Michael Wilson,North America
+Charity Connect,45367.58,27/02/2025,Annual,Recurring,Corporate,13/02/2021,Research Grant,Disaster Relief,Emily Davis,Oceania
+Charity Connect,32869.31,26/08/2023,Monthly,One-time,Corporate,30/08/2017,Disaster Relief,Environmental,Olivia Brown,Asia
+Solidarity Trust,17064.65,27/11/2024,Quarterly,Recurring,Non-profit,28/07/2017,Community Outreach,Social Services,Laura Johnson,Middle East
+Hope Partners,16230.22,21/01/2024,Annual,One-time,Corporate,25/02/2015,Year End Campaign,Community Support,John Rodriguez,Asia
+Visionary Solutions,13792.2,08/12/2017,Monthly,One-time,Foundation,23/03/2016,Research Grant,Healthcare,Daniel Anderson,South America
+Future Enterprises,34596.52,08/03/2025,Monthly,One-time,Corporate,28/02/2018,Spring Drive,Research,Laura Taylor,South America
+Pioneer Philanthropy,27225.96,05/03/2023,Annual,One-time,Foundation,05/12/2021,Community Outreach,Community Support,David Smith,South America
+Global Foundation,23106.15,15/12/2023,Monthly,Special Event,Non-profit,14/12/2018,Summer Giving,Environmental,Jane Davis,South America
+Future Enterprises,7999.04,03/11/2024,Quarterly,Recurring,Foundation,07/10/2021,Disaster Relief,Research,Emily Anderson,Europe
+United Charities,48556.04,17/11/2024,Quarterly,One-time,Non-profit,18/04/2022,Summer Giving,Healthcare,Laura Smith,Europe
+Innovative Giving,18054.05,21/12/2023,Quarterly,One-time,Corporate,22/11/2018,Education Initiative,Education,John Brown,Africa
+Hope Partners,49414.97,03/11/2024,Monthly,Special Event,Non-profit,04/05/2017,Holiday Appeal,Healthcare,Robert Davis,Middle East
+Solidarity Trust,36008.24,19/04/2017,Quarterly,One-time,Non-profit,30/01/2015,Education Initiative,Arts and Culture,Robert Davis,Oceania
+Global Foundation,7875.47,03/06/2017,Quarterly,Recurring,Corporate,03/06/2016,Healthcare Fund,Healthcare,John Davis,Middle East
+Innovative Giving,20557.14,10/03/2024,Annual,Special Event,Corporate,02/10/2016,Summer Giving,Education,Daniel Jones,South America
+Pioneer Philanthropy,35975.35,09/11/2021,Quarterly,One-time,Non-profit,09/07/2016,Arts Support,Environmental,Michael Anderson,Europe
+Community Builders,6967.36,09/07/2023,Quarterly,One-time,Non-profit,15/07/2020,Healthcare Fund,Disaster Relief,Sophia Smith,South America
+Evergreen Impact,9715.04,06/07/2020,Quarterly,One-time,Non-profit,13/06/2016,Year End Campaign,Healthcare,Robert Anderson,North America
+Visionary Solutions,9566.16,18/12/2021,Quarterly,Special Event,Foundation,05/10/2019,Arts Support,Disaster Relief,David Johnson,Europe
+Pioneer Philanthropy,28572.67,24/01/2024,Annual,Special Event,Non-profit,28/01/2023,Research Grant,Arts and Culture,Michael Williams,Europe
+Community Builders,19193.6,05/11/2024,Quarterly,One-time,Non-profit,02/06/2022,Holiday Appeal,Environmental,Alex Wilson,Oceania
+Solidarity Trust,8521.59,13/08/2022,Monthly,Special Event,Foundation,31/07/2020,Research Grant,Community Support,Sophia Smith,Africa
+Hope Partners,49517.69,16/04/2024,Monthly,Recurring,Non-profit,23/01/2019,Holiday Appeal,Disaster Relief,John Williams,Middle East
+Solidarity Trust,1369.33,22/11/2024,Monthly,Special Event,Non-profit,22/07/2021,Community Outreach,Social Services,Alex Anderson,Oceania
+Evergreen Impact,6043.54,07/10/2022,Monthly,Recurring,Non-profit,11/07/2022,Holiday Appeal,Disaster Relief,Emily Miller,South America
+Charity Connect,47115.5,24/08/2023,Monthly,Recurring,Non-profit,26/08/2022,Year End Campaign,Social Services,Sarah Johnson,Europe
+United Charities,18212.21,28/07/2022,Monthly,Special Event,Foundation,18/11/2019,Spring Drive,Environmental,Sarah Brown,Middle East
+Evergreen Impact,38108.43,09/11/2018,Monthly,Recurring,Foundation,30/10/2015,Holiday Appeal,Arts and Culture,Emily Taylor,South America
+Future Enterprises,8014.96,18/08/2020,Monthly,One-time,Foundation,09/06/2020,Research Grant,Environmental,David Johnson,North America
+Pioneer Philanthropy,31192.93,21/05/2023,Monthly,Recurring,Corporate,05/08/2021,Community Outreach,Community Support,Daniel Taylor,Africa
+Solidarity Trust,13339.04,25/11/2017,Annual,Recurring,Non-profit,20/09/2016,Community Outreach,Social Services,Daniel Wilson,Asia
+Evergreen Impact,38271.73,30/10/2023,Monthly,Recurring,Corporate,04/05/2016,Research Grant,Community Support,Olivia Miller,Europe
+Evergreen Impact,18710.38,11/09/2023,Quarterly,One-time,Corporate,04/09/2023,Arts Support,Education,Jane Garcia,Middle East
+Pioneer Philanthropy,21492.37,08/10/2024,Annual,Recurring,Corporate,31/07/2022,Healthcare Fund,Disaster Relief,Sophia Jones,Asia
+United Charities,32721.56,16/08/2022,Monthly,Special Event,Non-profit,30/06/2015,Spring Drive,Environmental,Olivia Jones,South America
+Innovative Giving,34347.09,04/02/2023,Annual,One-time,Non-profit,25/06/2017,Arts Support,Environmental,Sophia Anderson,Asia
+Evergreen Impact,438.22,02/09/2022,Annual,Special Event,Non-profit,29/04/2019,Research Grant,Disaster Relief,Olivia Williams,Europe
+Hope Partners,49447.92,26/11/2023,Annual,One-time,Corporate,26/05/2020,Holiday Appeal,Disaster Relief,Jane Williams,Africa
+Future Enterprises,29421.73,04/11/2024,Quarterly,One-time,Non-profit,28/11/2023,Research Grant,Research,Michael Miller,Europe
+Pioneer Philanthropy,43857.85,22/12/2024,Monthly,One-time,Foundation,15/02/2019,Healthcare Fund,Research,David Davis,North America
+Community Builders,8187.09,17/11/2020,Monthly,Recurring,Foundation,25/03/2019,Summer Giving,Healthcare,Sarah Anderson,North America
+Visionary Solutions,46672.79,04/03/2022,Quarterly,Recurring,Corporate,17/11/2017,Community Outreach,Disaster Relief,Michael Davis,Europe
+Innovative Giving,42781.77,21/05/2023,Quarterly,One-time,Non-profit,23/05/2016,Summer Giving,Environmental,Olivia Davis,Europe
+Hope Partners,13639.53,03/09/2023,Monthly,Recurring,Corporate,20/06/2015,Education Initiative,Community Support,Jane Rodriguez,South America
+Innovative Giving,26529.44,29/09/2018,Annual,Special Event,Foundation,15/03/2016,Disaster Relief,Arts and Culture,Robert Wilson,Asia
+Future Enterprises,32082.65,30/12/2022,Annual,Recurring,Non-profit,14/05/2017,Summer Giving,Education,David Rodriguez,South America
+Acme Corp,29105.63,20/08/2019,Annual,Special Event,Corporate,09/02/2018,Year End Campaign,Education,Laura Davis,North America
+Charity Connect,27963.62,10/10/2023,Annual,One-time,Foundation,18/04/2015,Research Grant,Disaster Relief,John Rodriguez,North America
+Hope Partners,20469.62,09/10/2023,Quarterly,One-time,Non-profit,26/11/2018,Holiday Appeal,Arts and Culture,Emily Anderson,Africa
+Evergreen Impact,46869.12,14/10/2022,Monthly,Special Event,Non-profit,28/01/2022,Disaster Relief,Community Support,Jane Taylor,North America
+Evergreen Impact,45274.26,22/03/2024,Monthly,Special Event,Corporate,11/02/2022,Holiday Appeal,Disaster Relief,John Williams,North America
+Hope Partners,38789.08,01/11/2022,Annual,Recurring,Corporate,18/04/2015,Research Grant,Environmental,Michael Williams,South America
+Evergreen Impact,4473.3,16/10/2024,Quarterly,One-time,Foundation,29/11/2022,Spring Drive,Arts and Culture,David Rodriguez,Oceania
+Visionary Solutions,23749.29,29/08/2023,Annual,Recurring,Foundation,07/07/2022,Year End Campaign,Healthcare,Sarah Johnson,North America
+United Charities,48458.75,22/08/2020,Monthly,Recurring,Foundation,30/03/2020,Research Grant,Research,Robert Garcia,South America
+Community Builders,21781.32,04/04/2023,Quarterly,Recurring,Corporate,23/01/2023,Arts Support,Community Support,John Wilson,North America
+Charity Connect,9023.96,01/02/2021,Monthly,Recurring,Foundation,03/05/2020,Community Outreach,Social Services,Michael Anderson,North America
+Hope Partners,16419.57,07/01/2023,Quarterly,Special Event,Foundation,19/07/2019,Holiday Appeal,Community Support,Laura Rodriguez,South America
+Acme Corp,17051.68,13/05/2020,Annual,Special Event,Foundation,17/09/2015,Education Initiative,Environmental,Olivia Davis,Oceania
+Evergreen Impact,41824.39,01/04/2024,Monthly,Recurring,Corporate,24/03/2021,Healthcare Fund,Community Support,Sarah Miller,South America
+Visionary Solutions,28491.67,11/01/2025,Annual,Special Event,Non-profit,14/10/2015,Healthcare Fund,Community Support,Sophia Garcia,Africa
+Hope Partners,13025.72,30/11/2021,Monthly,Special Event,Foundation,09/10/2016,Summer Giving,Healthcare,Michael Garcia,Middle East
+Innovative Giving,48104.36,03/11/2023,Quarterly,Special Event,Foundation,22/11/2022,Holiday Appeal,Social Services,Daniel Johnson,North America

@@ -1,17 +1,21 @@
 {% load static %}
 {% load task_filters %}
 <!doctype html>
-<html lang="en">
+<html lang="ar">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Dashboard{% endblock %}</title>
+    <title>{% block title %}لوحة التحكم{% endblock %}</title>
 
     <script src="{% static 'js/dashboard.js' %}"></script>
     <script src="{% static 'js/htmx.min.js' %}"></script>
     <!-- Custom styles -->
     <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+    
+    {% block extra_css %}
+    <!-- Additional CSS can be added by templates that extend base.html -->
+    {% endblock %}
 
   </head>
   <body>
@@ -22,7 +26,7 @@
           <i class="bi bi-list"></i>
         </button>
         <div class="navbar-brand">
-          Dashboard
+          لوحة التحكم
         </div>
       </nav>
       <!-- <button onclick="toggleTheme()" class="theme-toggle">
@@ -36,49 +40,49 @@
       <nav class="sidebar" id="sidebar">
         <!-- Add logo section -->
         <div class="sidebar-logo">
-          <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-img">
+          <img src="{% static 'images/logo.png' %}" alt="الشعار" class="logo-img">
         </div>
         
         <div class="sidebar-sticky">
           <ul class="nav">
             <li class="nav-item">
               <a class="nav-link" href="{% url 'dashboard' %}">
-                <i class="bi bi-speedometer2"></i> Dashboard
+                <i class="bi bi-speedometer2"></i> لوحة التحكم
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'users_list' %}">
-                <i class="bi bi-people"></i> Users
+                <i class="bi bi-people"></i> المستخدمين
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'documents' %}">
-                <i class="bi bi-folder"></i> Documents
+                <i class="bi bi-folder"></i> المستندات
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'hr' %}">
-                <i class="bi bi-briefcase"></i> HR
+                <i class="bi bi-briefcase"></i> الموارد البشرية
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'stats' %}">
-                <i class="bi bi-bar-chart"></i> Analytics
+                <i class="bi bi-bar-chart"></i> التحليلات
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'form_builder' %}">
-                <i class="bi bi-file-earmark-text"></i> Form Builder
+                <i class="bi bi-file-earmark-text"></i> منشئ النماذج
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'tasks-list' %}">
-                <i class="bi bi-file-earmark-text"></i> Tasks
+                <i class="bi bi-file-earmark-text"></i> المهام
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'logout' %}">
-                <i class="bi bi-box-arrow-right"></i> Logout
+                <i class="bi bi-box-arrow-right"></i> تسجيل الخروج
               </a>
             </li>
 
@@ -92,13 +96,13 @@
         <!-- Content from child templates will be injected here -->
         <div class="table-container">
           <div class="table-controls">
-            <input type="text" class="search-input" placeholder="Search by name...">
+            <input type="text" class="search-input" placeholder="البحث بالاسم...">
             <select class="action-select">
-              <option value="">Select Action</option>
-              <option value="delete">Delete</option>
-              <option value="archive">Archive</option>
+              <option value="">اختر إجراء</option>
+              <option value="delete">حذف</option>
+              <option value="archive">أرشفة</option>
             </select>
-            <button class="do-action-btn">Do Action</button>
+            <button class="do-action-btn">تنفيذ الإجراء</button>
           </div>
           
           <table class="data-table">

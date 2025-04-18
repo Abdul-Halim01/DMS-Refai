@@ -1,23 +1,23 @@
 {% extends 'base.html' %}
 
-{% block title %}Create Task{% endblock %}
+{% block title %}إنشاء مهمة{% endblock %}
 
 {% block content %}
 <div class="form-container">
     <div class="styled-form">
         <div class="form-header">
-            <h2>Create New Task</h2>
-            <p class="form-subtitle">Enter the details for the new task</p>
+            <h2>إنشاء مهمة جديدة</h2>
+            <p class="form-subtitle">أدخل تفاصيل المهمة الجديدة</p>
         </div>
 
         <form method="post" class="user-profile-form">
             {% csrf_token %}
             
             <div class="form-section">
-                <h3 class="section-title">Task Details</h3>
+                <h3 class="section-title">تفاصيل المهمة</h3>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.title.id_for_label }}">Title</label>
+                        <label for="{{ form.title.id_for_label }}">العنوان</label>
                         {{ form.title }}
                         {% if form.title.errors %}
                             <div class="form-error">{{ form.title.errors }}</div>
@@ -25,7 +25,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.description.id_for_label }}">Description</label>
+                        <label for="{{ form.description.id_for_label }}">الوصف</label>
                         {{ form.description }}
                         {% if form.description.errors %}
                             <div class="form-error">{{ form.description.errors }}</div>
@@ -35,7 +35,7 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.priority.id_for_label }}">Priority</label>
+                        <label for="{{ form.priority.id_for_label }}">الأولوية</label>
                         {{ form.priority }}
                         {% if form.priority.errors %}
                             <div class="form-error">{{ form.priority.errors }}</div>
@@ -43,7 +43,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.status.id_for_label }}">Status</label>
+                        <label for="{{ form.status.id_for_label }}">الحالة</label>
                         {{ form.status }}
                         {% if form.status.errors %}
                             <div class="form-error">{{ form.status.errors }}</div>
@@ -53,7 +53,7 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.user.id_for_label }}">user</label>
+                        <label for="{{ form.user.id_for_label }}">المستخدم</label>
                         {{ form.user }}
                         {% if form.user.errors %}
                             <div class="form-error">{{ form.user.errors }}</div>
@@ -64,9 +64,9 @@
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Create Task</button>
+                <button type="submit" class="btn btn-primary">إنشاء مهمة</button>
                 <a href="{% url 'tasks-list' %}" class="btn btn-secondary">
-                    Cancel
+                    إلغاء
                 </a>
             </div>
         </form>

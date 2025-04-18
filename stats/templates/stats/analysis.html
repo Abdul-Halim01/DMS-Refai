@@ -5,7 +5,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>EDA Analysis Report</title>
+  <title>تقرير تحليل البيانات</title>
   <!-- Load Plotly and jQuery -->
   <script src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -18,30 +18,30 @@
   <div class="container mx-auto px-4 py-8">
     <!-- Page Header -->
     <header class="page-header mb-8">
-      <h1 class="text-3xl font-bold text-gray-800">EDA Analysis Report</h1>
-      <p class="text-gray-600">Interactive data analysis and visualization</p>
+      <h1 class="text-3xl font-bold text-gray-800">تقرير تحليل البيانات</h1>
+      <p class="text-gray-600">تحليل وتصور البيانات التفاعلي</p>
     </header>
     <!-- Add this near your other buttons -->
         <button id="downloadReport" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-            Download PDF Report
+            تحميل تقرير PDF
         </button>
     <!-- Insights Section -->
     <section class="insights-section bg-white shadow-lg rounded-lg p-6 mb-8">
-      <h2 class="text-2xl font-bold mb-4 text-gray-800">Data Insights</h2>
+      <h2 class="text-2xl font-bold mb-4 text-gray-800">رؤى البيانات</h2>
       
       <!-- Filter buttons -->
       <div class="flex gap-2 mb-4">
         <button class="severity-filter px-4 py-2 rounded-lg text-sm font-medium bg-gray-200 hover:bg-gray-300" data-severity="all">
-          All
+          الكل
         </button>
         <button class="severity-filter px-4 py-2 rounded-lg text-sm font-medium bg-red-100 text-red-800 hover:bg-red-200" data-severity="high">
-          High Priority
+          أولوية عالية
         </button>
         <button class="severity-filter px-4 py-2 rounded-lg text-sm font-medium bg-yellow-100 text-yellow-800 hover:bg-yellow-200" data-severity="medium">
-          Medium Priority
+          أولوية متوسطة
         </button>
         <button class="severity-filter px-4 py-2 rounded-lg text-sm font-medium bg-blue-100 text-blue-800 hover:bg-blue-200" data-severity="low">
-          Low Priority
+          أولوية منخفضة
         </button>
       </div>
 
@@ -72,7 +72,7 @@
           {% endfor %}
         {% else %}
           <div class="col-span-full text-center py-8 bg-gray-50 rounded-lg">
-            <p class="text-gray-500">No insights available for this dataset.</p>
+            <p class="text-gray-500">لا توجد رؤى متاحة لمجموعة البيانات هذه.</p>
           </div>
         {% endif %}
       </div>
@@ -84,14 +84,14 @@
     <!-- Global Filters -->
     <section class="global-filters bg-white shadow-lg rounded-lg p-6 mb-8">
       <div class="filters-header mb-4">
-        <h2 class="text-xl font-bold text-gray-800">Global Filters</h2>
+        <h2 class="text-xl font-bold text-gray-800">المرشحات العامة</h2>
         <div class="filter-controls flex gap-2 mt-2">
-          <button id="add-filter" class="btn btn-primary">Add Filter</button>
+          <button id="add-filter" class="btn btn-primary">إضافة مرشح</button>
           <select id="global-logic" class="w-32">
-            <option value="AND">AND</option>
-            <option value="OR">OR</option>
+            <option value="AND">و</option>
+            <option value="OR">أو</option>
           </select>
-          <button id="apply-filters" class="btn btn-primary">Apply Filters</button>
+          <button id="apply-filters" class="btn btn-primary">تطبيق المرشحات</button>
         </div>
       </div>
       <div id="global-filters"></div>
@@ -113,20 +113,20 @@
             <!-- Filter Controls -->
             <div class="filter-panel space-y-4">
               <div class="filter-group">
-                <label class="filter-label block text-sm font-medium text-gray-700">Analysis Mode</label>
+                <label class="filter-label block text-sm font-medium text-gray-700">وضع التحليل</label>
                 <select class="filter-mode mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
                         data-target="{{ col }}" id="filter-mode-{{ col }}">
-                  <option value="self">Filter by Value</option>
-                  <option value="other">Filter by Another Column</option>
-                  <option value="compare">Compare with Column</option>
+                  <option value="self">تصفية حسب القيمة</option>
+                  <option value="other">تصفية حسب عمود آخر</option>
+                  <option value="compare">مقارنة مع عمود</option>
                 </select>
               </div>
 
               <div class="filter-group hidden" id="filter-by-other-{{ col }}">
-                <label class="filter-label block text-sm font-medium text-gray-700">Filter Using Column</label>
+                <label class="filter-label block text-sm font-medium text-gray-700">تصفية باستخدام العمود</label>
                 <select class="filter-column mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
                         data-target="{{ col }}" id="filter-column-{{ col }}">
-                  <option value="">Select Column</option>
+                  <option value="">اختر العمود</option>
                   {% for other_col in overview.columns %}
                     {% if other_col != col %}
                       <option value="{{ other_col }}">{{ other_col }}</option>
@@ -136,10 +136,10 @@
               </div>
 
               <div class="filter-group hidden" id="compare-by-{{ col }}">
-                <label class="filter-label block text-sm font-medium text-gray-700">Compare With Column</label>
+                <label class="filter-label block text-sm font-medium text-gray-700">مقارنة مع العمود</label>
                 <select class="compare-column mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
                         data-target="{{ col }}" id="compare-column-{{ col }}">
-                  <option value="">Select Column</option>
+                  <option value="">اختر العمود</option>
                   {% for other_col in overview.columns %}
                     {% if other_col != col %}
                       <option value="{{ other_col }}">{{ other_col }}</option>
@@ -149,7 +149,7 @@
                 
                 <!-- Plot type selector -->
                 <div class="plot-type-selector hidden mt-4">
-                  <label class="filter-label block text-sm font-medium text-gray-700">Plot Type</label>
+                  <label class="filter-label block text-sm font-medium text-gray-700">نوع الرسم البياني</label>
                   <select class="plot-type mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
                           data-target="{{ col }}" id="plot-type-{{ col }}">
                   </select>
@@ -158,21 +158,21 @@
                 <!-- Additional plot options -->
                 <div class="plot-options hidden mt-4">
                   <div class="aggregation-method hidden">
-                    <label class="filter-label block text-sm font-medium text-gray-700">Aggregation Method</label>
+                    <label class="filter-label block text-sm font-medium text-gray-700">طريقة التجميع</label>
                     <select class="agg-method mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
                             data-target="{{ col }}" id="agg-method-{{ col }}">
-                      <option value="mean">Mean</option>
-                      <option value="median">Median</option>
-                      <option value="sum">Sum</option>
-                      <option value="count">Count</option>
+                      <option value="mean">المتوسط</option>
+                      <option value="median">الوسيط</option>
+                      <option value="sum">المجموع</option>
+                      <option value="count">العدد</option>
                     </select>
                   </div>
                   
                   <div class="color-by hidden mt-4">
-                    <label class="filter-label block text-sm font-medium text-gray-700">Color By</label>
+                    <label class="filter-label block text-sm font-medium text-gray-700">التلوين حسب</label>
                     <select class="color-column mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
                             data-target="{{ col }}" id="color-column-{{ col }}">
-                      <option value="">None</option>
+                      <option value="">لا شيء</option>
                       {% for other_col in overview.columns %}
                         {% if other_col != col %}
                           <option value="{{ other_col }}">{{ other_col }}</option>
@@ -184,14 +184,14 @@
               </div>
 
               <div class="filter-group">
-                <label class="filter-label block text-sm font-medium text-gray-700">Filter Values</label>
+                <label class="filter-label block text-sm font-medium text-gray-700">تصفية القيم</label>
                 <select class="filter-values mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
                         multiple data-target="{{ col }}" id="filter-values-{{ col }}">
                 </select>
               </div>
 
               <button class="btn btn-primary w-full" onclick="resetPlot('{{ col }}')">
-                Reset Plot
+                إعادة تعيين الرسم البياني
               </button>
             </div>
           </div>
@@ -336,26 +336,26 @@
             
             // Add appropriate plot options based on column types
             if (targetType === 'numeric' && compareType === 'numeric') {
-                plotTypeSelect.append(new Option('Scatter Plot', 'scatter'));
-                plotTypeSelect.append(new Option('Hexbin Plot', 'hexbin'));
-                plotTypeSelect.append(new Option('2D Density', 'density'));
-                plotTypeSelect.append(new Option('Line Plot', 'line'));
+                plotTypeSelect.append(new Option('مخطط التشتت', 'scatter'));
+                plotTypeSelect.append(new Option('مخطط سداسي', 'hexbin'));
+                plotTypeSelect.append(new Option('كثافة ثنائية الأبعاد', 'density'));
+                plotTypeSelect.append(new Option('مخطط خطي', 'line'));
             } else if (targetType === 'numeric' && compareType === 'categorical') {
-                plotTypeSelect.append(new Option('Box Plot', 'box'));
-                plotTypeSelect.append(new Option('Violin Plot', 'violin'));
-                plotTypeSelect.append(new Option('Bar Plot (Mean)', 'bar'));
-                plotTypeSelect.append(new Option('Strip Plot', 'strip'));
+                plotTypeSelect.append(new Option('مخطط صندوقي', 'box'));
+                plotTypeSelect.append(new Option('مخطط كمان', 'violin'));
+                plotTypeSelect.append(new Option('مخطط شريطي (المتوسط)', 'bar'));
+                plotTypeSelect.append(new Option('مخطط شريطي', 'strip'));
             } else if (targetType === 'categorical' && compareType === 'numeric') {
-                plotTypeSelect.append(new Option('Box Plot', 'box'));
-                plotTypeSelect.append(new Option('Violin Plot', 'violin'));
-                plotTypeSelect.append(new Option('Bar Plot (Mean)', 'bar'));
-                plotTypeSelect.append(new Option('Strip Plot', 'strip'));
+                plotTypeSelect.append(new Option('مخطط صندوقي', 'box'));
+                plotTypeSelect.append(new Option('مخطط كمان', 'violin'));
+                plotTypeSelect.append(new Option('مخطط شريطي (المتوسط)', 'bar'));
+                plotTypeSelect.append(new Option('مخطط شريطي', 'strip'));
             } else {
                 // Both categorical
-                plotTypeSelect.append(new Option('Heatmap', 'heatmap'));
-                plotTypeSelect.append(new Option('Grouped Bar Plot', 'grouped_bar'));
-                plotTypeSelect.append(new Option('Stacked Bar Plot', 'stacked_bar'));
-                plotTypeSelect.append(new Option('Treemap', 'treemap'));
+                plotTypeSelect.append(new Option('خريطة حرارية', 'heatmap'));
+                plotTypeSelect.append(new Option('مخطط شريطي مجمع', 'grouped_bar'));
+                plotTypeSelect.append(new Option('مخطط شريطي مكدس', 'stacked_bar'));
+                plotTypeSelect.append(new Option('خريطة شجرية', 'treemap'));
             }
             
             plotTypeContainer.show();

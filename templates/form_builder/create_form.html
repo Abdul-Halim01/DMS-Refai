@@ -1,37 +1,41 @@
 {% extends 'base.html' %}
 
-{% block title %}Create Form{% endblock %}
+{% block title %}إنشاء نموذج{% endblock %}
 
 {% block content %}
 <div class="form-container">
     <div class="styled-form">
         <div class="form-header">
-            <h2>Create Dynamic Form</h2>
-            <p class="form-subtitle">Add fields to create your custom form</p>
+            <h2>إنشاء نموذج </h2>
+            <p class="form-subtitle">أضف حقولًا لإنشاء نموذجك المخصص</p>
         </div>
 
         <form id="formBuilder" method="post">
             {% csrf_token %}
             <div class="form-section">
                 <div class="form-group">
-                    <label for="form_name">Form Name</label>
+                    <label for="form_name">اسم النموذج</label>
                     <input type="text" id="form_name" name="form_name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="form_language">لغة النموذج</label>
+                    <input type="text" id="form_language" name="form_language" class="form-control">
                 </div>
             </div>
 
             <div class="form-section">
-                <h3 class="section-title">Form Fields</h3>
+                <h3 class="section-title">حقول النموذج</h3>
                 <div id="formFields">
                     <!-- Dynamic fields will be added here -->
                 </div>
 
                 <button type="button" class="btn btn-secondary" onclick="addField()">
-                    <i class="bi bi-plus"></i> Add Field
+                    <i class="bi bi-plus"></i> إضافة حقل
                 </button>
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Create Form</button>
+                <button type="submit" class="btn btn-primary">إنشاء النموذج</button>
             </div>
         </form>
     </div>
@@ -41,26 +45,26 @@
 <div class="field-template" style="display: none;">
     <div class="field-row" data-field-id="__id__">
         <div class="form-group">
-            <label>Field Name</label>
+            <label>اسم الحقل</label>
             <input type="text" name="fields[__id__][name]" class="form-control" required>
         </div>
         <div class="form-group">
-            <label>Field Type</label>
+            <label>نوع الحقل</label>
             <select name="fields[__id__][type]" class="form-control" required>
-                <option value="varchar">Text</option>
-                <option value="integer">Number</option>
-                <option value="text">Long Text</option>
-                <option value="date">Date</option>
-                <option value="boolean">Yes/No</option>
-                <option value="decimal">Decimal</option>
+                <option value="varchar">نص</option>
+                <option value="integer">رقم</option>
+                <option value="text">نص طويل</option>
+                <option value="date">تاريخ</option>
+                <option value="boolean">نعم/لا</option>
+                <option value="decimal">عشري</option>
             </select>
         </div>
         <div class="form-group">
-            <label>Max Length</label>
+            <label>الحد الأقصى للطول</label>
             <input type="number" name="fields[__id__][max_length]" class="form-control">
         </div>
         <div class="form-group">
-            <label>Required</label>
+            <label>مطلوب</label>
             <input type="checkbox" name="fields[__id__][required]" value="true">
         </div>
         <button type="button" class="btn btn-danger remove-field" onclick="removeField(this)">
@@ -117,22 +121,24 @@ document.getElementById('formBuilder').addEventListener('submit', function(e) {
     // Check if there are any fields
     const fieldRows = document.querySelectorAll('#formFields .field-row');
     if (fieldRows.length === 0) {
-        alert('Please add at least one field to your form');
+        alert('الرجاء إضافة حقل واحد على الأقل إلى النموذج الخاص بك');
         return;
     }
     
     const formData = new FormData(this);
     const csrfToken = formData.get('csrfmiddlewaretoken');
     const formName = formData.get('form_name');
-    
+    const formLanguage = formData.get('form_language');
+
     if (!formName) {
-        alert('Please enter a form name');
+        alert('الرجاء إدخال اسم النموذج');
         return;
     }
     
     // Convert FormData to a more structured format
     const data = {
         form_name: formName,
+        form_language: formLanguage,
         fields: []
     };
     
@@ -156,14 +162,14 @@ document.getElementById('formBuilder').addEventListener('submit', function(e) {
     
     // Validate fields
     if (data.fields.length === 0) {
-        alert('Please add at least one field to your form');
+        alert('الرجاء إضافة حقل واحد على الأقل إلى النموذج الخاص بك');
         return;
     }
     
     // Show loading indicator
     const submitBtn = this.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = 'Creating...';
+    submitBtn.innerHTML = 'جاري الإنشاء...';
     submitBtn.disabled = true;
 
     // Send the data using fetch
@@ -177,7 +183,7 @@ document.getElementById('formBuilder').addEventListener('submit', function(e) {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error('استجابة الشبكة غير صحيحة');
         }
         return response.json();
     })
@@ -185,15 +191,15 @@ document.getElementById('formBuilder').addEventListener('submit', function(e) {
         if (data.success) {
             window.location.href = data.redirect_url;
         } else {
-            alert(data.error || 'An error occurred');
+            alert(data.error || 'حدث خطأ');
             // Reset button
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while creating the form');
+        console.error('خطأ:', error);
+        alert('حدث خطأ أثناء إنشاء النموذج');
         // Reset button
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
@@ -201,5 +207,3 @@ document.getElementById('formBuilder').addEventListener('submit', function(e) {
 });
 </script>
 {% endblock %}
-
-

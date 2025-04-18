@@ -1,10 +1,35 @@
 {% extends 'base.html' %}
 
+{% block title %}حذف الغياب{% endblock %}
+
 {% block content %}
-<h2>Delete Absence</h2>
-<form method="post">
-    {% csrf_token %}
-    <p>Are you sure you want to delete absence record by "{{ absence.employee.username }}"?</p>
-    <button type="submit">Confirm Delete</button>
-</form>
+<div class="form-container">
+    <div class="delete-confirmation">
+        <div class="delete-header">
+            <i class="bi bi-exclamation-triangle-fill warning-icon"></i>
+            <h2>حذف سجل الغياب</h2>
+            <p class="delete-subtitle">لا يمكن التراجع عن هذا الإجراء</p>
+        </div>
+
+        <div class="delete-content">
+            <p class="confirmation-text">
+                هل أنت متأكد من رغبتك في حذف سجل الغياب للموظف "<span class="highlight">{{ absence.employee.username }}</span>"؟
+            </p>
+        </div>
+
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash"></i>
+                    تأكيد الحذف
+                </button>
+                <a href="{% url 'absences_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-x"></i>
+                    إلغاء
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Delete Recruite</h2>
+<h2>حذف المرشح</h2>
 <form method="post">
     {% csrf_token %}
-    <p>Are you sure you want to delete Recruite "{{ day.employee.username }}"?</p>
-    <button type="submit">Confirm Delete</button>
+    <p>هل أنت متأكد أنك تريد حذف المرشح "{{ day.employee.username }}"؟</p>
+    <button type="submit">تأكيد الحذف</button>
 </form>
 {% endblock %}

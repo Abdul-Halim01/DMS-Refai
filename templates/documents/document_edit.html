@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}Edit Document{% endblock %}
+{% block title %}تعديل المستند{% endblock %}
 
 {% block content %}
 <div class="form-container">
     <div class="styled-form">
         <div class="form-header">
-            <h2>Edit Document</h2>
-            <p class="form-subtitle">Update the document details</p>
+            <h2>تعديل المستند</h2>
+            <p class="form-subtitle">تحديث تفاصيل المستند</p>
         </div>
 
         <form method="post" enctype="multipart/form-data" class="user-profile-form">
@@ -16,41 +16,41 @@
             <div class="form-section">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.title.id_for_label }}">Title</label>
+                        <label for="{{ form.title.id_for_label }}">العنوان</label>
                         {{ form.title }}
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.group.id_for_label }}">Document Group</label>
+                        <label for="{{ form.group.id_for_label }}">مجموعة المستندات</label>
                         {{ form.group }}
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.description.id_for_label }}">Description</label>
+                        <label for="{{ form.description.id_for_label }}">الوصف</label>
                         {{ form.description }}
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.comment.id_for_label }}">Comment</label>
+                        <label for="{{ form.comment.id_for_label }}">التعليق</label>
                         {{ form.comment }}
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.file.id_for_label }}">Document File</label>
+                        <label for="{{ form.file.id_for_label }}">ملف المستند</label>
                         {{ form.file }}
-                        <small class="help-text">Current file: {{ document.file.name }}</small>
+                        <small class="help-text">الملف الحالي: {{ document.file.name }}</small>
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.language.id_for_label }}">Language</label>
+                        <label for="{{ form.language.id_for_label }}">اللغة</label>
                         {{ form.language }}
                     </div>
                     <div class="form-group">
-                        <label for="{{ form.is_private.id_for_label }}">Private Document</label>
+                        <label for="{{ form.is_private.id_for_label }}">مستند خاص</label>
                         {{ form.is_private }}
                     </div>  
                 </div>
@@ -60,33 +60,33 @@
             <div class="form-section">
                 <div class="form-row">
                     <div class="form-group">
-                        <label>File Type</label>
+                        <label>نوع الملف</label>
                         <input type="text" value="{{ document.file_type }}" class="form-control" readonly>
                     </div>
                     
                     <div class="form-group">
-                        <label>Size</label>
-                        <input type="text" value="{{ document.size|floatformat:2 }} MB" class="form-control" readonly>
+                        <label>الحجم</label>
+                        <input type="text" value="{{ document.size|floatformat:2 }} ميجابايت" class="form-control" readonly>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Upload Date</label>
+                        <label>تاريخ الرفع</label>
                         <input type="text" value="{{ document.upload_date|date:'Y-m-d H:i' }}" class="form-control" readonly>
                     </div>
                     
                     <div class="form-group">
-                        <label>Uploaded By</label>
+                        <label>تم الرفع بواسطة</label>
                         <input type="text" value="{{ document.uploaded_by }}" class="form-control" readonly>
                     </div>
                 </div>
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Update Document</button>
+                <button type="submit" class="btn btn-primary">تحديث المستند</button>
                 <a href="{% url 'document_list' %}" class="btn btn-secondary">
-                    Cancel
+                    إلغاء
                 </a>
             </div>
         </form>

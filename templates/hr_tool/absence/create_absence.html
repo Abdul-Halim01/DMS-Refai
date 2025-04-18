@@ -1,57 +1,57 @@
 {% extends 'base.html' %}
 
-{% block title %}Create Absence Record{% endblock %}
+{% block title %}إنشاء سجل غياب{% endblock %}
 
 {% block content %}
 <div class="form-container">
     <div class="styled-form">
         <div class="form-header">
-            <h2>Create New Absence Record</h2>
-            <p class="form-subtitle">Enter the details for the employee absence</p>
+            <h2>إنشاء سجل غياب جديد</h2>
+            <p class="form-subtitle">أدخل تفاصيل غياب الموظف</p>
         </div>
 
         <form method="post" class="user-profile-form">
             {% csrf_token %}
             
             <div class="form-section">
-                <h3 class="section-title">Absence Details</h3>
+                <h3 class="section-title">تفاصيل الغياب</h3>
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.employee.id_for_label }}">Employee</label>
+                        <label for="{{ form.employee.id_for_label }}">الموظف</label>
                         {{ form.employee }}
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.reason.id_for_label }}">Reason</label>
+                        <label for="{{ form.reason.id_for_label }}">السبب</label>
                         {{ form.reason }}
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.days.id_for_label }}">Number of Days</label>
+                        <label for="{{ form.days.id_for_label }}">عدد الأيام</label>
                         {{ form.days }}
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.start.id_for_label }}">Start Date</label>
+                        <label for="{{ form.start.id_for_label }}">تاريخ البداية</label>
                         {{ form.start }}
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.end.id_for_label }}">End Date</label>
+                        <label for="{{ form.end.id_for_label }}">تاريخ النهاية</label>
                         {{ form.end }}
                     </div>
                 </div>
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Create Absence Record</button>
+                <button type="submit" class="btn btn-primary">إنشاء سجل الغياب</button>
                 <a href="{% url 'absences_list' %}" class="btn btn-secondary">
-                    Cancel
+                    إلغاء
                 </a>
             </div>
         </form>

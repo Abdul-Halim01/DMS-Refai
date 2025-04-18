@@ -1,11 +1,25 @@
 {% extends 'base.html' %}
 
+{% block title %}إنشاء مهارة{% endblock %}
+
 {% block content %}
+<div class="form-container">
+    <div class="styled-form">
+        <div class="form-header">
+            <h2>إنشاء مهارة جديدة</h2>
+            <p class="form-subtitle">أدخل تفاصيل المهارة الجديدة</p>
+        </div>
 
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Save">
-</form>
-
-
+        <form method="post" class="user-profile-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">حفظ</button>
+                <a href="{% url 'skills_list' %}" class="btn btn-secondary">
+                    إلغاء
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

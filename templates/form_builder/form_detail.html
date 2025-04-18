@@ -1,26 +1,28 @@
 {% extends "base.html" %}
+{% load task_filters %}
 
-{% block title %}User List{% endblock %}
+{% block title %}تفاصيل النموذج{% endblock %}
 
 {% block content %}
 <div class="page-header">
-    <h1 class="h2">Form Detail</h1>
+    <h1 class="h2">تفاصيل النموذج</h1>
     {% if request.user.role == 'Moderator' or 'Admin' %}
-    <a href="{% url 'add_record' form_id %}" class="btn btn-primary">Add +</a>
+    <a href="{% url 'add_record' form_id %}" class="btn btn-primary">إضافة +</a>
     {% endif %}
 </div>
 
 <div class="table-container">
     <div class="table-controls">
         <div class="search-controls">
-            <input hx-get="" type="text" name="q" class="search-input" placeholder="Search by name..." value="{{ request.GET.q }}"/>
+            <input hx-get="" type="text" name="q" class="search-input" placeholder="البحث بالاسم..." value="{{ request.GET.q }}"/>
         </div>
         <div class="action-controls">
-            <select id="bulkAction" name="action" class="action-select">
-                <option value="" selected disabled>Select Action</option>
-                <option value="delete">Delete Selected Forms</option>
-            </select>
-            <button type="button" class="do-action-btn" onclick="executeBulkAction()">Do Action</button>
+            <a href="{% url 'export_form_pdf' form_id %}" target="_blank">
+                <button class=" pdf-btn">PDF</button>
+            </a>
+            <a href="{% url 'export_form_excel' form_id %}" target="_blank">
+                <button class=" excel-btn">EXCEL</button>
+            </a>
         </div>
     </div>
 
@@ -37,6 +39,7 @@
                     {% for field in fields %}
                     <th>{{ field }}</th>
                     {% endfor %}
+                    <th>إجراءات</th>
                 </tr>
             </thead>
 
@@ -46,8 +49,13 @@
                     <input type="checkbox" class="item-checkbox" value="{{ record.id }}">
                 </td>
                 <td>{{ record.id }}</td>
-                <td>{{ record.name }}</td>
-                
+                <td>{{ record.created_at }}</td>
+                {% for field in fields %}
+                    {% if field != 'ID' and field != 'Created At' %}
+                        <td>{{ record|get_item:field }}</td>
+                    {% endif %}
+                {% endfor %}
+
                 <td onclick="event.stopPropagation();">
                     <div class="action-buttons">
                         <a href="#" class="delete-btn">
@@ -64,13 +72,13 @@
     <div class="pagination-container">
         <ul class="pagination">
             {% if page_obj.has_previous %}
-                <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a></li>
+                <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">السابق</a></li>
                 <li><a href="#" class="page-link">{{ page_obj.number|add:'-1' }}</a></li>
             {% endif %}
             <li><a href="#" class="page-link active">{{ page_obj.number }}</a></li>
             {% if page_obj.has_next %}
                 <li><a href="#" class="page-link">{{ page_obj.number|add:'1' }}</a></li>
-                <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a></li>
+                <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">التالي</a></li>
             {% endif %}
         </ul>
     </div>

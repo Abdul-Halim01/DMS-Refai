@@ -6,13 +6,74 @@ from django.contrib.auth import authenticate, login , logout
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import UserRegistrationForm, UserUpdateForm, AdminChangePasswordForm # UserLoginForm will not be used in this snippet
+from .forms import UserRegistrationForm, UserUpdateForm, AdminChangePasswordForm, UserRoleForm # UserLoginForm will not be used in this snippet
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import get_user_model
 from django.views.generic import ListView , DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import *
 import json
 User = get_user_model()
+
+
+
+
+class UserRolesView(ListView):
+    model = UserRole
+    template_name = 'users/roles/user_roles.html'
+    context_object_name = 'user_roles'
+    paginate_by = 10  # set pagination to an appropriate number
+
+    def get_queryset(self):
+        q = self.request.GET.get('q', '')
+        if self.request.htmx:
+            self.template_name = 'partials/users_roles_partial.html'
+            if q:
+                return super().get_queryset().filter(name__icontains=q)
+        else:
+            return super().get_queryset()
+
+
+class UserRoleInfoView(View):
+    def get(self, request, pk):
+        user_role = UserRole.objects.get(id=pk)
+        return render(request, 'users/roles/user_role_form.html', {'user_role': user_role})
+
+class CreateUserRoleView(View):
+    def get(self, request):
+        form = UserRoleForm()
+        return render(request, 'users/roles/user_role_form.html', {'form': form})
+
+    def post(self, request):
+        form = UserRoleForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('user_roles')
+        return render(request, 'users/roles/user_role_form.html', {'form': form})
+
+
+
+class DeleteUserRoleView(View):
+    def get(self,request,pk):  
+        try:
+            role = UserRole.objects.get(id=pk)
+            role.delete()
+            return redirect('user_roles')
+        except UserRole.DoesNotExist:
+            return redirect('404')
+
+
+
+class UserRolesActionView(View):
+    def post(self,request):
+        selected_items = json.loads(request.POST.get('selected_ids', '[]'))
+        roles = UserRole.objects.filter(id__in=selected_items)
+
+        # perform DB operation depending on the chosen action
+        if request.POST.get('action') == 'delete':
+            roles.delete()
+        return redirect('user_roles')
+    
 
 
 

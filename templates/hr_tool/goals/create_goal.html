@@ -1,45 +1,45 @@
 {% extends 'base.html' %}
 
-{% block title %}Create Goal{% endblock %}
+{% block title %}إنشاء هدف{% endblock %}
 
 {% block content %}
 <div class="form-container">
     <div class="styled-form">
         <div class="form-header">
-            <h2>Create New Goal</h2>
-            <p class="form-subtitle">Set a new development goal for an employee</p>
+            <h2>إنشاء هدف جديد</h2>
+            <p class="form-subtitle">تعيين هدف تطوير جديد للموظف</p>
         </div>
 
         <form method="post" class="user-profile-form">
             {% csrf_token %}
             
             <div class="form-section">
-                <h3 class="section-title">Goal Information</h3>
+                <h3 class="section-title">معلومات الهدف</h3>
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.employee.id_for_label }}">Employee</label>
+                        <label for="{{ form.employee.id_for_label }}">الموظف</label>
                         {{ form.employee }}
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.skill.id_for_label }}">Skill</label>
+                        <label for="{{ form.skill.id_for_label }}">المهارة</label>
                         {{ form.skill }}
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.progress.id_for_label }}">Progress</label>
+                        <label for="{{ form.progress.id_for_label }}">التقدم</label>
                         {{ form.progress }}
                     </div>
                 </div>
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Create Goal</button>
+                <button type="submit" class="btn btn-primary">إنشاء هدف</button>
                 <a href="{% url 'goals_list' %}" class="btn btn-secondary">
-                    Cancel
+                    إلغاء
                 </a>
             </div>
         </form>

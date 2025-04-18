@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}لوحة التحكم{% endblock %}
 
 {% block content %}
 <div class="dashboard-header">
-    <h1 class="h2">Dashboard</h1>
+    <h1 class="h2">لوحة التحكم</h1>
 </div>
 
 <div class="dashboard-grid">
@@ -14,19 +14,19 @@
             <i class="bi bi-people"></i>
         </div>
         <div class="card-content">
-            <h3>User Management</h3>
-            <p>Manage users and their roles within the system.</p>
+            <h3>إدارة المستخدمين</h3>
+            <p>إدارة المستخدمين وأدوارهم داخل النظام.</p>
             <div class="card-stats">
                 <div class="stat">
                     <span class="stat-value">{{ total_users }}</span>
-                    <span class="stat-label">Total Users</span>
+                    <span class="stat-label">إجمالي المستخدمين</span>
                 </div>
                 <div class="stat">
                     <span class="stat-value">{{ active_users }}</span>
-                    <span class="stat-label">Active</span>
+                    <span class="stat-label">النشطين</span>
                 </div>
             </div>
-            <a href="{% url 'users_list' %}" class="card-action">Go to Users</a>
+            <a href="{% url 'users_list' %}" class="card-action">الذهاب إلى المستخدمين</a>
         </div>
     </div>
 
@@ -36,19 +36,19 @@
             <i class="bi bi-folder"></i>
         </div>
         <div class="card-content">
-            <h3>Document Management</h3>
-            <p>Upload and manage documents like PDFs, images, and videos.</p>
+            <h3>إدارة المستندات</h3>
+            <p>تحميل وإدارة المستندات مثل ملفات PDF والصور ومقاطع الفيديو.</p>
             <div class="card-stats">
                 <div class="stat">
                     <span class="stat-value">{{ total_documents }}</span>
-                    <span class="stat-label">Documents</span>
+                    <span class="stat-label">المستندات</span>
                 </div>
                 <div class="stat">
                     <span class="stat-value">{{ document_types }}</span>
-                    <span class="stat-label">Types</span>
+                    <span class="stat-label">الأنواع</span>
                 </div>
             </div>
-            <a href="{% url 'document_list' %}" class="card-action">Go to Documents</a>
+            <a href="{% url 'document_list' %}" class="card-action">الذهاب إلى المستندات</a>
         </div>
     </div>
 
@@ -58,42 +58,94 @@
             <i class="bi bi-briefcase"></i>
         </div>
         <div class="card-content">
-            <h3>HR Management</h3>
-            <p>Manage employees, holidays, absences and more...</p>
+            <h3>إدارة الموارد البشرية</h3>
+            <p>إدارة الموظفين والعطلات والغيابات والمزيد...</p>
             <div class="card-stats">
                 <div class="stat">
                     <span class="stat-value">{{ total_employees }}</span>
-                    <span class="stat-label">Employees</span>
+                    <span class="stat-label">الموظفين</span>
                 </div>
                 <div class="stat">
                     <span class="stat-value">{{ departments }}</span>
-                    <span class="stat-label">Departments</span>
+                    <span class="stat-label">الأقسام</span>
                 </div>
             </div>
-            <a href="{% url 'hr' %}" class="card-action">Go to HR</a>
+            <a href="{% url 'hr' %}" class="card-action">الذهاب إلى الموارد البشرية</a>
         </div>
     </div>
 
     <!-- Goals Management Card -->
-    <div class="dashboard-card">
+    <!-- <div class="dashboard-card">
         <div class="card-icon">
             <i class="bi bi-trophy"></i>
         </div>
         <div class="card-content">
-            <h3>Goals Management</h3>
-            <p>Track and manage employee goals and achievements.</p>
+            <h3>إدارة الأهداف</h3>
+            <p>تتبع وإدارة أهداف وإنجازات الموظفين.</p>
             <div class="card-stats">
                 <div class="stat">
                     <span class="stat-value">{{ total_goals }}</span>
-                    <span class="stat-label">Goals</span>
+                    <span class="stat-label">الأهداف</span>
                 </div>
                 <div class="stat">
                     <span class="stat-value">{{ completed_goals }}</span>
-                    <span class="stat-label">Completed</span>
+                    <span class="stat-label">المكتملة</span>
                 </div>
             </div>
-            <a href="{% url 'goals_list' %}" class="card-action">Go to Goals</a>
+            <a href="{% url 'goals_list' %}" class="card-action">الذهاب إلى الأهداف</a>
+        </div>
+    </div> -->
+
+    <!-- Task Management Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">
+            <i class="bi bi-list-task"></i>
+        </div>
+        <div class="card-content">
+            <h3>إدارة المهام</h3>
+            <p>إدارة وتتبع المهام والمشاريع.</p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-value"></span>
+                    <span class="stat-label">المهام</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value"></span>
+                    <span class="stat-label">المكتملة</span>
+                </div>
+            </div>
+            <a href="{% url 'tasks-list' %}" class="card-action">الذهاب إلى المهام</a>
         </div>
     </div>
+
+    <!-- Reports Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">
+            <i class="bi bi-bar-chart"></i>
+        </div>
+        <div class="card-content">
+            <h3>النماذج</h3>
+            <p>عرض وتحليل النماذج المختلفة.</p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-value"></span>
+                    <span class="stat-label">النماذج</span>
+                </div>
+            </div>
+            <a href="{% url 'form_builder' %}" class="card-action">الذهاب إلى منشئ النماذج</a>
+        </div>
+    </div>
+
+    <!-- Settings Card -->
+    <!-- <div class="dashboard-card">
+        <div class="card-icon">
+            <i class="bi bi-gear"></i>
+        </div>
+        <div class="card-content">
+            <h3>الإعدادات</h3>
+            <p>تعديل إعدادات النظام والتفضيلات.</p>
+            <a href="" class="card-action">الذهاب إلى الإعدادات</a>
+        </div>
+    </div> -->
 </div>
 {% endblock %}

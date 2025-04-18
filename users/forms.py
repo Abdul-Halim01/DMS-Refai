@@ -3,7 +3,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm 
 from django.contrib.auth import get_user_model
-
+from .models import UserRole
 User = get_user_model()
 
 
@@ -22,7 +22,11 @@ class UserUpdateForm(forms.ModelForm):
         fields = ['username', 'email', 'role']
 
 
+class UserRoleForm(forms.ModelForm):
 
+    class Meta:
+        model = UserRole
+        fields = ['name']
 
 
 class AdminChangePasswordForm(forms.Form):

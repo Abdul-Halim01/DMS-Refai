@@ -25,13 +25,14 @@ def get_form_fields(form_name):
         return [col[1] for col in columns if col[1] not in ('id', 'created_at')]
 
 
-def add_form(form_name, fields):
+def add_form(form_name, fields, form_language):
     with connection.cursor() as cursor:
 
         # Insert the form metadata
+        print(form_name, form_language)
         cursor.execute(
-            "INSERT INTO form_builder_customform (name) VALUES (%s) RETURNING id",
-            [form_name]
+            "INSERT INTO form_builder_customform (name, language) VALUES (%s, %s) RETURNING id",
+            [form_name, form_language]
         )
         form_id = cursor.fetchone()[0]
         
@@ -94,6 +95,23 @@ def get_form(form_name):
         return cursor.fetchall()
 
 
+def insert_record_with_fields(table_name, fields, values):
+    """
+    Insert a record with specific field values into a form table
+    
+    Args:
+        table_name (str): The name of the table to insert into
+        fields (list): List of field names
+        values (list): List of values corresponding to fields
+    """
+    with connection.cursor() as cursor:
+        fields_str = ', '.join(fields)
+        placeholders = ', '.join(['%s'] * len(fields))
+        
+        sql = f"INSERT INTO {table_name} ({fields_str}) VALUES ({placeholders})"
+        cursor.execute(sql, values)
+        
+        return True
 
 
 def add_record(form_name, records: list):

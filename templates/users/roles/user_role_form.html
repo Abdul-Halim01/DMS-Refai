@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}إنشاء دور جديد{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="styled-form">
+        <div class="form-header">
+            <h2>إنشاء دور جديد</h2>
+            <p class="form-subtitle">أدخل تفاصيل الدور الجديد</p>
+        </div>
+
+        <form method="post" class="user-create-form">
+            {% csrf_token %}
+            
+            <div class="form-section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id_name">اسم الدور</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                            <div class="form-error">{{ form.name.errors }}</div>
+                        {% endif %}
+
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">إنشاء دور</button>
+                <a href="{% url 'user_roles' %}" class="btn btn-secondary">إلغاء</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,20 +1,20 @@
 {% extends 'base.html' %}
 
-{% block title %}HR Settings{% endblock %}
+{% block title %}إعدادات الموارد البشرية{% endblock %}
 
 {% block content %}
 <div class="form-container">
     <div class="settings-form">
         <div class="form-header">
-            <h2>HR Settings</h2>
-            <p class="form-subtitle">Configure your HR system preferences</p>
+            <h2>إعدادات الموارد البشرية</h2>
+            <p class="form-subtitle">تكوين تفضيلات نظام الموارد البشرية</p>
         </div>
 
         <form method="post">
             {% csrf_token %}
             
             <div class="form-group">
-                <label for="{{ form.date_format.id_for_label }}">Date Format</label>
+                <label for="{{ form.date_format.id_for_label }}">تنسيق التاريخ</label>
                 {{ form.date_format }}
                 {% if form.date_format.help_text %}
                     <span class="help-text">{{ form.date_format.help_text }}</span>
@@ -22,7 +22,7 @@
             </div>
 
             <div class="form-group">
-                <label for="{{ form.time_format.id_for_label }}">Time Format</label>
+                <label for="{{ form.time_format.id_for_label }}">تنسيق الوقت</label>
                 {{ form.time_format }}
                 {% if form.time_format.help_text %}
                     <span class="help-text">{{ form.time_format.help_text }}</span>
@@ -30,7 +30,7 @@
             </div>
 
             <div class="form-group">
-                <label for="{{ form.language.id_for_label }}">Language</label>
+                <label for="{{ form.language.id_for_label }}">اللغة</label>
                 {{ form.language }}
                 {% if form.language.help_text %}
                     <span class="help-text">{{ form.language.help_text }}</span>
@@ -38,7 +38,7 @@
             </div>
 
             <div class="form-group">
-                <label for="{{ form.days_in_month.id_for_label }}">Days in Month</label>
+                <label for="{{ form.days_in_month.id_for_label }}">أيام في الشهر</label>
                 {{ form.days_in_month }}
                 {% if form.days_in_month.help_text %}
                     <span class="help-text">{{ form.days_in_month.help_text }}</span>
@@ -46,7 +46,7 @@
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Save Settings</button>
+                <button type="submit" class="btn btn-primary">حفظ الإعدادات</button>
             </div>
         </form>
     </div>

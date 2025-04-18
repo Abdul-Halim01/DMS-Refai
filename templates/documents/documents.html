@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}HR Dashboard{% endblock %}
+{% block title %}لوحة تحكم الموارد البشرية{% endblock %}
 
 {% block content %}
 <div class="dashboard-header">
-    <h1 class="h2">Documents</h1>
+    <h1 class="h2">المستندات</h1>
 </div>
 
 <div class="dashboard-grid">
@@ -15,15 +15,15 @@
             <i class="bi bi-person-plus"></i>
         </div>
         <div class="card-content">
-            <h3>Document</h3>
-            <p>Manage recruitment process and interviews.</p>
+            <h3>المستند</h3>
+            <p>إدارة عملية التوظيف والمقابلات.</p>
             <div class="card-stats">
                 <div class="stat">
                     <span class="stat-value">{{ total_documents }}</span>
-                    <span class="stat-label">Documents</span>
+                    <span class="stat-label">المستندات</span>
                 </div>
             </div>
-            <a href="{% url 'document_list' %}" class="card-action">Go to Documents</a>
+            <a href="{% url 'document_list' %}" class="card-action">الذهاب إلى المستندات</a>
         </div>
 
     </div>
@@ -35,15 +35,15 @@
             <i class="bi bi-trophy"></i>
         </div>
         <div class="card-content">
-            <h3>Document Group</h3>
-            <p>Track employee skills and goal progress.</p>
+            <h3>مجموعة المستندات</h3>
+            <p>تتبع مهارات الموظفين وتقدم الأهداف.</p>
             <div class="card-stats">
                 <div class="stat">
                     <span class="stat-value">{{ total_groups }}</span>
-                    <span class="stat-label">Groups</span>
+                    <span class="stat-label">المجموعات</span>
                 </div>
             </div>
-            <a href="{% url 'groups' %}" class="card-action">Go to Goals</a>
+            <a href="{% url 'groups' %}" class="card-action">الذهاب إلى الأهداف</a>
         </div>
     </div>
 

@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}HR Dashboard{% endblock %}
+{% block title %}لوحة تحكم الموارد البشرية{% endblock %}
 
 {% block content %}
 <div class="dashboard-header">
-    <h1 class="h2">HR Management</h1>
+    <h1 class="h2">إدارة الموارد البشرية</h1>
 </div>
 
 <div class="dashboard-grid">
@@ -14,19 +14,19 @@
             <i class="bi bi-calendar-x"></i>
         </div>
         <div class="card-content">
-            <h3>Absences Management</h3>
-            <p>Track and manage employee absences and leaves.</p>
+            <h3>إدارة الغيابات</h3>
+            <p>تتبع وإدارة غيابات وإجازات الموظفين.</p>
             <div class="card-stats">
                 <div class="stat">
                     <span class="stat-value">{{ total_absences }}</span>
-                    <span class="stat-label">Total</span>
+                    <span class="stat-label">الإجمالي</span>
                 </div>
                 <div class="stat">
                     <span class="stat-value">{{ pending_absences }}</span>
-                    <span class="stat-label">Pending</span>
+                    <span class="stat-label">قيد الانتظار</span>
                 </div>
             </div>
-            <a href="{% url 'absences_list' %}" class="card-action">Go to Absences</a>
+            <a href="{% url 'absences_list' %}" class="card-action">الذهاب إلى الغيابات</a>
         </div>
     </div>
 
@@ -36,19 +36,19 @@
             <i class="bi bi-calendar-check"></i>
         </div>
         <div class="card-content">
-            <h3>Holiday Management</h3>
-            <p>Manage and allocate holidays to employees.</p>
+            <h3>إدارة العطلات</h3>
+            <p>إدارة وتخصيص العطلات للموظفين.</p>
             <div class="card-stats">
                 <div class="stat">
                     <span class="stat-value">{{ total_holidays }}</span>
-                    <span class="stat-label">Holidays</span>
+                    <span class="stat-label">العطلات</span>
                 </div>
                 <div class="stat">
                     <span class="stat-value">{{ approved_holidays }}</span>
-                    <span class="stat-label">Approved</span>
+                    <span class="stat-label">المعتمدة</span>
                 </div>
             </div>
-            <a href="{% url 'holidays_list' %}" class="card-action">Go to Holidays</a>
+            <a href="{% url 'holidays_list' %}" class="card-action">الذهاب إلى العطلات</a>
         </div>
     </div>
 
@@ -58,19 +58,19 @@
             <i class="bi bi-people"></i>
         </div>
         <div class="card-content">
-            <h3>Employee Management</h3>
-            <p>Create and manage employee profiles.</p>
+            <h3>إدارة الموظفين</h3>
+            <p>إنشاء وإدارة ملفات الموظفين.</p>
             <div class="card-stats">
                 <div class="stat">
                     <span class="stat-value">{{ total_employees }}</span>
-                    <span class="stat-label">Employees</span>
+                    <span class="stat-label">الموظفين</span>
                 </div>
                 <div class="stat">
                     <span class="stat-value">{{ active_employees }}</span>
-                    <span class="stat-label">Active</span>
+                    <span class="stat-label">النشطين</span>
                 </div>
             </div>
-            <a href="{% url 'employee_list' %}" class="card-action">Go to Employees</a>
+            <a href="{% url 'employee_list' %}" class="card-action">الذهاب إلى الموظفين</a>
         </div>
     </div>
 
@@ -80,19 +80,19 @@
             <i class="bi bi-person-plus"></i>
         </div>
         <div class="card-content">
-            <h3>Recruitment</h3>
-            <p>Manage recruitment process and interviews.</p>
+            <h3>التوظيف</h3>
+            <p>إدارة عملية التوظيف والمقابلات.</p>
             <div class="card-stats">
                 <div class="stat">
                     <span class="stat-value">{{ total_candidates }}</span>
-                    <span class="stat-label">Candidates</span>
+                    <span class="stat-label">المرشحين</span>
                 </div>
                 <div class="stat">
                     <span class="stat-value">{{ open_positions }}</span>
-                    <span class="stat-label">Open Positions</span>
+                    <span class="stat-label">الوظائف المفتوحة</span>
                 </div>
             </div>
-            <a href="{% url 'recruiters_list' %}" class="card-action">Go to Recruitment</a>
+            <a href="{% url 'recruiters_list' %}" class="card-action">الذهاب إلى التوظيف</a>
         </div>
     </div>
 
@@ -102,19 +102,19 @@
             <i class="bi bi-trophy"></i>
         </div>
         <div class="card-content">
-            <h3>Skills & Goals</h3>
-            <p>Track employee skills and goal progress.</p>
+            <h3>المهارات والأهداف</h3>
+            <p>تتبع مهارات الموظفين وتقدم الأهداف.</p>
             <div class="card-stats">
                 <div class="stat">
                     <span class="stat-value">{{ total_goals }}</span>
-                    <span class="stat-label">Goals</span>
+                    <span class="stat-label">الأهداف</span>
                 </div>
                 <div class="stat">
                     <span class="stat-value">{{ completed_goals }}</span>
-                    <span class="stat-label">Completed</span>
+                    <span class="stat-label">المكتملة</span>
                 </div>
             </div>
-            <a href="{% url 'goals_skills' %}" class="card-action">Go to Goals</a>
+            <a href="{% url 'goals_skills' %}" class="card-action">الذهاب إلى الأهداف</a>
         </div>
     </div>
 
@@ -124,15 +124,12 @@
             <i class="bi bi-gear"></i>
         </div>
         <div class="card-content">
-            <h3>Setting</h3>
-            <p>Hr specific settings</p>
+            <h3>الإعدادات</h3>
+            <p>إعدادات خاصة بالموارد البشرية</p>
             <div class="card-stats">
-                <div class="stat">
-                    <span class="stat-value">test</span>
-                    <span class="stat-label">test</span>
-                </div>
+
             </div>
-            <a href="{% url 'hr_settings' %}" class="card-action">Go to settings</a>
+            <a href="{% url 'hr_settings' %}" class="card-action">الذهاب إلى الإعدادات</a>
         </div>
     </div>
 </div>

@@ -1,0 +1,26 @@
+<thead>
+    <tr>
+        <th><input type="checkbox" id="selectAll" class="select-all-checkbox"></th>
+        <th>المعرف</th>
+        <th>الاسم </th>
+        <th>الإجراءات </th>
+    </tr>
+</thead>
+<tbody>
+    {% for role in user_roles %}
+    <tr onclick="clickHandler(event)" data-link="{% url 'user_role_info' role.id %}">
+        <td onclick="event.stopPropagation();">
+            <input type="checkbox" class="item-checkbox" value="{{ role.id }}">
+        </td>
+        <td>{{ role.id }}</td>
+        <td>{{ role.name }}</td>
+        <td onclick="event.stopPropagation();">
+            <div class="action-buttons">
+                <a href="{% url 'delete_user_role' role.id %}" class="delete-btn">
+                    <i class="bi bi-trash"></i>
+                </a>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>

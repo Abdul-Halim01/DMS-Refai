@@ -1,23 +1,23 @@
 {% extends 'base.html' %}
 
-{% block title %}Create Employee{% endblock %}
+{% block title %}إنشاء موظف{% endblock %}
 
 {% block content %}
 <div class="form-container">
     <div class="styled-form">
         <div class="form-header">
-            <h2>Create New Employee</h2>
-            <p class="form-subtitle">Enter the details for the new employee account</p>
+            <h2>إنشاء موظف جديد</h2>
+            <p class="form-subtitle">أدخل تفاصيل حساب الموظف الجديد</p>
         </div>
 
         <form method="post" enctype="multipart/form-data" class="user-profile-form">
             {% csrf_token %}
             
             <div class="form-section">
-                <h3 class="section-title">Account Information</h3>
+                <h3 class="section-title">معلومات الحساب</h3>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.username.id_for_label }}">Username</label>
+                        <label for="{{ form.username.id_for_label }}">اسم المستخدم</label>
                         {{ form.username }}
                         {% if form.username.errors %}
                             <div class="form-error">{{ form.username.errors }}</div>
@@ -25,7 +25,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.email.id_for_label }}">Email</label>
+                        <label for="{{ form.email.id_for_label }}">البريد الإلكتروني</label>
                         {{ form.email }}
                         {% if form.email.errors %}
                             <div class="form-error">{{ form.email.errors }}</div>
@@ -33,7 +33,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.upload_limit.id_for_label }}">Upload Limit</label>
+                        <label for="{{ form.upload_limit.id_for_label }}">حد التحميل</label>
                         {{ form.upload_limit }}
                         {% if form.upload_limit.errors %}
                             <div class="form-error">{{ form.upload_limit.errors }}</div>
@@ -43,7 +43,7 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.password.id_for_label }}">Password</label>
+                        <label for="{{ form.password.id_for_label }}">كلمة المرور</label>
                         {{ form.password }}
                         {% if form.password.errors %}
                             <div class="form-error">{{ form.password.errors }}</div>
@@ -53,7 +53,7 @@
                         {% endif %}
                     </div>
                     <div class="form-group">
-                        <label for="{{ form.confirm_password.id_for_label }}">Confirm Password</label>
+                        <label for="{{ form.confirm_password.id_for_label }}">تأكيد كلمة المرور</label>
                         {{ form.confirm_password }}
                         {% if form.confirm_password.errors %}
                             <div class="form-error">{{ form.confirm_password.errors }}</div>
@@ -66,10 +66,10 @@
             </div>
 
             <div class="form-section">
-                <h3 class="section-title">Employee Details</h3>
+                <h3 class="section-title">تفاصيل الموظف</h3>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.role.id_for_label }}">Role</label>
+                        <label for="{{ form.role.id_for_label }}">الدور</label>
                         {{ form.role }}
                         {% if form.role.errors %}
                             <div class="form-error">{{ form.role.errors }}</div>
@@ -77,7 +77,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.department.id_for_label }}">Department</label>
+                        <label for="{{ form.department.id_for_label }}">القسم</label>
                         {{ form.department }}
                         {% if form.department.errors %}
                             <div class="form-error">{{ form.department.errors }}</div>
@@ -85,7 +85,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.position.id_for_label }}">Position</label>
+                        <label for="{{ form.position.id_for_label }}">المنصب</label>
                         {{ form.position }}
                         {% if form.position.errors %}
                             <div class="form-error">{{ form.position.errors }}</div>
@@ -93,7 +93,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.social_status.id_for_label }}">Social Status</label>
+                        <label for="{{ form.social_status.id_for_label }}">الحالة الاجتماعية</label>
                         {{ form.social_status }}
                         {% if form.social_status.errors %}
                             <div class="form-error">{{ form.social_status.errors }}</div>
@@ -101,7 +101,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="{{ form.start_date.id_for_label }}">Start Date</label>
+                        <label for="{{ form.start_date.id_for_label }}">تاريخ البدء</label>
                         {{ form.start_date }}
                         {% if form.start_date.errors %}
                             <div class="form-error">{{ form.start_date.errors }}</div>
@@ -112,10 +112,10 @@
             </div>
 
             <div class="form-section">
-                <h3 class="section-title">Contact Details</h3>
+                <h3 class="section-title">تفاصيل الاتصال</h3>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.address.id_for_label }}">Address</label>
+                        <label for="{{ form.address.id_for_label }}">العنوان</label>
                         {{ form.address }}
                         {% if form.address.errors %}
                             <div class="form-error">{{ form.address.errors }}</div>
@@ -123,7 +123,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.phonenumber.id_for_label }}">Phone</label>
+                        <label for="{{ form.phonenumber.id_for_label }}">الهاتف</label>
                         {{ form.phonenumber }}
                         {% if form.phonenumber.errors %}
                             <div class="form-error">{{ form.phonenumber.errors }}</div>
@@ -133,9 +133,9 @@
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Create Employee</button>
+                <button type="submit" class="btn btn-primary">إنشاء موظف</button>
                 <a href="{% url 'employee_list' %}" class="btn btn-secondary">
-                    Cancel
+                    إلغاء
                 </a>
             </div>
         </form>

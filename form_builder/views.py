@@ -4,11 +4,13 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 import json
 from django.shortcuts import redirect
-from .cursor_db import add_form, get_form, add_record , remove_record , update_record, get_form_fields
+from .cursor_db import add_form, get_form, add_record, remove_record, update_record, get_form_fields, insert_record_with_fields
 from django.views import View
 from django.utils.decorators import method_decorator
 from .models import *
 from django.views import generic
+from .form_utils import create_dynamic_form
+from django.db import connection
 
 class ListForms(generic.ListView):
     model = CustomForm
@@ -35,7 +37,8 @@ class FormDetailView(View):
                     if i < len(record):
                         record_dict[field] = record[i]
                 records.append(record_dict)
-
+            print(form_fields)
+            print(records)
             context = {
                 'form_id': form.id,
                 'records': records,
@@ -55,6 +58,8 @@ class CreateFormView(View):
         try:
             data = json.loads(request.body)
             form_name = data.get('form_name')
+            form_language = data.get('form_language')
+            print(form_name, form_language)
             fields = data.get('fields', [])
             
             if not form_name:
@@ -70,12 +75,12 @@ class CreateFormView(View):
                 })
             
             # Create the form and its table
-            result = add_form(form_name, fields)
+            result = add_form(form_name, fields, form_language)
             
             if result['success']:
                 return JsonResponse({
                     'success': True,
-                    'redirect_url': f'/forms/{result["form_id"]}'
+                    'redirect_url': f'/form-builder/forms/{result["form_id"]}'
                 })
             else:
                 return JsonResponse({
@@ -98,17 +103,63 @@ class CreateFormView(View):
 
 class CreateRecordView(View):
     def get(self, request, pk):
-        form_name = CustomForm.objects.get(id=pk).name
-        return render(request, 'form_builder/add_record.html')
+        try:
+            custom_form = CustomForm.objects.get(id=pk)
+            form_name = custom_form.name
+            
+            # Create a dynamic form based on table structure
+            DynamicForm = create_dynamic_form(form_name)
+            form = DynamicForm()
+            
+            context = {
+                'form': form,
+                'form_name': form_name,
+                'form_id': pk
+            }
+            
+            return render(request, 'form_builder/add_record.html', context)
+        except CustomForm.DoesNotExist:
+            return redirect('form_builder')
     
     def post(self, request, pk):
-        data = request.body
-        form_name = CustomForm.objects.get(id=pk).name
-        records = data.get('records', [])
-        add_record(form_name, records)
+        try:
+            custom_form = CustomForm.objects.get(id=pk)
+            form_name = custom_form.name
+            
+            # Create dynamic form and validate data
+            DynamicForm = create_dynamic_form(form_name)
+            form = DynamicForm(request.POST)
+            
+            if form.is_valid():
+                # Extract validated data
+                cleaned_data = form.cleaned_data
+                
+                # Get fields and values for insertion
+                fields = list(cleaned_data.keys())
+                values = [cleaned_data[field] for field in fields]
+                
+                # Insert the record using our utility function
+                table_name = f"form_{pk}"
+                insert_record_with_fields(table_name, fields, values)
+                
+                return redirect(f'/form-builder/forms/{pk}/')
+            else:
+                # If form is invalid, show errors
+                context = {
+                    'form': form,
+                    'form_name': form_name,
+                    'form_id': pk
+                }
+                return render(request, 'form_builder/add_record.html', context)
+                
+        except CustomForm.DoesNotExist:
+            return redirect('form_builder')
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            })
 
-        return redirect(f'/forms/{pk}')
-    
 
 class DeleteRecordView(View):
     def get(self, request, pk):
@@ -136,3 +187,34 @@ class FormsActionView(View):
                 'message': 'Forms deleted successfully'
             })
         
+
+
+class ExportFormPdfView(View):
+    def get(self, request, pk):
+        try:
+            form = CustomForm.objects.get(id=pk)
+            form_name = form.name
+            from utility.export_form_pdf import export_form_pdf
+            return export_form_pdf(form_name)
+        except CustomForm.DoesNotExist:
+            return redirect('form_builder')
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            })
+
+class ExportFormExcelView(View):
+    def get(self, request, pk):
+        try:
+            form = CustomForm.objects.get(id=pk)
+            form_name = form.name
+            from utility.export_form_excel import export_form_excel
+            return export_form_excel(form_name)
+        except CustomForm.DoesNotExist:
+            return redirect('form_builder')
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            })
