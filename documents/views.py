@@ -82,12 +82,10 @@ class UploadDocumentView(View):
     def post(self, request):
         form = DocumentUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            print(request.user)
             form.save(commit=False)
             form.instance.uploaded_by = request.user
             form.save()
             return redirect('document_list')
-        print(form.errors)
         return render(request, 'documents/upload.html', {'form': form})
     
 

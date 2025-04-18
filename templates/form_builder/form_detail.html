@@ -58,8 +58,11 @@
 
                 <td onclick="event.stopPropagation();">
                     <div class="action-buttons">
-                        <a href="#" class="delete-btn">
+                        <a href="{% url 'delete_record' form_id record.id %}" class="delete-btn">
                             <i class="bi bi-trash"></i>
+                        </a>
+                        <a href="#" class="share-btn">
+                            <i class="bi bi-share"></i>
                         </a>
                     </div>
                 </td>

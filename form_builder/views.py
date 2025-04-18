@@ -37,8 +37,6 @@ class FormDetailView(View):
                     if i < len(record):
                         record_dict[field] = record[i]
                 records.append(record_dict)
-            print(form_fields)
-            print(records)
             context = {
                 'form_id': form.id,
                 'records': records,
@@ -59,7 +57,6 @@ class CreateFormView(View):
             data = json.loads(request.body)
             form_name = data.get('form_name')
             form_language = data.get('form_language')
-            print(form_name, form_language)
             fields = data.get('fields', [])
             
             if not form_name:
@@ -99,8 +96,6 @@ class CreateFormView(View):
             })
                 
 
-
-
 class CreateRecordView(View):
     def get(self, request, pk):
         try:
@@ -139,8 +134,7 @@ class CreateRecordView(View):
                 values = [cleaned_data[field] for field in fields]
                 
                 # Insert the record using our utility function
-                table_name = f"form_{pk}"
-                insert_record_with_fields(table_name, fields, values)
+                insert_record_with_fields(form_name, fields, values)
                 
                 return redirect(f'/form-builder/forms/{pk}/')
             else:
@@ -162,9 +156,10 @@ class CreateRecordView(View):
 
 
 class DeleteRecordView(View):
-    def get(self, request, pk):
+    def get(self, request, pk, record_id):
         form_name = CustomForm.objects.get(id=pk).name
-        return render(request, 'form_builder/delete_record.html')
+        remove_record(form_name, record_id)
+        return redirect(f'/form-builder/forms/{pk}/')
 
 
 
