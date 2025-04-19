@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}المستخدمين{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="h2">المستخدمين</h1>
+</div>
+
+<div class="dashboard-grid">
+
+    <!-- Dcoument Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">
+            <i class="bi bi-person-plus"></i>
+        </div>
+        <div class="card-content">
+            <h3>المستخدمين</h3>
+            <p>إدارة عملية التوظيف والمقابلات.</p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-value">{{ total_users }}</span>
+                    <span class="stat-label">المستخدمين</span>
+                </div>
+            </div>
+            <a href="{% url 'users_list' %}" class="card-action">الذهاب إلى المستخدمين</a>
+        </div>
+
+    </div>
+
+
+    <!-- Document Group Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">
+            <i class="bi bi-trophy"></i>
+        </div>
+        <div class="card-content">
+            <h3>أدوار المستخدمين</h3>
+            <p>إدارة أدوار المستخدمين.</p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-value">{{ total_roles }}</span>
+                    <span class="stat-label">أدوار المستخدمين</span>
+                </div>
+            </div>
+            <a href="{% url 'user_roles' %}" class="card-action">الذهاب إلى أدوار المستخدمين</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

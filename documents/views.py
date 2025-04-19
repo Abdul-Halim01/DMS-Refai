@@ -20,7 +20,9 @@ login_required_m =  method_decorator(login_required(login_url='login') , name="d
 @login_required_m
 class DocumentPageView(View):
     def get(self,request):
-        return render(request , 'documents/documents.html')
+        total_documents = Document.objects.count()
+        total_groups = DocumentGroup.objects.count()
+        return render(request , 'documents/documents.html', {'total_documents': total_documents, 'total_groups': total_groups})
 
 
 
@@ -35,13 +37,13 @@ class ListGroupsView(generic.ListView):
 class DeleteGroupView(generic.DeleteView):
     model = DocumentGroup
     template_name = 'group/delete_group.html'
-    success_url = 'documents/documents'
+    success_url = '/documents/groups/'
 
 
 class CreateGroupView(generic.CreateView):
     model = DocumentGroup
-    fields = ['name']
-    template_name = 'group/group_form.html'
+    fields = ['name','description']
+    template_name = 'group/create_group.html'
     success_url = '/documents/groups/'
 
 

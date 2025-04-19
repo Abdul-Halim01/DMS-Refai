@@ -18,7 +18,7 @@
         <td>{{ user.id }}</td>
         <td>{{ user.username }}</td>
         <td>{{ user.email }}</td>
-        <td><span class="role-badge">{{ user.role }}</span></td>
+        <td><span class="role-badge">{{ user.role.name }}</span></td>
         <td>
             {% if user.is_active %}
                 <span class="status-badge active"><i class="bi bi-check-circle"></i> نشط</span>

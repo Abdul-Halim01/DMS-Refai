@@ -1,4 +1,4 @@
-from .models import Employee , Holiday , Skill , WorkGoal , HRSettings
+from .models import Employee , Holiday , Skill , WorkGoal , HRSettings , Absence
 from django import forms
 from django.forms.widgets import TextInput
 
@@ -42,10 +42,29 @@ class EmployeeUpdateForm(forms.ModelForm):
 
 
 class HolidayForm(forms.ModelForm):
-    daterange = forms.CharField(widget=TextInput(attrs={'name':'daterange'}))
+    start = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+    )
+    end = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+    )
     class Meta:
         model = Holiday
-        fields = ['employee' , 'daterange', 'hours']
+        fields = ['employee', 'hours', 'start', 'end', 'accepted']
+
+
+
+class AbsenceForm(forms.ModelForm):
+    start = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+    )
+    end = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+    )
+    
+    class Meta:
+        model = Absence
+        fields = ['start', 'end', 'reason', 'employee']
 
 
 class SkillForm(forms.ModelForm):

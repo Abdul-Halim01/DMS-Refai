@@ -58,7 +58,7 @@
                     <td>{{ holiday.start }}</td>
                     <td>{{ holiday.end }}</td>
                     <td>
-                        {% if holiday.is_approved %}
+                        {% if holiday.accepted %}
                             <span class="status-badge active"><i class="bi bi-check-circle"></i> تمت الموافقة</span>
                         {% else %}
                             <span class="status-badge inactive"><i class="bi bi-clock"></i> قيد الانتظار</span>

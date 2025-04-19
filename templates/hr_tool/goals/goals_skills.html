@@ -1,52 +1,49 @@
 {% extends "base.html" %}
 
-{% block title %}HR Dashboard{% endblock %}
+{% block title %}لوحة تحكم الموارد البشرية{% endblock %}
 
 {% block content %}
 <div class="dashboard-header">
-    <h1 class="h2">Documents</h1>
+    <h1 class="h2">المستندات</h1>
 </div>
 
 <div class="dashboard-grid">
 
-    <!-- Dcoument Card -->
+    <!-- بطاقة المهارات -->
     <div class="dashboard-card">
         <div class="card-icon">
             <i class="bi bi-person-plus"></i>
         </div>
         <div class="card-content">
-            <h3>Skills</h3>
-            <p>Manage employee skills and development.</p>
+            <h3>المهارات</h3>
+            <p>إدارة مهارات الموظفين وتطويرهم.</p>
             <div class="card-stats">
                 <div class="stat">
                     <span class="stat-value">{{ total_skills }}</span>
-                    <span class="stat-label">Skills</span>
+                    <span class="stat-label">المهارات</span>
                 </div>
             </div>
 
-            <a href="{% url 'skills_list' %}" class="card-action">Go to Skills</a>
+            <a href="{% url 'skills_list' %}" class="card-action">الانتقال إلى المهارات</a>
         </div>
-
-
     </div>
 
-
-    <!-- Document Group Card -->
+    <!-- بطاقة الأهداف -->
     <div class="dashboard-card">
         <div class="card-icon">
             <i class="bi bi-trophy"></i>
         </div>
         <div class="card-content">
-            <h3>Goals</h3>
-            <p>Track employee skills and goal progress.</p>
+            <h3>الأهداف</h3>
+            <p>متابعة مهارات الموظفين وتقدم الأهداف.</p>
             <div class="card-stats">
                 <div class="stat">
                     <span class="stat-value">{{ total_goals }}</span>
-                    <span class="stat-label">Goals</span>
+                    <span class="stat-label">الأهداف</span>
                 </div>
             </div>
 
-            <a href="{% url 'goals_list' %}" class="card-action">Go to Goals</a>
+            <a href="{% url 'goals_list' %}" class="card-action">الانتقال إلى الأهداف</a>
         </div>
     </div>
 

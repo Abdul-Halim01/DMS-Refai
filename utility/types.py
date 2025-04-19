@@ -42,19 +42,6 @@ class Progress(models.TextChoices):
     COMPLETE = '100%'
 
 
-class Position(models.TextChoices):
-    INTERN = 'Intern'
-    FULL_TIME = 'Full-Time'
-    PART_TIME = 'Part-Time'
-
-
-
-class Department(models.TextChoices):
-    HR = 'HR'
-    FINANCE = 'Finance'
-
-
-
 class Holiday(models.TextChoices):
     FULL_DAY = '8 Hours'
     HALF_DAY = '4 Hours'

@@ -4,16 +4,16 @@
 
 {% block content %}
 <div class="page-header">
-    <h1 class="h2">مجموعات المستندات</h1>
+    <h1 class="h2">المجموعات</h1>
     {% if request.user.role == 'Moderator' or 'Admin' %}
-    <a href="{% url 'create_group' %}" class="btn btn-primary"> إضافة +</a>
+    <a href="{% url 'create_group' %}" class="btn btn-primary">إضافة +</a>
     {% endif %}
 </div>
 
 <div class="table-container">
     <div class="table-controls">
         <div class="search-controls">
-            <input type="text" name="q" class="search-input" placeholder="البحث عن مجموعات...">
+            <input hx-get="{% url 'groups' %}" type="text" name="q" class="search-input" placeholder="البحث بالاسم..." value="{{ request.GET.q }}"/>
         </div>
         <div class="action-controls">
             <select id="bulkAction" name="action" class="action-select">
@@ -24,47 +24,44 @@
         </div>
     </div>
 
-    <form method="post" action="{% url 'group_action' %}" class="action-form" id="bulkActionForm">
+    <form method="post" action="{% url 'group_action' %}"  id="bulkActionForm">
         {% csrf_token %}
         <input type="hidden" name="selected_ids" id="selectedIds">
         <input type="hidden" name="action" id="selectedAction">
-
+        
         <table class="data-table">
+
             <thead>
                 <tr>
-                    <th><input type="checkbox" id="selectAll" class="select-all-checkbox"></th>
-                    <th>المعرف</th>
+                    <th><input type="checkbox" id="select-all"></th>
+                    <th>الرقم</th>
                     <th>الاسم</th>
+                    <th>الوصف</th>
+                    <th>إجراءات</th>
                 </tr>
             </thead>
-            <tbody>
-                {% for group in groups %}
-                <tr onclick="clickHandler(event)" data-link="{% url 'group_edit' group.id %}">
-                    <td onclick="event.stopPropagation();">
-                        <input type="checkbox" class="item-checkbox" value="{{ group.id }}">
-                    </td>
-                    <td><a href="" class="user-link">{{ group.id }}</a></td>
-                    <td>
-                        <span class="group-badge">{{ group.name }}</span>
-                    </td>
-                    <td>{{ group.description }}</td>
-                    <td>{{ group.created_by.username }}</td>
-                    <td>{{ group.created_date|date:"M d, Y H:i" }}</td>
-                    <td>{{ group.documents.count }}</td>
-                    <td>
-                        <div class="action-buttons">
-                            {% if request.user == group.created_by or request.user.is_staff %}
-                            <a href="{% url 'group_delete' group.id %}" class="delete-btn">
-                                <i class="bi bi-trash"></i>
-                            </a>
-                            {% endif %}
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
+
+            {% for group in groups %}
+            <tr onclick="clickHandler(event)" data-link="{% url 'group_edit' group.id %}">
+                <td onclick="event.stopPropagation();">
+                    <input type="checkbox" class="item-checkbox" value="{{ group.id }}">
+                </td>
+                <td>{{ group.id }}</td>
+                <td>{{ group.name }}</td>
+                <td>{{ group.description }}</td>
+                <td onclick="event.stopPropagation();">
+                    <div class="action-buttons">
+                        <a href="{% url 'group_delete' group.id %}" class="delete-btn">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
         </table>
+
     </form>
+
     <div class="pagination-container">
         <ul class="pagination">
             {% if page_obj.has_previous %}
@@ -79,4 +76,5 @@
         </ul>
     </div>
 </div>
+
 {% endblock %}

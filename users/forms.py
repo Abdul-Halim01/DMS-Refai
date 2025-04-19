@@ -30,8 +30,14 @@ class UserRoleForm(forms.ModelForm):
 
 
 class AdminChangePasswordForm(forms.Form):
-    new_password = forms.CharField(widget=forms.PasswordInput)
-    confirm_password = forms.CharField(widget=forms.PasswordInput)
+    new_password = forms.CharField(
+        label="كلمة المرور الجديدة",
+        widget=forms.PasswordInput
+    )
+    confirm_password = forms.CharField(
+        label="تأكيد كلمة المرور الجديدة",
+        widget=forms.PasswordInput
+    )
 
 
 

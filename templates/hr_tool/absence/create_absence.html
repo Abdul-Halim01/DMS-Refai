@@ -30,20 +30,15 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="{{ form.days.id_for_label }}">عدد الأيام</label>
-                        {{ form.days }}
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
                         <label for="{{ form.start.id_for_label }}">تاريخ البداية</label>
                         {{ form.start }}
+                        <span class="help-text">اختر تاريخ بداية الغياب</span>
                     </div>
                     
                     <div class="form-group">
                         <label for="{{ form.end.id_for_label }}">تاريخ النهاية</label>
                         {{ form.end }}
+                        <span class="help-text">اختر تاريخ نهاية الغياب</span>
                     </div>
                 </div>
             </div>

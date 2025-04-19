@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Goals List{% endblock %}
+{% block title %}قائمة الأهداف{% endblock %}
 
 {% block content %}
 <div class="page-header">
-    <h1 class="h2">All Goals</h1>
-    {% if request.user.role == 'Moderator' or 'Admin' %}
-    <a href="{% url 'create_goal' %}" class="btn btn-primary">Add +</a>
+    <h1 class="h2">جميع الأهداف</h1>
+    {% if request.user.role == 'Moderator' or request.user.role == 'Admin' %}
+    <a href="{% url 'create_goal' %}" class="btn btn-primary">إضافة +</a>
     {% endif %}
 </div>
 
@@ -14,14 +14,14 @@
     <div class="table-controls">
 
         <div class="search-controls">
-            <input type="text" name="q" class="search-input" placeholder="Search by name...">
+            <input type="text" name="q" class="search-input" placeholder="ابحث بالاسم...">
         </div>
         <div class="action-controls">
             <select id="bulkAction" name="action" class="action-select">
-                <option value="" selected disabled>Select Action</option>
-                <option value="delete">Delete Selected Records</option>
+                <option value="" selected disabled>اختر إجراء</option>
+                <option value="delete">حذف السجلات المحددة</option>
             </select>
-            <button type="button" class="do-action-btn" onclick="executeBulkAction()">Do Action</button>
+            <button type="button" class="do-action-btn" onclick="executeBulkAction()">تنفيذ الإجراء</button>
         </div>
 
     </div>
@@ -35,13 +35,13 @@
             <thead>
                 <tr>
                     <th><input type="checkbox" id="selectAll" class="select-all-checkbox"></th>
-                    <th>Employee</th>
-                    <th>Employee ID</th>
-                    <th>Skill</th>
-                    <th>Progress</th>
-                    <th>Created</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>الموظف</th>
+                    <th>رقم الموظف</th>
+                    <th>المهارة</th>
+                    <th>التقدم</th>
+                    <th>تاريخ الإنشاء</th>
+                    <th>الحالة</th>
+                    <th>إجراءات</th>
                 </tr>
             </thead>
             <tbody>
@@ -63,14 +63,14 @@
                     <td>{{ goal.created }}</td>
                     <td>
                         {% if goal.is_completed %}
-                            <span class="status-badge active"><i class="bi bi-check-circle"></i> Completed</span>
+                            <span class="status-badge active"><i class="bi bi-check-circle"></i> مكتمل</span>
                         {% else %}
-                            <span class="status-badge inactive"><i class="bi bi-hourglass-split"></i> In Progress</span>
+                            <span class="status-badge inactive"><i class="bi bi-hourglass-split"></i> قيد التنفيذ</span>
                         {% endif %}
                     </td>
                     <td onclick="event.stopPropagation();">
                         <div class="action-buttons">
-                            <a href="{% url 'delete_goal' goal.id %}" class="delete-btn">
+                            <a href="{% url 'delete_goal' goal.id %}" class="delete-btn" title="حذف">
                                 <i class="bi bi-trash"></i>
                             </a>
                         </div>
@@ -85,13 +85,13 @@
     <div class="pagination-container">
         <ul class="pagination">
             {% if page_obj.has_previous %}
-                <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a></li>
+                <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">السابق</a></li>
                 <li><a href="#" class="page-link">{{ page_obj.number|add:'-1' }}</a></li>
             {% endif %}
             <li><a href="#" class="page-link active">{{ page_obj.number }}</a></li>
             {% if page_obj.has_next %}
                 <li><a href="#" class="page-link">{{ page_obj.number|add:'1' }}</a></li>
-                <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a></li>
+                <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">التالي</a></li>
             {% endif %}
         </ul>
     </div>

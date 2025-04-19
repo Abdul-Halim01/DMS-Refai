@@ -7,19 +7,32 @@ from utility.types import Role
 
 
 
+class Criteria(models.Model):
+    CRITERIA_TYPE_CHOICES = [
+        ('delete', 'Delete'),
+        ('add', 'Add'),
+        ('edit', 'Edit'),
+    ]
+    name = models.CharField(max_length=20)
+    criteria_type = models.CharField(max_length=20, choices=CRITERIA_TYPE_CHOICES)
+
+    def __str__(self) -> str:
+        return f"{self.name} - {self.criteria_type}"
+
+
 class UserRole(models.Model):
     name = models.CharField(max_length=20)
+    criteria = models.ManyToManyField(Criteria, related_name='user_roles')
 
     def __str__(self) -> str:
         return self.name
 
 
+
 class User(AbstractUser):
     phonenumber = models.CharField(max_length=15, validators=[RegexValidator(regex=r'^\d{7,15}$', message='Phone number must be between 7 and 15 digits')], null=True, blank=True)
     image = models.ImageField(upload_to='users/images',default='placeholder.jpg',null=True,blank=True)       
-    role = models.CharField(max_length=10, choices=Role, default='normal')
-    # role = models.ForeignKey(UserRole, on_delete=models.CASCADE, default=1)
-    # upload_limit = models.IntegerField(validators=).
+    role = models.ForeignKey(UserRole, on_delete=models.CASCADE, null=True, blank=True)
     groups = models.ManyToManyField(    
         'auth.Group',
         related_name='custom_user_set',  # Custom related name to avoid clashes
@@ -57,7 +70,7 @@ class User(AbstractUser):
 
 
 
-class Settings(models.Model):
+class Setting(models.Model):
     DATE_CHOICES = [
         ('MM/DD/YY', 'DD/MM/YY'),
     ]
@@ -73,7 +86,7 @@ class Settings(models.Model):
     
     def clean(self):
         if self.pk is None:
-            if Settings.objects.exists():
+            if Setting.objects.exists():
                 raise ValidationError("Only one Settings instance is allowed.")
         super().clean()
 

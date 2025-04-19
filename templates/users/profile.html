@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Profile{% endblock %}
+{% block title %}الملف الشخصي{% endblock %}
 
 {% block content %}
 <div class="form-container">
     <div class="styled-form">
         <div class="form-header">
-            <h2>Profile Settings</h2>
-            <p class="form-subtitle">Manage your account information and preferences</p>
+            <h2>إعدادات الملف الشخصي</h2>
+            <p class="form-subtitle">إدارة معلومات حسابك وتفضيلاتك</p>
         </div>
 
         <form method="post" class="user-profile-form">
@@ -16,14 +16,14 @@
             <div class="form-section">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="id_username">Username</label>
+                        <label for="id_username">اسم المستخدم</label>
                         {{ form.username }}
                         {% if form.username.errors %}
                             <div class="form-error">{{ form.username.errors }}</div>
                         {% endif %}
                     </div>
                     <div class="form-group">
-                        <label for="id_email">Email Address</label>
+                        <label for="id_email">البريد الإلكتروني</label>
                         {{ form.email }}
                         {% if form.email.errors %}
                             <div class="form-error">{{ form.email.errors }}</div>
@@ -35,7 +35,7 @@
             <div class="form-section">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="id_role">Role</label>
+                        <label for="id_role">الدور</label>
                         {{ form.role }}
                         {% if form.role.errors %}
                             <div class="form-error">{{ form.role.errors }}</div>
@@ -45,10 +45,10 @@
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
                 <a href="{% url 'change_password' user.id %}" class="btn btn-secondary">
                     <i class="bi bi-key"></i>
-                    Change Password
+                    تغيير كلمة المرور
                 </a>
             </div>
         </form>

@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Delete Skill</h2>
+<h2>حذف المهارة</h2>
 <form method="post">
     {% csrf_token %}
-    <p>Are you sure you want to delete "{{ skill.name }}"?</p>
-    <button type="submit">Confirm Delete</button>
+    <p>هل أنت متأكد أنك تريد حذف "{{ skill.name }}"?</p>
+    <button type="submit">تأكيد الحذف</button>
 </form>
 {% endblock %}

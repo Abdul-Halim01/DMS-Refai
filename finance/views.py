@@ -22,7 +22,7 @@ class ListSalariesView(ListView):
     model = Salary
     template_name = 'hr_tool/salary/salaries.html'
     context_object_name = 'salaries'
-    paginate_by = 5
+    paginate_by = 10
 
     def get_queryset(self) -> QuerySet[Any]:
         queryset = super().get_queryset()

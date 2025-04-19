@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}قائمة القسم{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="h2">جميع القسم</h1>
+    {% if request.user.role == 'Moderator' or 'Admin' %}
+    <a href="{% url 'create_department' %}" class="btn btn-primary">إضافة +</a>
+    {% endif %}
+</div>
+
+<div class="table-container">
+    <div class="table-controls">
+        <form method="post" action="{% url 'departments_action' %}" class="action-form" id="actionForm">
+            {% csrf_token %}
+            <div class="search-controls">
+                <input type="text" name="q" class="search-input" placeholder="البحث بالاسم...">
+            </div>
+            <select name="action" class="action-select">
+                <option value="">اختر إجراء</option>
+                <option value="delete">حذف القسم المحددين</option>
+                <option value="export_excel">تصدير إلى إكسل</option>
+            </select>
+            <button type="submit" class="do-action-btn">تنفيذ الإجراء</button>
+            <!-- Add hidden input for selected items -->
+            <input type="hidden" name="selected_items" id="selectedItems">
+        </form>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="select-all"></th>
+                <th>الرقم التعريفي</th>
+                <th>اسم القسم</th>
+                <th>الوصف</th>
+                <th>الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for department in departments %}
+            <tr onclick="clickHandler(event)" data-link="{% url 'department_info' department.id %}">
+                <td onclick="event.stopPropagation();">
+                    <input type="checkbox" class="item-checkbox" value="{{ department.id }}">
+                </td>
+                <td>{{ department.id }}</td>
+                <td>{{ department.name }}</td>
+                <td>{{ department.description }}</td>
+                <td onclick="event.stopPropagation();">
+                    <div class="action-buttons">
+                        <a href="{% url 'delete_department' department.id %}" class="delete-btn">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination-container">
+        <ul class="pagination">
+            {% if page_obj %}
+                {% if page_obj.has_previous %}
+                    <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">السابق</a></li>
+                    <li><a href="#" class="page-link">{{ page_obj.number|add:'-1' }}</a></li>
+                {% endif %}
+                <li><a href="#" class="page-link active">{{ page_obj.number }}</a></li>
+                {% if page_obj.has_next %}
+                    <li><a href="#" class="page-link">{{ page_obj.number|add:'1' }}</a></li>
+                    <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">التالي</a></li>
+                {% endif %}
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

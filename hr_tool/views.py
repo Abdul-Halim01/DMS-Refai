@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from .models import *
 # from users.models import User
-from .forms import EmployeeRegistrationForm , EmployeeUpdateForm , HolidayForm , WorkGoalForm , HRSettingsForm
+from .forms import EmployeeRegistrationForm , EmployeeUpdateForm , HolidayForm , WorkGoalForm , HRSettingsForm , AbsenceForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import user_passes_test
@@ -14,26 +14,35 @@ from django.contrib.auth import get_user_model
 import datetime
 from django.http import HttpResponse
 from .resources import EmployeeResource , HolidayResource , AbsenceResource , RecruitmentResource
-from utility.mixins import AdminRequiredMixin, ModeratorRequiredMixin
+from utility.mixins import HRCriteriaAddMixin , HRCriteriaEditMixin , HRCriteriaDeleteMixin
 from django.views.generic import ListView , DeleteView , CreateView , UpdateView
 from utility.helper import change_format , reverse_format
 
 User = get_user_model()
 
 
-# Create your views here.
 
-class MainHR(ModeratorRequiredMixin, View):
+class MainHR(HRCriteriaAddMixin, View):
     def get(slef,request):
-        return render(request , 'hr_tool/HR.html')
+        total_holidays = Holiday.objects.count()
+        total_absences = Absence.objects.count()
+        total_employees = Employee.objects.count()
+        active_employees = Employee.objects.filter(is_active=True).count()
+        approved_holidays = Holiday.objects.filter(accepted=True).count()
+        total_recruiters = Recruitment.objects.count()
+        total_goals = WorkGoal.objects.count()
+        total_skills = Skill.objects.count()
+        total_departments = Department.objects.count()
+        total_positions = Position.objects.count()
+        return render(request , 'hr_tool/HR.html' , {'total_holidays' : total_holidays , 'total_absences' : total_absences , 'total_employees' : total_employees , 'active_employees' : active_employees , 'approved_holidays' : approved_holidays , 'total_recruiters' : total_recruiters , 'total_goals' : total_goals , 'total_skills' : total_skills , 'total_departments' : total_departments , 'total_positions' : total_positions})
 
 
 # @login_required_decorator
-class ListEmployeesView(ModeratorRequiredMixin, ListView):
+class ListEmployeesView( ListView):
     model = Employee
     template_name = 'hr_tool/employee/employees.html'
     context_object_name = 'employees'
-    paginate_by = 5
+    paginate_by = 10
 
     def get_queryset(self) -> QuerySet[Any]:
         queryset = super().get_queryset()
@@ -46,10 +55,9 @@ class ListEmployeesView(ModeratorRequiredMixin, ListView):
 
 
 
-class CreateEmployeeView(ModeratorRequiredMixin, CreateView):
+class CreateEmployeeView( CreateView):
     model = Employee
     form_class = EmployeeRegistrationForm
-
     template_name = 'hr_tool/employee/create_employee.html'
     success_url = '/hr/employees/'
 
@@ -61,17 +69,16 @@ class CreateEmployeeView(ModeratorRequiredMixin, CreateView):
 
 
 # @login_required_decorator
-class DeleteEmployeeView(ModeratorRequiredMixin, DeleteView):
+class DeleteEmployeeView( DeleteView):
     model = Employee
     template_name = 'hr_tool/employee/delete_employee.html'
-
     context_object_name = 'employee'
     success_url = '/hr/employees/'
     
     
 
 # @login_required_decorator
-class UpdateEmployeeView(ModeratorRequiredMixin, UpdateView):
+class UpdateEmployeeView( UpdateView):
     model = Employee
     template_name = 'hr_tool/employee/employee_profile.html'
     form_class = EmployeeUpdateForm
@@ -102,7 +109,7 @@ class UpdateEmployeeView(ModeratorRequiredMixin, UpdateView):
         
 
 
-class EmployeesActionView(ModeratorRequiredMixin, View):
+class EmployeesActionView( View):
     def post(self, request):
         selected_items = request.POST.getlist('selected_items')
         
@@ -127,7 +134,7 @@ class EmployeesActionView(ModeratorRequiredMixin, View):
 
 
 @method_decorator(login_required, name='dispatch')
-class CreateHolidayView(ModeratorRequiredMixin, View):
+class CreateHolidayView( View):
     def get(self,request):
         form = HolidayForm()
         return render(request , 'hr_tool/holiday/create_holiday.html' , {'form' : form})
@@ -145,11 +152,11 @@ class CreateHolidayView(ModeratorRequiredMixin, View):
 
 
 @method_decorator(login_required, name='dispatch')
-class ListHolidaysView(ModeratorRequiredMixin, ListView):
+class ListHolidaysView( ListView):
     model = Holiday
     template_name = 'hr_tool/holiday/holidays.html'
     context_object_name = 'holidays'
-    paginate_by = 5
+    paginate_by = 10
 
     def get_queryset(self) -> QuerySet[Any]:
         queryset = super().get_queryset()
@@ -162,7 +169,7 @@ class ListHolidaysView(ModeratorRequiredMixin, ListView):
 
 
 
-class HolidaysActionView(ModeratorRequiredMixin, View):
+class HolidaysActionView( View):
     def post(self,request):
         selected_items = json.loads(request.POST.get('selected_ids', '[]'))
         holidays = Holiday.objects.filter(id__in=selected_items)
@@ -187,30 +194,22 @@ class HolidaysActionView(ModeratorRequiredMixin, View):
 
 
 @method_decorator(login_required, name='dispatch')
-class UpdateHolidayView(ModeratorRequiredMixin, View):
+class UpdateHolidayView( View):
     def get(self,request,pk):
         holiday = Holiday.objects.get(id=pk)
         form = HolidayForm(instance=holiday)
-        start = reverse_format(holiday.start)
-        end = reverse_format(holiday.end)
-        form.initial['daterange'] = f"{start} - {end}"
-        print(form.initial['daterange'])
         return render(request , 'hr_tool/holiday/holiday_info.html' , {'form' : form})
     
     def post(self,requset,pk):
         form = HolidayForm(requset.POST , instance=Holiday.objects.get(id=pk))
         if form.is_valid():
-            holiday = form.save(commit=False)
-            start_date, end_date = form.cleaned_data['daterange'].split('-')
-            holiday.start = change_format(start_date)
-            holiday.end = change_format(end_date)
-            holiday.save()
+            form.save()
             return redirect('holidays_list')
         return redirect('holiday_info')
 
 
 @method_decorator(login_required, name='dispatch')
-class DeleteHolidayView(ModeratorRequiredMixin, DeleteView):
+class DeleteHolidayView( DeleteView):
     model = Holiday
     template_name = 'hr_tool/holiday/delete_holiday.html'
     context_object_name = 'holiday'
@@ -219,19 +218,19 @@ class DeleteHolidayView(ModeratorRequiredMixin, DeleteView):
 
 
 @method_decorator(login_required, name='dispatch')
-class CreateAbsenceView(ModeratorRequiredMixin, CreateView):
+class CreateAbsenceView( CreateView):
     model = Absence
-    fields = '__all__'
+    form_class = AbsenceForm
     template_name = 'hr_tool/absence/create_absence.html'
     success_url = '/hr/absences/'
 
 
 @method_decorator(login_required, name='dispatch')
-class ListAbsenceView(ModeratorRequiredMixin, ListView):
+class ListAbsenceView( ListView):
     model = Absence
     template_name = 'hr_tool/absence/absences.html'
     context_object_name = 'absences'
-    paginate_by = 5
+    paginate_by = 10
 
     def get_queryset(self) -> QuerySet[Any]:
         queryset = super().get_queryset()
@@ -244,7 +243,7 @@ class ListAbsenceView(ModeratorRequiredMixin, ListView):
 
 
 
-class AbsenceActionView(ModeratorRequiredMixin, View):
+class AbsenceActionView(View):
     def post(self,request):
         selected_ids = json.loads(request.POST.get('selected_ids', '[]'))
         absences = Absence.objects.filter(id__in=selected_ids)
@@ -266,16 +265,16 @@ class AbsenceActionView(ModeratorRequiredMixin, View):
         return redirect('absences_list')
 
 @method_decorator(login_required, name='dispatch')
-class UpdateAbsenceView(ModeratorRequiredMixin, UpdateView):
+class UpdateAbsenceView( UpdateView):
     model = Absence
-    fields = '__all__'
+    form_class = AbsenceForm
     template_name = 'hr_tool/absence/absence_info.html'
     success_url = '/hr/absences/'
     context_object_name = 'absence'
 
 
 @method_decorator(login_required, name='dispatch')
-class DeleteAbsenceView(ModeratorRequiredMixin, DeleteView):
+class DeleteAbsenceView( DeleteView):
     model = Absence
     template_name = 'hr_tool/absence/list_absences.html'
     success_url = '/hr/absences/'
@@ -284,11 +283,11 @@ class DeleteAbsenceView(ModeratorRequiredMixin, DeleteView):
 
 
 
-class ListRecruitersView(ModeratorRequiredMixin, ListView):
+class ListRecruitersView( ListView):
     model = Recruitment
     template_name = 'hr_tool/recruitment/list_recruiters.html'
     context_object_name = 'recruiters'
-    paginate_by = 5
+    paginate_by = 10
 
     def get_queryset(self) -> QuerySet[Any]:
         queryset = super().get_queryset()
@@ -301,7 +300,7 @@ class ListRecruitersView(ModeratorRequiredMixin, ListView):
     
 
 
-class RecruitersActionView(ModeratorRequiredMixin, View):
+class RecruitersActionView( View):
     def post(self,request):
         selected_ids = json.loads(request.POST.get('selected_ids'))
         recruiters = Recruitment.objects.filter(id__in=selected_ids) 
@@ -329,7 +328,7 @@ class RecruitersActionView(ModeratorRequiredMixin, View):
 
 
 
-class RecruiterProfileView(ModeratorRequiredMixin, UpdateView):
+class RecruiterProfileView( UpdateView):
     model = Recruitment
     template_name = 'hr_tool/recruitment/recruiter_profile.html'
     success_url = '/hr/recruiters/'
@@ -338,7 +337,7 @@ class RecruiterProfileView(ModeratorRequiredMixin, UpdateView):
 
 
 
-class DeleteRecruiterView(ModeratorRequiredMixin, DeleteView):
+class DeleteRecruiterView( DeleteView):
     model = Recruitment
     template_name = 'hr_tool/recruitment/delete_recruite.html'
     success_url = '/hr/recruiters/'
@@ -347,11 +346,11 @@ class DeleteRecruiterView(ModeratorRequiredMixin, DeleteView):
 
 
 
-class ListGoalsView(ModeratorRequiredMixin, ListView):
+class ListGoalsView( ListView):
     model = WorkGoal
     template_name = 'hr_tool/goals/goals.html'
     context_object_name = 'goals'
-    paginate_by = 5
+    paginate_by = 10
 
     def get_queryset(self) -> QuerySet[Any]:
         queryset = super().get_queryset()
@@ -363,32 +362,32 @@ class ListGoalsView(ModeratorRequiredMixin, ListView):
         return queryset
 
 
-class GoalsSkillsView(ModeratorRequiredMixin, View):
+class GoalsSkillsView( View):
     def get(self,request):
         return render(request , 'hr_tool/goals/goals_skills.html')
 
 
 
-class CreateGoalView(ModeratorRequiredMixin, CreateView):
+class CreateGoalView( CreateView):
     model = WorkGoal
     template_name = 'hr_tool/goals/create_goal.html'
     success_url = '/hr/goals/'
     form_class = WorkGoalForm
 
 
-class GoalDetailView(ModeratorRequiredMixin, UpdateView):
+class GoalDetailView( UpdateView):
     model = WorkGoal
     template_name = 'hr_tool/goals/goal_detail.html'
     context_object_name = 'goal'
 
-class DeleteGoalView(ModeratorRequiredMixin, DeleteView):
+class DeleteGoalView( DeleteView):
     model = WorkGoal
     template_name = 'hr_tool/goals/delete_goal.html'
     success_url = '/hr/goals/'
     context_object_name = 'goal'
 
 
-class GoalsActionView(ModeratorRequiredMixin, View):
+class GoalsActionView( View):
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def post(self,request):
         selected_items = json.loads(request.POST.get('selected_ids'))
@@ -400,11 +399,11 @@ class GoalsActionView(ModeratorRequiredMixin, View):
         return redirect('goals_list')
 
 
-class ListSkillsView(ModeratorRequiredMixin, ListView):
+class ListSkillsView( ListView):
     model = Skill
     template_name = 'hr_tool/goals/skills.html'
     context_object_name = 'skills'
-    paginate_by = 5
+    paginate_by = 10
 
     def get_queryset(self) -> QuerySet[Any]:
         queryset = super().get_queryset()
@@ -416,19 +415,19 @@ class ListSkillsView(ModeratorRequiredMixin, ListView):
         return queryset
 
 
-class CreateSkillView(ModeratorRequiredMixin, CreateView):
+class CreateSkillView( CreateView):
     model = Skill
     fields = ['name']
     template_name = 'hr_tool/goals/create_skill.html'
     success_url = '/hr/skills/'
 
 
-class SkillDetailView(ModeratorRequiredMixin, UpdateView):
+class SkillDetailView( UpdateView):
     model = Skill
     template_name = 'hr_tool/goals/skill_detail.html'
     context_object_name = 'skill'
 
-class DeleteSkillView(ModeratorRequiredMixin, DeleteView):
+class DeleteSkillView( DeleteView):
     model = Skill
     template_name = 'hr_tool/goals/delete_skill.html'
     success_url = '/hr/skills/'
@@ -436,7 +435,7 @@ class DeleteSkillView(ModeratorRequiredMixin, DeleteView):
 
 
 
-class SkillsActionView(ModeratorRequiredMixin, View):
+class SkillsActionView( View):
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def post(self,request):
         selected_items = json.loads(request.POST.get('selected_ids'))
@@ -448,7 +447,7 @@ class SkillsActionView(ModeratorRequiredMixin, View):
 
 
 
-class SettingsView(ModeratorRequiredMixin, View):
+class SettingsView( View):
     def get(self,request):
         settings_instance = HRSettings.objects.first()
         form = HRSettingsForm(instance=settings_instance)
@@ -460,3 +459,84 @@ class SettingsView(ModeratorRequiredMixin, View):
             form.save()
             return redirect('hr_settings')
         return redirect('hr_settings')
+
+
+
+class ListDepartmentsView(ListView):
+    model = Department
+    template_name = 'hr_tool/departments/departments.html'
+    context_object_name = 'departments'
+    paginate_by = 10
+
+class CreateDepartmentView(CreateView):
+    model = Department
+    template_name = 'hr_tool/departments/create_department.html'
+    success_url = '/hr/departments/'
+    fields = ['name' , 'description']
+
+class DepartmentDetailView( UpdateView):
+    model = Department
+    fields = ['name' , 'description']
+    template_name = 'hr_tool/departments/department_info.html'
+    context_object_name = 'department'
+    success_url = '/hr/departments/'
+
+class DeleteDepartmentView(DeleteView):
+    model = Department
+    template_name = 'hr_tool/departments/delete_department.html'
+    success_url = '/hr/departments/'
+    context_object_name = 'department'
+
+class DepartmentsActionView( View):
+    def post(self,request):
+        selected_items = json.loads(request.POST.get('selected_ids'))
+        departments = Department.objects.filter(id__in=selected_items)
+        if request.POST.get('action') == 'delete':
+            departments.delete()
+        return redirect('departments_list')
+
+
+class ListPositionsView( ListView):
+    model = Position
+    template_name = 'hr_tool/positions/positions.html'
+    context_object_name = 'positions'
+    paginate_by = 10
+
+class CreatePositionView( CreateView):
+    model = Position
+    template_name = 'hr_tool/positions/create_position.html'
+    success_url = '/hr/positions/'
+    fields = ['name' , 'description']
+
+class PositionDetailView(UpdateView):
+    model = Position
+    fields = ['name' , 'description']
+    template_name = 'hr_tool/positions/position_info.html'
+    context_object_name = 'position'    
+    success_url = '/hr/positions/'
+    
+class DeletePositionView( DeleteView):
+    model = Position
+    template_name = 'hr_tool/positions/delete_position.html'
+    success_url = '/hr/positions/'
+    context_object_name = 'position'
+
+
+class PositionsActionView( View):
+    def post(self,request):
+        selected_items = json.loads(request.POST.get('selected_ids'))
+        positions = Position.objects.filter(id__in=selected_items)
+        if request.POST.get('action') == 'delete':
+            positions.delete()
+        return redirect('positions_list')   
+
+
+
+    
+    
+
+
+
+
+
+

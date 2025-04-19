@@ -3,7 +3,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('hr/' , views.MainHR.as_view() , name="hr"),
+    path('' , views.MainHR.as_view() , name="hr"),
 
     path('employees/' , views.ListEmployeesView.as_view() , name="employee_list"),
     path('create-employee/' , views.CreateEmployeeView.as_view() , name="create_employee"),
@@ -44,6 +44,18 @@ urlpatterns = [
     path('skill/<int:id>' , views.SkillDetailView.as_view() , name="skill_info"),
     path('skills/add' , views.CreateSkillView.as_view() , name="create_skill"),
     path('skills/<str:pk>/delete' , views.DeleteSkillView.as_view() , name="delete_skill"),
+
+    path('departments/' , views.ListDepartmentsView.as_view() , name="departments"),
+    path('departments/add' , views.CreateDepartmentView.as_view() , name="create_department"),
+    path('departments/action' , views.DepartmentsActionView.as_view() , name="departments_action"),
+    path('department/<str:pk>' , views.DepartmentDetailView.as_view() , name="department_info"),
+    path('department/<str:pk>/delete' , views.DeleteDepartmentView.as_view() , name="delete_department"),
+
+    path('positions/' , views.ListPositionsView.as_view() , name="positions"),
+    path('positions/add' , views.CreatePositionView.as_view() , name="create_position"),
+    path('positions/action' , views.PositionsActionView.as_view() , name="positions_action"),
+    path('position/<str:pk>' , views.PositionDetailView.as_view() , name="position_info"),
+    path('position/<str:pk>/delete' , views.DeletePositionView.as_view() , name="delete_position"),
 
     path('hr_settings/' , views.SettingsView.as_view() , name="hr_settings")
     

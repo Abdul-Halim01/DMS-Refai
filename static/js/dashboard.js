@@ -51,7 +51,7 @@
     })
   }
 
-  // Initialize Date Range Picker
+  // Initialize Date Range Picker (if jQuery is available)
   const initializeDateRangePicker = () => {
     const dateRangeInput = $('input[name="daterange"]');
     if (dateRangeInput.length) {
@@ -68,24 +68,29 @@
     }
   }
 
-  // Initialize Date Pickers
-  const initializeDatePickers = () => {
+  // Initialize Native Date Pickers - no jQuery required
+  const initializeNativeDatePickers = () => {
     // For absence form
-    const startDateInput = $('#id_start');
-    const endDateInput = $('#id_end');
+    const startDateInput = document.getElementById('id_start');
+    const endDateInput = document.getElementById('id_end');
     
-    if (startDateInput.length) {
-      startDateInput.datepicker({
-        format: 'yyyy-mm-dd',
-        autoclose: true
+    if (startDateInput) {
+      // Set attributes for date input
+      startDateInput.setAttribute('type', 'date');
+      startDateInput.addEventListener('change', function() {
+        // Set minimum date for end date picker
+        if (endDateInput && this.value) {
+          endDateInput.min = this.value;
+        }
       });
     }
     
-    if (endDateInput.length) {
-      endDateInput.datepicker({
-        format: 'yyyy-mm-dd',
-        autoclose: true
-      });
+    if (endDateInput) {
+      // Set attributes for date input
+      endDateInput.setAttribute('type', 'date');
+      if (startDateInput && startDateInput.value) {
+        endDateInput.min = startDateInput.value;
+      }
     }
   }
 
@@ -155,11 +160,11 @@
     initializeSidebar();
     initializeSubmenus();
     setActiveNavItem();
+    initializeNativeDatePickers();
     
     // Initialize jQuery-dependent features if jQuery is available
     if (typeof $ !== 'undefined') {
       initializeDateRangePicker();
-      initializeDatePickers();
     }
   });
 })();

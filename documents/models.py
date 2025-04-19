@@ -33,7 +33,7 @@ class Document(models.Model):
             self.file_type = 'video'
         elif self.file.name.endswith(('mp3', 'wav', 'ogg' , 'm4a', 'acc','aac')):
             self.file_type = 'audio'
-        elif self.file.name.endswith(('csv',  'xlsx')):
+        elif self.file.name.endswith(('csv', 'xlsx', 'xls')):
             self.file_type = 'document_Excel'
         elif self.file.name.endswith(('ppt', 'pptx')):
             self.file_type = 'document_PowePoint'
@@ -67,6 +67,8 @@ class Document(models.Model):
 
 class DocumentGroup(models.Model):
     name = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name

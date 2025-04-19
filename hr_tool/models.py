@@ -6,12 +6,29 @@ from django.core.validators import RegexValidator
 
 User = get_user_model()
 
-# Create your models here.
+
+
+class Department(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    created = models.DateField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class Position(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    created = models.DateField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class Employee(User):
-    position = models.CharField(max_length=100, choices=Position)
-    department = models.CharField(max_length=100, choices=Department)
+    position = models.ForeignKey(Position , on_delete=models.CASCADE , blank=True , null=True)
+    department = models.ForeignKey(Department , on_delete=models.CASCADE , blank=True , null=True)
     address = models.CharField(max_length=100)
     social_status = models.CharField(max_length=50,choices=SocialStatus)
     start_date = models.DateField(null=True , blank=True)
@@ -29,6 +46,7 @@ class Holiday(models.Model):
     hours = models.CharField(choices=Holiday, max_length=40)
     start = models.DateField()
     end = models.DateField()
+    accepted = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return f'{self.employee.username} - {self.hours}'
@@ -37,7 +55,6 @@ class Holiday(models.Model):
 
 class Absence(models.Model):
     employee = models.ForeignKey(Employee , on_delete=models.CASCADE)
-    days = models.IntegerField(validators=[MinValueValidator(1) , MaxValueValidator(1000)])
     reason = models.CharField(max_length=100, choices=Absence,default='_')
     start = models.DateField()
     end = models.DateField()
@@ -53,8 +70,8 @@ class Recruitment(models.Model):
     birthday = models.DateField()
     state = models.CharField(max_length=30 , choices=State)
     image = models.ImageField(upload_to='recruiters/images', default='placeholder.jpg')
-    position = models.CharField(max_length=100 , choices=Position,default='Initial')
-    department = models.CharField(max_length=100)
+    position = models.ForeignKey(Position , on_delete=models.CASCADE , blank=True , null=True)
+    department = models.ForeignKey(Department , on_delete=models.CASCADE , blank=True , null=True)
     resume = models.FileField(upload_to='recruitment/resumes',blank=True,null=True)
 
     def __str__(self) -> str:

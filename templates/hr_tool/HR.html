@@ -21,10 +21,6 @@
                     <span class="stat-value">{{ total_absences }}</span>
                     <span class="stat-label">الإجمالي</span>
                 </div>
-                <div class="stat">
-                    <span class="stat-value">{{ pending_absences }}</span>
-                    <span class="stat-label">قيد الانتظار</span>
-                </div>
             </div>
             <a href="{% url 'absences_list' %}" class="card-action">الذهاب إلى الغيابات</a>
         </div>
@@ -45,7 +41,7 @@
                 </div>
                 <div class="stat">
                     <span class="stat-value">{{ approved_holidays }}</span>
-                    <span class="stat-label">المعتمدة</span>
+                    <span class="stat-label">المقبولة</span>
                 </div>
             </div>
             <a href="{% url 'holidays_list' %}" class="card-action">الذهاب إلى العطلات</a>
@@ -118,19 +114,42 @@
         </div>
     </div>
 
-    <!-- ٍSetting Management Card -->
+    <!-- Departments Management Card -->
     <div class="dashboard-card">
         <div class="card-icon">
-            <i class="bi bi-gear"></i>
+            <i class="bi bi-building"></i>
         </div>
         <div class="card-content">
-            <h3>الإعدادات</h3>
-            <p>إعدادات خاصة بالموارد البشرية</p>
+            <h3>الأقسام</h3>
+            <p>إدارة الأقسام.</p>
             <div class="card-stats">
-
+                <div class="stat">
+                    <span class="stat-value">{{ total_departments }}</span>
+                    <span class="stat-label">القسم</span>
+                </div>
             </div>
-            <a href="{% url 'hr_settings' %}" class="card-action">الذهاب إلى الإعدادات</a>
+            <a href="{% url 'departments' %}" class="card-action">الذهاب إلى القسم</a>
         </div>
     </div>
+
+    <!-- Positions Management Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">
+            <i class="bi bi-person-badge"></i>
+        </div>
+        <div class="card-content">
+            <h3>المناصب</h3>
+            <p>إدارة المناصب.</p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-value">{{ total_positions }}</span>
+                    <span class="stat-label">المنصب</span>
+                </div>
+            </div>
+            <a href="{% url 'positions' %}" class="card-action">الذهاب إلى المنصب</a>
+        </div>
+    </div>
+
+
 </div>
 {% endblock %}

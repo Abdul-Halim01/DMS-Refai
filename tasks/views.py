@@ -34,7 +34,7 @@ class TaskList(ListView):
     model = Task
     template_name = 'tasks/tasks.html'
     context_object_name = 'tasks'
-    paginate_by = 5
+    paginate_by = 10
 
     def get_queryset(self):
         q = self.request.GET.get('q', '')

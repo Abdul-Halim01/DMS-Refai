@@ -23,10 +23,10 @@
                 </div>
                 <div class="stat">
                     <span class="stat-value">{{ active_users }}</span>
-                    <span class="stat-label">النشطين</span>
+                    <span class="stat-label">المستخدمين النشطين</span>
                 </div>
             </div>
-            <a href="{% url 'users_list' %}" class="card-action">الذهاب إلى المستخدمين</a>
+            <a href="{% url 'users' %}" class="card-action">الذهاب إلى المستخدمين</a>
         </div>
     </div>
 
@@ -44,8 +44,8 @@
                     <span class="stat-label">المستندات</span>
                 </div>
                 <div class="stat">
-                    <span class="stat-value">{{ document_types }}</span>
-                    <span class="stat-label">الأنواع</span>
+                    <span class="stat-value">{{ total_groups }}</span>
+                    <span class="stat-label">المجموعات</span>
                 </div>
             </div>
             <a href="{% url 'document_list' %}" class="card-action">الذهاب إلى المستندات</a>
@@ -64,10 +64,6 @@
                 <div class="stat">
                     <span class="stat-value">{{ total_employees }}</span>
                     <span class="stat-label">الموظفين</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-value">{{ departments }}</span>
-                    <span class="stat-label">الأقسام</span>
                 </div>
             </div>
             <a href="{% url 'hr' %}" class="card-action">الذهاب إلى الموارد البشرية</a>
@@ -106,11 +102,11 @@
             <p>إدارة وتتبع المهام والمشاريع.</p>
             <div class="card-stats">
                 <div class="stat">
-                    <span class="stat-value"></span>
+                    <span class="stat-value">{{ total_tasks }}</span>
                     <span class="stat-label">المهام</span>
                 </div>
                 <div class="stat">
-                    <span class="stat-value"></span>
+                    <span class="stat-value">{{ total_finished_tasks }}</span>
                     <span class="stat-label">المكتملة</span>
                 </div>
             </div>
@@ -128,7 +124,7 @@
             <p>عرض وتحليل النماذج المختلفة.</p>
             <div class="card-stats">
                 <div class="stat">
-                    <span class="stat-value"></span>
+                    <span class="stat-value">{{ total_forms }}</span>
                     <span class="stat-label">النماذج</span>
                 </div>
             </div>

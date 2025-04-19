@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
 
-{% block title %}Delete Group{% endblock %}
+{% block title %}حذف المجموعة{% endblock %}
 
 {% block content %}
 <div class="form-container">
     <div class="delete-confirmation">
         <div class="delete-header">
             <i class="bi bi-exclamation-triangle-fill warning-icon"></i>
-            <h2>Delete Group</h2>
-            <p class="delete-subtitle">This action cannot be undone</p>
+            <h2>حذف المجموعة</h2>
+            <p class="delete-subtitle">هذا الإجراء لا يمكن التراجع عنه</p>
         </div>
 
         <div class="delete-content">
             <p class="confirmation-text">
-                Are you sure you want to delete group "<span class="highlight">{{ group.name }}</span>"?
+                هل أنت متأكد أنك تريد حذف المجموعة "<span class="highlight">{{ group.name }}</span>"؟
             </p>
         </div>
 
@@ -22,17 +22,14 @@
             <div class="form-actions">
                 <button type="submit" class="btn btn-danger">
                     <i class="bi bi-trash"></i>
-                    Confirm Delete
+                    تأكيد الحذف
                 </button>
                 <a href="{% url 'groups' %}" class="btn btn-secondary">
                     <i class="bi bi-x"></i>
-                    Cancel
+                    إلغاء
                 </a>
-
             </div>
         </form>
     </div>
 </div>
 {% endblock %}
-
-

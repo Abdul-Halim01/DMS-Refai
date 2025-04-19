@@ -76,6 +76,14 @@ class UserRolesActionView(View):
     
 
 
+class UsersView(View):
+    def get(self,request):
+        total_users = User.objects.count()
+        total_roles = UserRole.objects.count()
+        return render(request, 'users/users.html', {'total_users': total_users, 'total_roles': total_roles})
+
+
+
 
 
 class UserListView(LoginRequiredMixin, ListView):
@@ -202,13 +210,11 @@ class PerformActionView(View):
 # change password by admin
 class AdminChangePasswordView(View):
     def get(self,request,user_id):
-
         form = AdminChangePasswordForm()
         return render(request,'users/change_password.html',{'form':form})
     
     def post(self,request,user_id):
         form = AdminChangePasswordForm(request.POST)
-
         try:
             user = User.objects.get(pk=user_id)
             # if the form is valid and the passwords match then set a new password

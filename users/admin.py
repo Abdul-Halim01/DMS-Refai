@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User , Settings
+from .models import User , Setting , UserRole , Criteria
 from django.contrib.auth.admin import UserAdmin
 
 
@@ -28,5 +28,16 @@ class CustomUserAdmin(UserAdmin):
     )
 
 
+class UserRoleAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name']
+    ordering = ['-id']
+
+
+class CriteriaAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'criteria_type']
+    ordering = ['-id']
+
 admin.site.register(User, CustomUserAdmin)
-admin.site.register(Settings)
+admin.site.register(UserRole , UserRoleAdmin)
+admin.site.register(Criteria , CriteriaAdmin)
+admin.site.register(Setting)

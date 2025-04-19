@@ -1,28 +1,28 @@
 {% extends "base.html" %}
 
-{% block title %}User List{% endblock %}
+{% block title %}قائمة المستخدمين{% endblock %}
 
 {% block content %}
 <div class="page-header">
-    <h1 class="h2">Users</h1>
+    <h1 class="h2">المستخدمون</h1>
     {% if request.user.role == 'Moderator' or 'Admin' %}
-    <a href="{% url 'create_user' %}" class="btn btn-primary">Add +</a>
+    <a href="{% url 'create_user' %}" class="btn btn-primary">إضافة +</a>
     {% endif %}
 </div>
 
 <div class="table-container">
     <div class="table-controls">
         <div class="search-controls">
-            <input hx-get="{% url 'users_list' %}" hx-push-url="true" hx-target="#users-partial" hx-swap="innerHTML" hx-trigger="keyup changed delay:500ms" type="text" name="q" class="search-input" placeholder="Search by name..." value="{{ request.GET.q }}"/>
+            <input hx-get="{% url 'users_list' %}" hx-push-url="true" hx-target="#users-partial" hx-swap="innerHTML" hx-trigger="keyup changed delay:500ms" type="text" name="q" class="search-input" placeholder="ابحث بالاسم..." value="{{ request.GET.q }}"/>
         </div>
         <div class="action-controls">
             <select id="bulkAction" name="action" class="action-select">
-                <option value="" selected disabled>Select Action</option>
-                <option value="delete">Delete Selected Users</option>
-                <option value="activate">Activate Selected Users</option>
-                <option value="deactivate">Deactivate Selected Users</option>
+                <option value="" selected disabled>اختر الإجراء</option>
+                <option value="delete">حذف المستخدمين المحددين</option>
+                <option value="activate">تفعيل المستخدمين المحددين</option>
+                <option value="deactivate">تعطيل المستخدمين المحددين</option>
             </select>
-            <button type="button" class="do-action-btn" onclick="executeBulkAction()">Do Action</button>
+            <button type="button" class="do-action-btn" onclick="executeBulkAction()">تنفيذ الإجراء</button>
         </div>
     </div>
 
@@ -40,13 +40,13 @@
     <div class="pagination-container">
         <ul class="pagination">
             {% if page_obj.has_previous %}
-                <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a></li>
+                <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">السابق</a></li>
                 <li><a href="#" class="page-link">{{ page_obj.number|add:'-1' }}</a></li>
             {% endif %}
             <li><a href="#" class="page-link active">{{ page_obj.number }}</a></li>
             {% if page_obj.has_next %}
                 <li><a href="#" class="page-link">{{ page_obj.number|add:'1' }}</a></li>
-                <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a></li>
+                <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">التالي</a></li>
             {% endif %}
         </ul>
     </div>

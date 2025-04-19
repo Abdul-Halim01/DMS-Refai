@@ -12,6 +12,10 @@ COPY . .
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 
+RUN python manage.py makemigrations
+RUN python manage.py migrate
+RUN python manage.py create_criterias
+
 # Expose port
 EXPOSE 8000
 
