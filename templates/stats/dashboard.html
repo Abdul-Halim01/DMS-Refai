@@ -1,17 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Data Analysis
-
-<!-- Bootstrap JS Bundle (includes Popper) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoYaN6X+6V+DQcr5Bv87Z0oWzERfZ1pC1JUZzF+GIUo4yJG" crossorigin="anonymous"></script>
-{% endblock %}
+{% block title %}تحليل البيانات{% endblock %}
 
 {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoYaN6X+6V+DQcr5Bv87Z0oWzERfZ1pC1JUZzF+GIUo4yJG" crossorigin="anonymous"></script>
 <div class="page-header">
-    <h1 class="h2">Data Analysis</h1>
+    <h1 class="h2">تحليل البيانات</h1>
     <form method="post" action="{% url 'upload_file' %}">
     {% csrf_token %}
-    <button id="upload-file-btn" class="btn btn-primary">Upload File</button>
+    <button id="upload-file-btn" class="btn btn-primary">رفع ملف</button>
     </form>
 </div>
 
@@ -19,23 +16,23 @@
 <div id="file-upload-section" class="upload-form-container" style="display: none;">
     <div class="card mb-4">
         <div class="card-header">
-            <h5>Upload Data File for Analysis</h5>
+            <h5>رفع ملف البيانات للتحليل</h5>
         </div>
         <div class="card-body">
          <!-- Change your form to this: -->
             <form id="file-upload-form" enctype="multipart/form-data" method="post" action="{% url 'upload_file' %}">
                 {% csrf_token %}
                 <div class="form-group mb-3">
-                    <label for="id_csv_file">Select CSV File</label>
+                    <label for="id_csv_file">اختر ملف CSV</label>
                     <input type="file" class="form-control" id="id_csv_file" 
                         name="csv_file" accept=".csv" required>
                 </div>
                 <div class="form-group mb-3">
-                    <label for="id_report_name">Report Name (optional)</label>
+                    <label for="id_report_name">اسم التقرير (اختياري)</label>
                     <input type="text" class="form-control" id="id_report_name" 
                         name="report_name">
                 </div>
-                <button type="submit" class="btn btn-success">Upload & Analyze</button>
+                <button type="submit" class="btn btn-success">رفع وتحليل</button>
             </form>
         </div>
     </div>
@@ -43,7 +40,7 @@
 
 <div class="card mb-4">
     <div class="card-header">
-        <h5>Available Forms for Analysis</h5>
+        <h5>الاستعلامات المتاحة</h5>
     </div>
     <div class="card-body">
         <div class="table-container">
@@ -53,10 +50,10 @@
                 </div>
                 <div class="action-controls">
                     <select id="bulkAction" name="action" class="action-select">
-                        <option value="" selected disabled>Select Action</option>
-                        <option value="analyze">Analyze Selected Forms</option>
+                        <option value="" selected disabled>اختر العملية</option>
+                        <option value="analyze">تحليل الاستعلامات المختارة</option>
                     </select>
-                    <button type="button" class="do-action-btn" onclick="executeBulkAction()">Do Action</button>
+                    <button type="button" class="do-action-btn" onclick="executeBulkAction()">تنفيذ العملية</button>
                 </div>
             </div>
 
@@ -69,9 +66,8 @@
                     <thead>
                         <tr>
                             <th><input type="checkbox" id="select-all"></th>
-                            <th>ID</th>
-                            <th>Form Name</th>
-                            <th>Actions</th>
+                            <th>الاسم</th>
+                            <th>العملية</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -94,7 +90,7 @@
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="4" class="text-center">No forms available for analysis.</td>
+                            <td colspan="4" class="text-center">لا يوجد استعلامات متاحة للتحليل.</td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -104,13 +100,13 @@
             <div class="pagination-container">
                 <ul class="pagination">
                     {% if page_obj.has_previous %}
-                        <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a></li>
+                        <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">السابق</a></li>
                         <li><a href="#" class="page-link">{{ page_obj.number|add:'-1' }}</a></li>
                     {% endif %}
                     <li><a href="#" class="page-link active">{{ page_obj.number }}</a></li>
                     {% if page_obj.has_next %}
                         <li><a href="#" class="page-link">{{ page_obj.number|add:'1' }}</a></li>
-                        <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a></li>
+                        <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">التالي</a></li>
                     {% endif %}
                 </ul>
             </div>
@@ -118,12 +114,12 @@
     </div>
 </div>
 
-<!-- Modal for Analysis Results -->
+{% comment %} <!-- Modal for Analysis Results -->
 <div class="modal fade" id="analysisModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Analysis Results</h5>
+        <h5 class="modal-title">نتائج التحليل</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" id="analysisModalBody">
@@ -131,11 +127,11 @@
       </div>
       <div class="modal-footer">
         <input type="text" id="save-report-name" class="form-control" placeholder="Enter report name">
-        <button class="btn btn-success" id="saveReportBtn">Save Report</button>
+        <button class="btn btn-success" id="saveReportBtn">حفظ التقرير</button>
       </div>
     </div>
   </div>
-</div>
+</div> {% endcomment %}
 
 
 <script>
