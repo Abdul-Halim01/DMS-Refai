@@ -48,7 +48,7 @@ def  generate_donor_insights(df, include_figures=False):
                 donor_df = df[df['organization_name'] == name].copy()
                 
                 # Monthly donation pattern
-                monthly_donations = donor_df.set_index('donation_date')['donation_amount'].resample('M').agg([
+                monthly_donations = donor_df.set_index('donation_date')['donation_amount'].resample('ME').agg([
                     'sum', 'count', 'mean'
                 ]).fillna(0)
                 
@@ -153,9 +153,9 @@ def  generate_donor_insights(df, include_figures=False):
                 })
                 
             # 2. Donation Trends Analysis
-            monthly_total = df.set_index('donation_date')['donation_amount'].resample('M').sum()
-            monthly_count = df.set_index('donation_date')['donation_amount'].resample('M').count()
-            monthly_avg = df.set_index('donation_date')['donation_amount'].resample('M').mean()
+            monthly_total = df.set_index('donation_date')['donation_amount'].resample('ME').sum()
+            monthly_count = df.set_index('donation_date')['donation_amount'].resample('ME').count()
+            monthly_avg = df.set_index('donation_date')['donation_amount'].resample('ME').mean()
             
             trend_fig = make_subplots(
                 rows=2, cols=1,
@@ -827,6 +827,7 @@ def generate_all_insights(df):
         
         # Donor-specific insights
         all_insights.extend(generate_donor_insights(df))
+        
         all_insights.extend(generate_engagement_insights(df))
         all_insights.extend(generate_retention_insights(df))
         all_insights.extend(generate_statistical_insights(df))

@@ -2,10 +2,10 @@
 {% load static %}
 {% load json_filters %}
 <!DOCTYPE html>
-<html>
+<html dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>تقرير تحليل البيانات</title>
+  <title> التحليل الاستكشافي للبيانات</title>
   <!-- Load Plotly and jQuery -->
   <script src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -13,76 +13,147 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <style>
+
+    .analysis-card {
+      transition: all 0.3s ease;
+    }
+    
+    .analysis-card:hover {
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    /* Tab Container Styles */
+    .tab-container {
+      margin-top: 1rem !important;
+      border-top: 1px solid #e5e7eb !important;
+      padding-top: 1rem !important;
+    }
+    
+    .tab-header {
+      display: flex !important;
+      border-bottom: 1px solid #e5e7eb !important;
+      margin-bottom: 1rem !important;
+    }
+    
+    .tab {
+      padding: 0.75rem 1.25rem !important;
+      cursor: pointer !important;
+      margin-right: 0.5rem !important;
+      border-bottom: 2px solid transparent !important;
+      font-weight: 500 !important;
+      color: #4b5563 !important;
+      transition: all 0.2s ease !important;
+    }
+    
+    .tab:hover {
+      color: #3b82f6 !important;
+    }
+    
+    .tab.active {
+      border-bottom: 2px solid #3b82f6 !important;
+      color: #3b82f6 !important;
+      font-weight: 600 !important;
+    }
+    
+    /* Important: Fixed tab-pane styles */
+    .tab-pane {
+      display: none !important;
+      padding: 1rem 0;
+      visibility: hidden;
+    }
+    
+    .tab-pane:not(.hidden) {
+      display: block !important;
+      visibility: visible;
+    }
+    
+    /* Fix for plot container width */
+    .plot-container {
+      min-height: 400px !important;
+      height: 400px !important;
+      width: 100% !important;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    
+    /* Style for the plotly graph divs */
+    [class*="plotly-graph-div"] {
+      min-height: 350px !important;
+      width: 100% !important;
+      background-color: #f9fafb;
+    }
+    
+    /* Spinner animation */
+    .spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border-left-color: #09f;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body class="bg-gray-100">
+  <form id="csrf-form" style="display:none">
+    {% csrf_token %}
+  </form>
   <div class="container mx-auto px-4 py-8">
     <!-- Page Header -->
     <header class="page-header mb-8">
-      <h1 class="text-3xl font-bold text-gray-800">تقرير تحليل البيانات</h1>
-      <p class="text-gray-600">تحليل وتصور البيانات التفاعلي</p>
+      <h1 class="text-3xl font-bold text-gray-800"> التحليل الاستكشافي للبيانات</h1>
+      <p class="text-gray-600">تحليل بيانات تفاعلي وعرض مرئي</p>
     </header>
-    <!-- Add this near your other buttons -->
-        <button id="downloadReport" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-            تحميل تقرير PDF
-        </button>
+    
     <!-- Insights Section -->
     <section class="insights-section bg-white shadow-lg rounded-lg p-6 mb-8">
       <h2 class="text-2xl font-bold mb-4 text-gray-800">رؤى البيانات</h2>
       
       <!-- Filter buttons -->
       <div class="flex gap-2 mb-4">
-        <button class="severity-filter px-4 py-2 rounded-lg text-sm font-medium bg-gray-200 hover:bg-gray-300" data-severity="all">
+        <button class="severity-filter px-4 py-2 rounded-lg text-sm font-medium bg-gray-200 hover:bg-gray-300 active" data-severity="all">
           الكل
         </button>
         <button class="severity-filter px-4 py-2 rounded-lg text-sm font-medium bg-red-100 text-red-800 hover:bg-red-200" data-severity="high">
-          أولوية عالية
+          الاولوية العالية
         </button>
         <button class="severity-filter px-4 py-2 rounded-lg text-sm font-medium bg-yellow-100 text-yellow-800 hover:bg-yellow-200" data-severity="medium">
-          أولوية متوسطة
+          الاولوية المتوسطة
         </button>
         <button class="severity-filter px-4 py-2 rounded-lg text-sm font-medium bg-blue-100 text-blue-800 hover:bg-blue-200" data-severity="low">
-          أولوية منخفضة
+          الاولوية المنخفضة
+        </button>
+        
+        <!-- Add Refresh AI Insights button -->
+        <button id="generateAIInsights" class="ml-auto px-4 py-2 rounded-lg text-sm font-medium bg-purple-500 text-white hover:bg-purple-600 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+          تحديث رؤى الذكاء الاصطناعي
         </button>
       </div>
 
-      <!-- Insights Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {% if insights %}
-          {% for insight in insights %}
-            <div class="insight-card cursor-pointer bg-white rounded-lg border p-4 hover:shadow-lg transition-all duration-200
-              {% if insight.severity == 'high' %}border-red-400 bg-red-50
-              {% elif insight.severity == 'medium' %}border-yellow-400 bg-yellow-50
-              {% else %}border-blue-400 bg-blue-50{% endif %}"
-              data-severity="{{ insight.severity }}">
-              
-              <div class="flex justify-between items-start mb-2">
-                <span class="text-sm font-semibold px-2 py-1 rounded
-                  {% if insight.severity == 'high' %}bg-red-200 text-red-800
-                  {% elif insight.severity == 'medium' %}bg-yellow-200 text-yellow-800
-                  {% else %}bg-blue-200 text-blue-800{% endif %}">
-                  {{ insight.type|title|cut:"_"|capfirst }}
-                </span>
-              </div>
-              
-              <p class="text-gray-700 text-sm mt-2">{{ insight.message }}</p>
-              
-              <!-- Store the insight data -->
-              <div class="hidden insight-data">{{ insight|to_json }}</div>
-            </div>
-          {% endfor %}
-        {% else %}
-          <div class="col-span-full text-center py-8 bg-gray-50 rounded-lg">
-            <p class="text-gray-500">لا توجد رؤى متاحة لمجموعة البيانات هذه.</p>
+      <!-- Insights Grid - Empty at first, will be filled by JavaScript -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 insights-grid">
+        <div class="col-span-full text-center py-8 bg-gray-50 rounded-lg loading-indicator">
+          <div class="inline-flex items-center">
+            <svg class="animate-spin h-5 w-5 text-gray-500 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>تحميل رؤى الذكاء الاصطناعي...</span>
           </div>
-        {% endif %}
+        </div>
       </div>
     </section>
 
-    <!-- Overview Section -->
-    
-
     <!-- Global Filters -->
-    <section class="global-filters bg-white shadow-lg rounded-lg p-6 mb-8">
+    {% comment %} <section class="global-filters bg-white shadow-lg rounded-lg p-6 mb-8">
       <div class="filters-header mb-4">
         <h2 class="text-xl font-bold text-gray-800">المرشحات العامة</h2>
         <div class="filter-controls flex gap-2 mt-2">
@@ -95,111 +166,50 @@
         </div>
       </div>
       <div id="global-filters"></div>
-    </section>
+    </section> {% endcomment %}
 
-    <!-- Analysis Section -->
-    <section class="analysis-section grid grid-cols-1 md:grid-cols-2 gap-6">
-      {% for col, plot_html in plots.items %}
-        <div class="analysis-card bg-white shadow-lg rounded-lg overflow-hidden">
-          <div class="card-header bg-gray-50 px-6 py-4">
-            <h3 class="text-lg font-semibold text-gray-800">{{ col }}</h3>
-          </div>
-          <div class="card-content p-6">
-            <!-- Plot Container -->
-            <div class="plot-container mb-1" id="plot-container-{{ col }}">
-              {{ plot_html|safe }}
-            </div>
-            
-            <!-- Filter Controls -->
-            <div class="filter-panel space-y-4">
-              <div class="filter-group">
-                <label class="filter-label block text-sm font-medium text-gray-700">وضع التحليل</label>
-                <select class="filter-mode mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
-                        data-target="{{ col }}" id="filter-mode-{{ col }}">
-                  <option value="self">تصفية حسب القيمة</option>
-                  <option value="other">تصفية حسب عمود آخر</option>
-                  <option value="compare">مقارنة مع عمود</option>
-                </select>
-              </div>
-
-              <div class="filter-group hidden" id="filter-by-other-{{ col }}">
-                <label class="filter-label block text-sm font-medium text-gray-700">تصفية باستخدام العمود</label>
-                <select class="filter-column mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
-                        data-target="{{ col }}" id="filter-column-{{ col }}">
-                  <option value="">اختر العمود</option>
-                  {% for other_col in overview.columns %}
-                    {% if other_col != col %}
-                      <option value="{{ other_col }}">{{ other_col }}</option>
-                    {% endif %}
-                  {% endfor %}
-                </select>
-              </div>
-
-              <div class="filter-group hidden" id="compare-by-{{ col }}">
-                <label class="filter-label block text-sm font-medium text-gray-700">مقارنة مع العمود</label>
-                <select class="compare-column mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
-                        data-target="{{ col }}" id="compare-column-{{ col }}">
-                  <option value="">اختر العمود</option>
-                  {% for other_col in overview.columns %}
-                    {% if other_col != col %}
-                      <option value="{{ other_col }}">{{ other_col }}</option>
-                    {% endif %}
-                  {% endfor %}
-                </select>
-                
-                <!-- Plot type selector -->
-                <div class="plot-type-selector hidden mt-4">
-                  <label class="filter-label block text-sm font-medium text-gray-700">نوع الرسم البياني</label>
-                  <select class="plot-type mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
-                          data-target="{{ col }}" id="plot-type-{{ col }}">
-                  </select>
-                </div>
-
-                <!-- Additional plot options -->
-                <div class="plot-options hidden mt-4">
-                  <div class="aggregation-method hidden">
-                    <label class="filter-label block text-sm font-medium text-gray-700">طريقة التجميع</label>
-                    <select class="agg-method mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
-                            data-target="{{ col }}" id="agg-method-{{ col }}">
-                      <option value="mean">المتوسط</option>
-                      <option value="median">الوسيط</option>
-                      <option value="sum">المجموع</option>
-                      <option value="count">العدد</option>
-                    </select>
-                  </div>
-                  
-                  <div class="color-by hidden mt-4">
-                    <label class="filter-label block text-sm font-medium text-gray-700">التلوين حسب</label>
-                    <select class="color-column mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
-                            data-target="{{ col }}" id="color-column-{{ col }}">
-                      <option value="">لا شيء</option>
-                      {% for other_col in overview.columns %}
-                        {% if other_col != col %}
-                          <option value="{{ other_col }}">{{ other_col }}</option>
-                        {% endif %}
-                      {% endfor %}
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="filter-group">
-                <label class="filter-label block text-sm font-medium text-gray-700">تصفية القيم</label>
-                <select class="filter-values mt-1 block w-full rounded-md border-gray-300 shadow-sm" 
-                        multiple data-target="{{ col }}" id="filter-values-{{ col }}">
-                </select>
-              </div>
-
-              <button class="btn btn-primary w-full" onclick="resetPlot('{{ col }}')">
-                إعادة تعيين الرسم البياني
-              </button>
-            </div>
-          </div>
+    <!-- Column Selector -->
+    <section class="column-selector bg-white shadow-lg rounded-lg p-6 mb-8">
+      <div class="selector-header mb-4">
+        <h2 class="text-xl font-bold text-gray-800">اختر الاعمدة التي تريد تحليلها</h2>
+        <p class="text-gray-600 text-sm mt-1">اختر حتى 4 أعمدة لأداء أفضل</p>
+      </div>
+      
+      <div class="selector-content flex flex-col md:flex-row md:items-center gap-4">
+        <div class="column-dropdown flex-grow">
+          <select id="column-picker" class="w-full p-2 border rounded-md" multiple>
+            {% for col in columns %}
+              <option value="{{ col }}">{{ col }}</option>
+            {% endfor %}
+          </select>
+          <p class="text-xs text-gray-500 mt-1">اضغط Ctrl/Cmd لتحديد أكثر من عمود (حد أقصى 4)</p>
         </div>
-      {% endfor %}
+        
+        <div class="column-actions">
+          <button id="load-selected-columns" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+            تحميل الاعمدة المختارة
+          </button>
+        </div>
+      </div>
+      
+      <div id="selection-warning" class="mt-3 text-yellow-600 hidden">
+        يرجى اختيار أقل من 4 عمود لأداء أفضل.
+      </div>
     </section>
 
-    <!-- Insight Modal -->
+    <!-- Debug Output -->
+    <div id="debug-output" class="bg-gray-100 p-4 mb-8 rounded-lg text-xs overflow-auto" style="max-height: 0px; display: none;">
+    </div>
+
+    <!-- Dynamic Plot Container -->
+    <section id="dynamic-plots-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Plots will be loaded here dynamically -->
+      <div id="no-plots-message" class="col-span-full text-center py-8 bg-gray-50 rounded-lg">
+        <p class="text-gray-500">اختر الاعمدة أعلاه واضغط "تحميل الاعمدة المختارة" لعرض الرسوم البيانية</p>
+      </div>
+    </section>
+
+    <!-- Insight Modal for Unload -->
     <div id="insightModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 overflow-y-auto">
       <div class="flex items-center justify-center min-h-screen p-4">
         <div class="modal-content relative inline-block w-full max-w-4xl bg-white rounded-lg shadow-xl">
@@ -221,307 +231,979 @@
       </div>
     </div>
 
-   
-
         {% csrf_token %}
 
   </div>
 
-  <!-- JavaScript -->
   <script>
     // Global columns for filter builder
     var globalColumns = {{ overview.columns|safe }};
   </script>
   
-  <!-- Include your existing JavaScript files -->
-  <!-- JavaScript for Per-Plot Filtering -->
+
   <script>
-    $(document).ready(function() {
-        // ... keep existing global filter code ...
+    // Helper function to generate column options
+    function generateColumnOptions(currentColumn) {
+      let options = '';
+      {% for col in columns %}
+      if ("{{ col }}" !== currentColumn) {
+        options += `<option value="{{ col }}">{{ col }}</option>`;
+      }
+      {% endfor %}
+      return options;
+    }
 
-        // Handle filter mode changes
-        $('.filter-mode').change(function() {
-            const target = $(this).data('target');
-            const mode = $(this).val();
-            
-            // Hide all optional filter sections first
-            $(`#filter-by-other-${target}, #compare-by-${target}`).hide();
-            $(`#filter-values-${target}`).parent().show();
-            
-            if (mode === 'self') {
-                // Get values for the target column itself
-                $.get("{% url 'get_unique_values' %}", { 
-                    column: target 
-                }, function(data) {
-                    const filterValues = $(`#filter-values-${target}`);
-                    filterValues.empty();
-                    if (data.values) {
-                        data.values.forEach(function(value) {
-                            filterValues.append(new Option(value, value));
-                        });
-                    }
-                });
-            } else if (mode === 'other') {
-                $(`#filter-by-other-${target}`).show();
-                $(`#filter-values-${target}`).empty();
+    // Utility debug logging function that also updates the DOM
+    function debugLog(message) {
+      const timestamp = new Date().toISOString().substring(11, 23);
+      const logMessage = `[${timestamp}] ${message}`;
+      console.log(logMessage);
+      
+      // Also add to debug output on page
+      const debugLog = document.getElementById('debug-log');
+      if (debugLog) {
+        debugLog.textContent = logMessage + '\n' + debugLog.textContent;
+      }
+    }
+
+    // Show the debug panel
+    function showDebugPanel() {
+      document.getElementById('debug-output').style.display = 'block';
+    }
+
+    // Initialize filter event handlers
+    function initFilterEventHandlers() {
+      debugLog("Setting up filter event handlers");
+      
+      // Filter mode change handler
+      $('.filter-mode').off('change').on('change', function() {
+        const target = $(this).data('target');
+        const mode = $(this).val();
+        debugLog(`Filter mode changed for ${target} to ${mode}`);
+        
+        // Hide all filter panels first
+        $(`#filter-by-self-${target}`).addClass('hidden');
+        $(`#filter-by-other-${target}`).addClass('hidden');
+        $(`#compare-by-${target}`).addClass('hidden');
+        
+        // Show the appropriate panel based on selected mode
+        if (mode === 'self') {
+          $(`#filter-by-self-${target}`).removeClass('hidden');
+          // Load values for self-filtering
+          debugLog(`Loading values for self-filtering of ${target}`);
+          loadColumnValues(target, target);
+        } else if (mode === 'other') {
+          $(`#filter-by-other-${target}`).removeClass('hidden');
+          loadColumnValues(target, `other-filter-values-${target}`);
+        } else if (mode === 'compare') {
+          $(`#compare-by-${target}`).removeClass('hidden');
+        }
+      });
+      
+      $('.filter-column').off('change').on('change', function() {
+        const target = $(this).data('target');
+        const filterColumn = $(this).val();
+        const filterPanel = $(this).closest('.filter-panel');
+        
+        debugLog(`Filter column for ${target} changed to ${filterColumn}`);
+        
+        if (filterColumn) {
+          // Get column type
+          $.get("{% url 'get_column_type' %}", { column: filterColumn })
+            .done(function(typeData) {
+              const isNumeric = typeData.type === 'numeric';
+              const conditionSelect = filterPanel.find('.filter-condition-type');
+              const valuesContainer = filterPanel.find('.filter-values-container');
+              const valueInputs = filterPanel.find('.value-inputs');
+              const valueSelect = filterPanel.find('.filter-values');
+              
+
+              // Clear existing options
+              conditionSelect.empty();
+              valueInputs.empty();
+              valueSelect.empty().addClass('hidden');
+
+              // Set up condition types
+              if
+              
+               (isNumeric) {
+                conditionSelect.append(`
+                  <option value="=">=</option>
+                  <option value="!=">≠</option>
+                  <option value=">">></option>
+                  <option value="<"><</option>
+                  <option value=">=">≥</option>
+                  <option value="<=">≤</option>
+                  <option value="between">بين</option>
+                `);
                 
-                // Reset the filter column selection
-                $(`#filter-column-${target}`).val('');
-            } else if (mode === 'compare') {
-                $(`#compare-by-${target}`).show();
-                $(`#filter-values-${target}`).parent().hide();
-            }
-        });
-
-        // Handle filter column selection
-        $('.filter-column').change(function() {
-            const target = $(this).data('target');
-            const selectedColumn = $(this).val();
-            
-            console.log('Filter column selected:', {
-                target: target,
-                selectedColumn: selectedColumn
-            });
-            
-            if (selectedColumn) {
-                $.get("{% url 'get_unique_values' %}", { 
-                    column: selectedColumn 
-                }, function(data) {
-                    console.log('Received unique values:', data);
-                    const filterValues = $(`#filter-values-${target}`);
-                    filterValues.empty();
-                    if (data.values) {
-                        data.values.forEach(function(value) {
-                            filterValues.append(new Option(value, value));
-                        });
-                    }
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    console.error('Error fetching values:', textStatus, errorThrown);
-                });
-            } else {
-                $(`#filter-values-${target}`).empty();
-            }
-        });
-
-        // Add handler for compare column selection
-        $('.compare-column').change(function() {
-            const target = $(this).data('target');
-            const compareColumn = $(this).val();
-            
-            if (compareColumn) {
-                // Get column types and update plot options
-                $.get("{% url 'get_column_types' %}", {
-                    target: target,
-                    compare_column: compareColumn
-                }, function(data) {
-                    updatePlotOptions(target, compareColumn, data.column_types);
-                });
-            } else {
-                // Hide plot options if no column selected
-                $(`#compare-by-${target} .plot-type-selector`).hide();
-                $(`#compare-by-${target} .plot-options`).hide();
-            }
-        });
-
-        // Function to update plot options based on column types
-        function updatePlotOptions(target, compareColumn, columnTypes) {
-            const plotTypeSelect = $(`#plot-type-${target}`);
-            const plotTypeContainer = $(`#compare-by-${target} .plot-type-selector`);
-            const plotOptions = $(`#compare-by-${target} .plot-options`);
-            
-            plotTypeSelect.empty();
-            
-            const targetType = columnTypes.target;
-            const compareType = columnTypes.compare;
-            
-            // Add appropriate plot options based on column types
-            if (targetType === 'numeric' && compareType === 'numeric') {
-                plotTypeSelect.append(new Option('مخطط التشتت', 'scatter'));
-                plotTypeSelect.append(new Option('مخطط سداسي', 'hexbin'));
-                plotTypeSelect.append(new Option('كثافة ثنائية الأبعاد', 'density'));
-                plotTypeSelect.append(new Option('مخطط خطي', 'line'));
-            } else if (targetType === 'numeric' && compareType === 'categorical') {
-                plotTypeSelect.append(new Option('مخطط صندوقي', 'box'));
-                plotTypeSelect.append(new Option('مخطط كمان', 'violin'));
-                plotTypeSelect.append(new Option('مخطط شريطي (المتوسط)', 'bar'));
-                plotTypeSelect.append(new Option('مخطط شريطي', 'strip'));
-            } else if (targetType === 'categorical' && compareType === 'numeric') {
-                plotTypeSelect.append(new Option('مخطط صندوقي', 'box'));
-                plotTypeSelect.append(new Option('مخطط كمان', 'violin'));
-                plotTypeSelect.append(new Option('مخطط شريطي (المتوسط)', 'bar'));
-                plotTypeSelect.append(new Option('مخطط شريطي', 'strip'));
-            } else {
-                // Both categorical
-                plotTypeSelect.append(new Option('خريطة حرارية', 'heatmap'));
-                plotTypeSelect.append(new Option('مخطط شريطي مجمع', 'grouped_bar'));
-                plotTypeSelect.append(new Option('مخطط شريطي مكدس', 'stacked_bar'));
-                plotTypeSelect.append(new Option('خريطة شجرية', 'treemap'));
-            }
-            
-            plotTypeContainer.show();
-            plotOptions.show();
-            
-            // Trigger change to update plot
-            plotTypeSelect.trigger('change');
-        }
-
-        // Handle plot type changes
-        $('.plot-type').change(function() {
-            const target = $(this).data('target');
-            const plotType = $(this).val();
-            const compareColumn = $(`#compare-column-${target}`).val();
-            
-            // Show/hide additional options based on plot type
-            const aggMethodDiv = $(`#compare-by-${target} .aggregation-method`);
-            const colorByDiv = $(`#compare-by-${target} .color-by`);
-            
-            if (['bar', 'grouped_bar', 'stacked_bar'].includes(plotType)) {
-                aggMethodDiv.show();
-            } else {
-                aggMethodDiv.hide();
-            }
-            
-            if (['scatter', 'strip'].includes(plotType)) {
-                colorByDiv.show();
-            } else {
-                colorByDiv.hide();
-            }
-            
-            // Update plot
-            updateComparisonPlot(target, compareColumn, plotType);
-        });
-
-        // Function to update the comparison plot
-        function updateComparisonPlot(target, compareColumn, plotType) {
-            const aggMethod = $(`#agg-method-${target}`).val();
-            const colorColumn = $(`#color-column-${target}`).val();
-            
-            $.ajax({
-                url: "{% url 'compare_plot' %}",
-                data: {
-                    target: target,
-                    compare_column: compareColumn,
-                    plot_type: plotType,
-                    agg_method: aggMethod,
-                    color_column: colorColumn
-                },
-                success: function(response) {
-                    if (response.plot_html) {
-                        $(`#plot-container-${target}`).html(response.plot_html);
-                    }
-                },
-                error: function(xhr) {
-                    console.error('Error updating plot:', xhr.responseText);
-                }
-            });
-        }
-
-        // Initialize filter values for 'self' mode on page load
-        $('.filter-mode').each(function() {
-            const target = $(this).data('target');
-            $.get("{% url 'get_unique_values' %}", { 
-                column: target 
-            }, function(data) {
-                const filterValues = $(`#filter-values-${target}`);
-                filterValues.empty();
-                if (data.values) {
-                    data.values.forEach(function(value) {
-                        filterValues.append(new Option(value, value));
+                valueInputs.html(`
+                  <div class="numeric-inputs">
+                    <div class="single-input">
+                      <input type="number" class="w-full p-2 border rounded-md single-val" 
+                            placeholder="ادخل القيمة" step="any">
+                    </div>
+                    <div class="between-input hidden flex gap-2 mt-2">
+                      <input type="number" class="w-full p-2 border rounded-md min-val" 
+                            placeholder="الحد الأدنى" step="any">
+                      <span class="self-center">و</span>
+                      <input type="number" class="w-full p-2 border rounded-md max-val" 
+                            placeholder="الحد الأقصى" step="any">
+                    </div>
+                  </div>
+                `);
+              } else {
+                conditionSelect.append(`
+                  <option value="=">هو</option>
+                  <option value="!=">ما عدا</option>
+                `);
+                
+                // Load unique values
+                $.get("{% url 'get_unique_values' %}", { column: filterColumn })
+                  .done(function(data) {
+                    valueSelect.removeClass('hidden');
+                    data.values.forEach(value => {
+                      valueSelect.append($('<option>', {
+                        value: value,
+                        text: value
+                      }));
                     });
-                }
-            });
-        });
-
-        // Update the filter values change handler
-        $('.filter-values').change(function() {
-            const target = $(this).data('target');
-            const mode = $(`#filter-mode-${target}`).val();
-            const selectedValues = $(this).val();
-            
-            console.log('Filter values changed:', {
-                target: target,
-                mode: mode,
-                selectedValues: selectedValues
-            });
-            
-            if (selectedValues && selectedValues.length > 0) {
-                let filterData = {
-                    target: target,
-                    mode: mode,
-                    'values[]': selectedValues
-                };
-
-                if (mode === 'other') {
-                    filterData.filter_column = $(`#filter-column-${target}`).val();
-                }
-
-                console.log('Sending filter request:', filterData);
-
-                $.ajax({
-                    url: "{% url 'filter_plot' %}",
-                    method: 'GET',
-                    data: filterData,
-                    success: function(response) {
-                        if (response.plot_html) {
-                            $(`#plot-container-${target}`).html(response.plot_html);
-                        }
-                    },
-                    error: function(xhr) {
-                        console.error('Error updating plot:', xhr.responseText);
-                    }
-                });
-            }
-        });
-
-        // Reset plot functionality
-        window.resetPlot = function(col) {
-            const container = $(`#plot-container-${col}`);
-            const originalPlot = container.data('original-plot');
-            
-            // Reset the plot to original state
-            container.html(originalPlot);
-            
-            // Reset filter controls
-            $(`#filter-mode-${col}`).val('self');
-            $(`#filter-by-other-${col}, #compare-by-${col}`).hide();
-            
-            // Reset and update filter values
-            $.get("{% url 'get_unique_values' %}", { 
-                column: col 
-            }, function(data) {
-                const filterValues = $(`#filter-values-${col}`);
-                filterValues.empty();
-                if (data.values) {
-                    data.values.forEach(function(value) {
-                        filterValues.append(new Option(value, value));
+                    valueSelect.css({
+                      'height': '150px',
+                      'overflow-y': 'auto'
                     });
+                  });
+              }
+
+              // Handle condition type changes
+              conditionSelect.off('change').on('change', function() {
+                const condition = $(this).val();
+                if (isNumeric) {
+                  filterPanel.find('.between-input').addClass('hidden');
+                  filterPanel.find('.single-input').show();
+                  if (condition === 'between') {
+                    filterPanel.find('.single-input').hide();
+                    filterPanel.find('.between-input').removeClass('hidden').show();
+                  }
                 }
+              });
+
+              // Show values container
+              valuesContainer.removeClass('hidden');
+              filterPanel.find('.apply-other-filter').removeClass('hidden');
             });
+        } else {
+          filterPanel.find('.filter-values-container').addClass('hidden');
+          filterPanel.find('.apply-other-filter').addClass('hidden');
+        }
+      });
+
+      
+      // Compare column change handler
+      $('.compare-column').off('change').on('change', function() {
+        const target = $(this).data('target');
+        const compareColumn = $(this).val();
+        debugLog(`Compare column for ${target} changed to ${compareColumn}`);
+        
+        if (compareColumn) {
+          // AJAX call to get column types for plot options
+          $.get("{% url 'get_column_types' %}", {
+            target: target,
+            compare_column: compareColumn
+          }, function(data) {
+            updatePlotOptions(target, compareColumn, data.column_types);
+          });
+        } else {
+          $(`#tab-compare-${target} .plot-type-selector`).addClass('hidden');
+          $(`#tab-compare-${target} .plot-options`).addClass('hidden');
+        }
+      });
+      
+      // Filter application button handler
+      $('.apply-filter').off('click').on('click', function() {
+        const target = $(this).data('target');
+        const mode = $(`#filter-mode-${target}`).val();
+        debugLog(`Applying filter for ${target} with mode ${mode}`);
+        
+        if (mode === 'self') {
+            const conditionType = $(`#condition-type-${target}`).val();
+            const isNumeric = $(`#condition-type-${target} option`).length > 2; // Simple type check
+            
+            let filterValues = [];
+            if (isNumeric) {
+              if (conditionType === 'between') {
+                const min = $(`#value-inputs-${target} .between-input input:first`).val();
+                const max = $(`#value-inputs-${target} .between-input input:last`).val();
+                filterValues = [min, max];
+              } else {
+                filterValues = [$(`#value-inputs-${target} .numeric-input`).val()];
+              }
+            } else {
+              filterValues = $(`#filter-values-${target}`).val() || [];
+            }
+
+            // Validation
+            if ((isNumeric && !filterValues.every(v => v !== '')) || 
+              (!isNumeric && filterValues.length === 0)) {
+              alert('رجاء اختيار قيم صالحة');
+              return;
+            }
+
+            // AJAX call to filter plot
+            $.get("{% url 'filter_plot' %}", {
+              target: target,
+              mode: 'self',
+              condition: conditionType,
+              filter_values: filterValues
+            }, function(data) {
+              debugLog(`Row count: ${data.html}`);
+              updatePlotWithFilteredData(target, data);
+            });
+          } 
+        if (mode === 'other') {
+          const filterColumn = $(`#other-filter-column-${target}`).val();
+          const condition = $(`#other-filter-condition-${target}`).val();
+          const isNumeric = $(`#other-filter-condition-${target} option[value="between"]`).length > 0;
+
+          let filterValues = [];
+          if (isNumeric) {
+            if (condition === 'between') {
+              const min = $('.min-val').val();
+              const max = $('.max-val').val();
+              if (min && max) {
+                filterValues = [min, max];
+              }
+            } else {
+              const singleVal = $('.single-val').val();
+              if (singleVal) {
+                filterValues = [singleVal];
+              }
+            }
+          } else {
+            filterValues = $(`#other-filter-values-${target}`).val() || [];
+          }
+
+          // Validation
+          if(filterValues){
+
+          console.log(`age is ${filterValues}`);
+          }else{
+            console.log(`the filtervalues is not work well`);
+          }
+          if ((isNumeric && !filterValues.every(v => v !== '')) || 
+            (!isNumeric && filterValues.length === 0)) {
+            alert('برجاء اختيار قيم صالحة');
+            return;
+          }
+
+          // AJAX call to filter plot
+          $.get("{% url 'filter_plot' %}", {
+            target: target,
+            mode: 'other',
+            filter_column: filterColumn,
+            condition: condition,
+            filter_values: filterValues
+          }, function(data) {
+            updatePlotWithFilteredData(target, data);
+          });
+    } else if (mode === 'compare') {
+          // Compare with another column
+          const compareColumn = $(`#compare-column-${target}`).val();
+          const plotType = $(`#plot-type-${target}`).val();
+          const aggMethod = $(`#agg-method-${target}`).val();
+          const colorColumn = $(`#color-column-${target}`).val();
+          
+          if (!compareColumn) {
+            alert('رجاء اختيار عمود للمقارنة');
+            return;
+          }
+          
+          if (!plotType) {
+            alert('رجاء اختيار نوع المخطط');
+            return;
+          }
+          debugLog(`Applying compare filter for ${target} and ${compareColumn} with plot type ${plotType}`);
+          // AJAX call to create comparison plot
+          $.get("{% url 'compare_columns' %}", {
+            target: target,
+            compare_column: compareColumn,
+            plot_type: plotType,
+            agg_method: aggMethod || 'mean',
+            color_column: colorColumn || ''
+          }, function(data) {
+            updatePlotWithFilteredData(target, data);
+          });
+        }
+      });
+    }
+
+    // Add this new helper function to load column values
+    // Add this new helper function to load column values
+    function loadColumnValues(column, target) {
+      debugLog(`Loading values for column ${column} for target ${target}`);
+      
+      // Determine the correct selector based on whether this is a self-filter or other-filter
+      const valuesSelector = target.startsWith('other-filter-values-') 
+          ? `#${target}` 
+          : `#filter-values-${target}`;
+      
+      const selectElement = $(valuesSelector);
+      
+      if (!selectElement.length) {
+          debugLog(`Error: Could not find selector ${valuesSelector}`);
+          return;
+      }
+
+      // Show loading state
+      selectElement.html('<option value="" disabled>تحميل القيم...</option>');
+      
+      // Get column type first
+      $.get("{% url 'get_column_type' %}", { column: column })
+        .done(function(typeData) {
+          const isNumeric = typeData.type === 'numeric';
+          // You may reassign valuesSelector if needed (this line suggests it's always using #filter-values-…)
+          // For clarity, ensure that you are targeting the intended element here.
+          const fixedValuesSelector = `#filter-values-${target.replace('other-filter-values-', '')}`;
+          
+          const conditionSelect = $(`#condition-type-${target}`);
+          const valueInputs = $(`#value-inputs-${target}`);
+          const valueSelect = $(`#value-select-${target}`);
+
+          // Clear existing options or inputs
+          conditionSelect.empty();
+          valueInputs.empty();
+          valueSelect.addClass('hidden');
+
+          if (isNumeric) {
+            // Add numeric condition options
+            conditionSelect.append(`
+              <option value="=">=</option>
+              <option value="!=">≠</option>
+              <option value=">">></option>
+              <option value="<"><</option>
+              <option value=">=">≥</option>
+              <option value="<=">≤</option>
+              <option value="between">بين</option>
+            `);
+            
+            // Add numeric inputs including a hidden section for between condition
+            valueInputs.html(`
+              <div class="flex gap-2">
+                <input type="number" class="numeric-input w-full p-2 border rounded-md" 
+                      placeholder="ادخل القيمة" step="any">
+                <div class="between-input hidden flex gap-2">
+                  <input type="number" class="w-full p-2 border rounded-md" 
+                        placeholder="الحد الأدنى" step="any">
+                  <span class="self-center">و</span>
+                  <input type="number" class="w-full p-2 border rounded-md" 
+                        placeholder="الحد الأقصى" step="any">
+                </div>
+              </div>
+            `);
+          } else {
+            // Add categorical condition options
+            conditionSelect.append(`
+              <option value="=">هو</option>
+              <option value="!=">ما عدا</option>
+            `);
+
+            $(`#value-select-${target}`).removeClass('hidden');
+            $(`.categorical-values`).removeClass('hidden');
+
+
+            // Make an AJAX call to get unique values for categorical data.
+            $.get("{% url 'get_unique_values' %}", { column: column })
+              .done(function(data) {
+                // Remove the hidden class and update the select element with new options
+                valueSelect.removeClass('hidden');
+                // Use the already defined (or fixed) selector here if needed.
+                const uniqueSelectElement = $(fixedValuesSelector);
+                uniqueSelectElement.empty();
+                
+                data.values.forEach(function(value) {
+                  uniqueSelectElement.append($('<option>', {
+                    value: value,
+                    text: value
+                  }));
+                });
+                selectElement.css({
+                  'height': '150px',
+                  'overflow-y': 'auto'
+                });
+              })
+              .fail(function(xhr, status, error) {
+                debugLog(`Error loading column values: ${error}`);
+                // Clear the select element and inform the user about the error
+                selectElement.empty().append('<option value="" disabled>حدث خطأ أثناء تحميل القيم</option>');
+              });
+          }
+
+          // Handle change events for condition types (especially for numeric inputs)
+          conditionSelect.off('change').on('change', function() {
+            const condition = $(this).val();
+            if (isNumeric) {
+              $('.between-input').addClass('hidden');
+              $('.numeric-input').show();
+              if (condition === 'between') {
+                $('.numeric-input').hide();
+                $('.between-input').removeClass('hidden').show();
+              }
+            }
+          });
+        })
+        .fail(function(xhr, status, error) {
+          debugLog(`Error retrieving column type: ${error}`);
+          // Handle errors that occur during the column type fetch (optional)
+        });
+    }
+
+
+    // Add this function to update plot with filtered data
+    function updatePlotWithFilteredData(target, data) {
+      if (data.html) {
+        // Update the plot
+        debugLog(`Updating plot with filtered data for ${target}`);
+        $(`#plot-container-${target}`).html(data.html);
+        
+        // Update row count if available
+        if (data.row_count !== undefined) {
+          $(`#row-count-${target}`).text(`Showing ${data.row_count} rows`);
+        }
+        
+        // Refresh the plot
+        setTimeout(function() {
+          const plotDiv = document.querySelector(`#plot-container-${target} [class*="plotly-graph-div"]`);
+          if (plotDiv && window.Plotly) {
+            try {
+              window.Plotly.redraw(plotDiv);
+              debugLog(`Refreshed filtered plot for ${target}`);
+            } catch (e) {
+              debugLog(`Error refreshing filtered plot: ${e.message}`);
+            }
+          }
+        }, 100);
+      } else if (data.error) {
+        debugLog(`Error in filter: ${data.error}`);
+        alert(`Error: ${data.error}`);
+      }
+    }
+
+    // Update plot options based on column types
+    function updatePlotOptions(target, compareColumn, columnTypes) {
+      const plotTypeSelect = $(`#plot-type-${target}`);
+      plotTypeSelect.empty();
+      
+      // Determine available plot types based on column data types
+      if (columnTypes.target === 'numeric' && columnTypes.compare === 'numeric') {
+        // Both numeric - offer scatter plot
+        plotTypeSelect.append(`<option value="scatter">Scatter Plot</option>`);
+        plotTypeSelect.append(`<option value="heatmap">Heatmap</option>`);
+        plotTypeSelect.append(`<option value="box">Box Plot</option>`);
+        plotTypeSelect.append(`<option value="hexbin">Hexbin Plot</option>`);
+      } else if (columnTypes.target === 'numeric' && columnTypes.compare === 'categorical') {
+        // Numeric vs categorical - offer box plot
+        plotTypeSelect.append(`<option value="box">Box Plot</option>`);
+        plotTypeSelect.append(`<option value="violin">Violin Plot</option>`);
+        plotTypeSelect.append(`<option value="bar">Bar Chart</option>`);
+      } else if (columnTypes.target === 'categorical' && columnTypes.compare === 'categorical') {
+        // Both categorical - offer heatmap
+        plotTypeSelect.append(`<option value="heatmap">Heatmap</option>`);
+        plotTypeSelect.append(`<option value="bar">Grouped Bar Chart</option>`);
+        plotTypeSelect.append(`<option value="treemap">Treemap</option>`);
+      } else {
+        // Categorical vs numeric - offer bar chart
+        plotTypeSelect.append(`<option value="bar">Bar Chart</option>`);
+        plotTypeSelect.append(`<option value="box">Box Plot</option>`);
+      }
+      
+      // Show plot type selector
+      $(`#tab-compare-${target} .plot-type-selector`).removeClass('hidden');
+      
+      // Set up plot type change handler
+      plotTypeSelect.off('change').on('change', function() {
+        const plotType = $(this).val();
+        const options = $(`#tab-compare-${target} .plot-options`);
+        
+        // Show/hide specific options based on plot type
+        options.removeClass('hidden');
+        
+        if (plotType === 'bar' || plotType === 'box') {
+          $(`#tab-compare-${target} .aggregation-method`).removeClass('hidden');
+          $(`#tab-compare-${target} .color-by`).removeClass('hidden');
+        } else {
+          $(`#tab-compare-${target} .aggregation-method`).addClass('hidden');
+          $(`#tab-compare-${target} .color-by`).removeClass('hidden');
+        }
+        
+        if (plotType === 'treemap') {
+          $(`#tab-compare-${target} .size-by`).removeClass('hidden');
+        } else {
+          $(`#tab-compare-${target} .size-by`).addClass('hidden');
+        }
+      });
+    }
+
+    // Function to reset a plot to its original state
+    function resetPlot(column) {
+      debugLog(`Resetting plot for ${column}`);
+      
+      const plotContainer = $(`#plot-container-${column}`);
+      const originalPlot = plotContainer.data('original-plot');
+      
+      if (originalPlot) {
+        plotContainer.html(originalPlot);
+        
+        // Reset filter mode
+        $(`#filter-mode-${column}`).val('none');
+        
+        // Hide all filter panels
+        $(`#filter-by-self-${column}`).addClass('hidden');
+        $(`#filter-by-other-${column}`).addClass('hidden');
+        
+        // Reset row count
+        $(`#row-count-${column}`).text('');
+        
+        // Reset tabs - activate filter tab and hide compare tab
+        $(`.tab[data-tab="filter-${column}"]`).addClass('active');
+        $(`.tab[data-tab="compare-${column}"]`).removeClass('active');
+        $(`#tab-filter-${column}`).removeClass('hidden');
+        $(`#tab-compare-${column}`).addClass('hidden');
+        
+        // Refresh the plot
+        setTimeout(function() {
+          const plotDiv = document.querySelector(`#plot-container-${column} [class*="plotly-graph-div"]`);
+          if (plotDiv && window.Plotly) {
+            try {
+              window.Plotly.redraw(plotDiv);
+              debugLog(`Refreshed reset plot for ${column}`);
+            } catch (e) {
+              debugLog(`Error refreshing reset plot: ${e.message}`);
+            }
+          }
+        }, 100);
+      } else {
+        debugLog(`No original plot data found for ${column}`);
+      }
+    }
+
+    // Document ready handler
+    $(document).ready(function() {
+      debugLog("Document ready");
+      showDebugPanel();
+      
+      // Column selection functionality
+      $('#column-picker').on('change', function() {
+        const selectedColumns = $(this).val() || [];
+        debugLog(`Column selection changed: ${selectedColumns.join(', ')}`);
+        
+        // Show warning if more than 4 columns are selected
+        if (selectedColumns.length > 4) {
+          $('#selection-warning').removeClass('hidden');
+        } else {
+          $('#selection-warning').addClass('hidden');
+        }
+      });
+      
+      // Load selected columns button
+      $('#load-selected-columns').on('click', function() {
+        debugLog("Load button clicked");
+        const selectedColumns = $('#column-picker').val() || [];
+        debugLog(`Selected columns: ${selectedColumns.join(', ')}`);
+        
+        // Enforce maximum of 4 columns
+        if (selectedColumns.length > 4) {
+          alert('يرجى اختيار أقصى 4 أعمدة لأداء أفضل.');
+          return;
+        }
+        
+        if (selectedColumns.length === 0) {
+          alert('يرجى اختيار على الأقل عمود واحد للعرض.');
+          return;
+        }
+        
+        // Show loading indicator
+        $('#dynamic-plots-container').html(`
+          <div class="col-span-full text-center py-8 bg-gray-50 rounded-lg">
+            <p class="text-gray-500">
+              <svg class="inline w-6 h-6 animate-spin" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              يتم تحميل الرسوم البيانية، يرجى الإنتظار...
+            </p>
+          </div>
+        `);
+        
+        // Add CSRF token to AJAX requests
+        const csrftoken = $('[name=csrfmiddlewaretoken]').val();
+        
+        debugLog("Sending AJAX request");
+        // AJAX request to get plots for selected columns
+        $.ajax({
+          url: "{% url 'get_selected_plots' %}",
+          method: 'GET',
+          data: {
+            'columns[]': selectedColumns,
+            'csrfmiddlewaretoken': csrftoken
+          },
+          beforeSend: function(xhr) {
+            debugLog("Sending AJAX request");
+          },
+          success: function(response) {
+            debugLog("AJAX success response received");
+            
+            // Clear container
+            $('#dynamic-plots-container').empty();
+            
+            if (response.plots && Object.keys(response.plots).length > 0) {
+              // DEBUG: Show what we got
+              debugLog(`Received ${Object.keys(response.plots).length} plots`);
+              
+              // Set grid columns based on number of plots
+              const gridClass = selectedColumns.length === 1 ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2';
+              $('#dynamic-plots-container').addClass(gridClass);
+              
+              // Add each plot to the container
+              for (const [column, plotData] of Object.entries(response.plots)) {
+                debugLog(`Adding plot for column: ${column}`);
+                
+                // Create a unique ID for this plot container
+                const plotContainerId = `plot-container-${column.replace(/[^a-zA-Z0-9]/g, '_')}`;
+                
+                // Create the full plot card with all filter options
+                const plotCard = `
+                  <div class="analysis-card bg-white shadow-lg rounded-lg overflow-hidden mb-6" data-column="${column}">
+                    <div class="card-header bg-gray-50 px-6 py-4">
+                      <h3 class="text-lg font-semibold text-gray-800">${column}</h3>
+                    </div>
+                    <div class="card-content p-6">
+                      <!-- Plot Container -->
+                      <div class="plot-container mb-4" id="${plotContainerId}">
+                        ${plotData.html}
+                      </div>
+                      
+                      <!-- Tab Navigation -->
+                      <div class="tab-container border-t pt-4 mt-4">
+                        <div class="tab-header flex space-x-4 border-b">
+                          <div class="tab active" data-tab="filter-${column}">تصفية</div>
+                          <div class="tab" data-tab="compare-${column}">مقارنة</div>
+                        </div>
+                        
+                        <!-- Filter Tab -->
+                        <div id="tab-filter-${column}" class="tab-pane">
+                          <div class="filter-controls mt-4">
+                            <div class="filter-selector mb-4">
+                              <label class="block text-sm font-medium text-gray-700 mb-2">اختيارات التصفية:</label>
+                              <select class="filter-mode w-full p-2 border rounded-md" id="filter-mode-${column}" data-target="${column}">
+                                <option value="none">لا تصفية</option>
+                                <option value="self">تصفية بالقيمة</option>
+                                <option value="other">تصفية بعمود آخر</option>
+                              </select>
+                            </div>
+                            
+                            <!-- In the filter-by-self section -->
+                            <div id="filter-by-self-${column}" class="filter-panel hidden mb-4">
+                              <div class="filter-group mb-3">
+                                <label class="filter-label block text-sm font-medium text-gray-700 mb-2">شرط التصفية:</label>
+                                <select class="filter-condition-type w-full p-2 border rounded-md" data-target="${column}" 
+                                        id="condition-type-${column}">
+                                  <!-- Options will be populated dynamically based on column type -->
+                                </select>
+                              </div>
+
+                              <div class="filter-values-container mt-3">
+                                <div id="value-inputs-${column}">
+                                  <!-- Dynamic inputs will be inserted here -->
+                                </div>
+                                <div id="value-select-${column}" class="hidden">
+                                  <select class="filter-values w-full p-2 border rounded-md" multiple 
+                                          data-target="${column}" id="filter-values-${column}">
+                                    <!-- Options will be populated dynamically -->
+                                  </select>
+                                  <p class="text-xs text-gray-500 mt-1">اضغط Ctrl/Cmd لاختيار متعدد</p>
+                                </div>
+                              </div>
+
+                              <button class="apply-filter bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-full mt-4" 
+                                      data-target="${column}">
+                                تصفية
+                              </button>
+                            </div>
+                            
+                            <!-- Filter by other column -->
+                            <div id="filter-by-other-${column}" class="filter-panel hidden mb-4">
+                              <div class="filter-group mb-3">
+                                <label class="filter-label block text-sm font-medium text-gray-700 mb-2">العمود المراد تصفيته:</label>
+                                <select class="filter-column w-full p-2 border rounded-md" data-target="${column}" 
+                                        id="other-filter-column-${column}">
+                                  <option value="">اختر العمود</option>
+                                  ${generateColumnOptions(column)}
+                                </select>
+                              </div>
+                              
+                              <div class="filter-group mb-3">
+                                <label class="filter-label block text-sm font-medium text-gray-700 mb-2">الشرط:</label>
+                                <select class="filter-condition-type w-full p-2 border rounded-md" 
+                                        id="other-filter-condition-${column}">
+                                  <!-- Options populated dynamically -->
+                                </select>
+                              </div>
+
+                              <div class="filter-values-container mt-3 hidden">
+                                <div class="value-inputs mb-3">
+                                  <!-- Numeric inputs will be inserted here -->
+                                </div>
+                                <div class="categorical-values hidden">
+                                  <label class="block text-sm font-medium text-gray-700 mb-2">اختر القيم:</label>
+                                  <select class="filter-values w-full p-2 border rounded-md" multiple 
+                                          id="other-filter-values-${column}">
+                                    <!-- Options populated dynamically -->
+                                  </select>
+                                  <p class="text-xs text-gray-500 mt-1">اضغط Ctrl/Cmd لاختيار متعدد</p>
+                                </div>
+                              </div>
+
+                              <button class="apply-filter bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-full mt-4" 
+                                      data-target="${column}">
+                                تصفية
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <!-- Compare Tab -->
+                       <!-- In Compare Tab section -->
+                        <div id="tab-compare-${column}" class="tab-pane hidden">
+                          <div class="compare-controls mt-4">
+                            <div class="compare-selector mb-4">
+                              <label class="block text-sm font-medium text-gray-700 mb-2">مقارنة مع:</label>
+                              <select class="compare-column w-full p-2 border rounded-md" data-target="${column}" 
+                                      id="compare-column-${column}">
+                                <option value="">اختر العمود</option>
+                                ${generateColumnOptions(column)}
+                              </select>
+                            </div>
+                            
+                            <!-- Plot type selection -->
+                            <div class="plot-type-selector hidden mb-4">
+                              <label class="block text-sm font-medium text-gray-700 mb-2">نوع الرسم:</label>
+                              <select class="w-full p-2 border rounded-md plot-type-select" 
+                                      id="plot-type-${column}" 
+                                      data-target="${column}">
+                                <!-- Options populated dynamically -->
+                              </select>
+                            </div>
+
+                            <button class="apply-compare bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-full" 
+                                    data-target="${column}">
+                              توليد المخطط
+                            </button>
+                          </div>
+                        </div>
+                      
+                      <div id="row-count-${column}" class="text-sm text-gray-500 mt-2"></div>
+                      
+                      <button class="mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded w-full reset-plot" data-target="${column}">
+                          اعادة تعيين المخطط
+                      </button>
+                    </div>
+                  </div>
+                `;
+                
+                // Append the plot card to the container
+                $('#dynamic-plots-container').append(plotCard);
+                
+                // Store original plot
+                $(`#${plotContainerId}`).data('original-plot', plotData.html);
+                
+                debugLog(`Plot card added for ${column}`);
+
+                // Add statistics if available
+                if (response.stats && response.stats[column]) {
+                  const stats = response.stats[column];
+                  let statsHtml = '<div class="stats-panel mt-2 p-3 bg-gray-50 rounded text-sm">';
+                  
+                  if (stats.type === 'numeric') {
+                    statsHtml += `
+                      <div class="grid grid-cols-2 gap-2">
+                        <div>المتوسط: ${stats.mean ? stats.mean.toFixed(2) : 'N/A'}</div>
+                        <div>الوسيط: ${stats.median ? stats.median.toFixed(2) : 'N/A'}</div>
+                        <div>الانحراف المعياري: ${stats.std ? stats.std.toFixed(2) : 'N/A'}</div>
+                        <div>المدى: ${stats.min !== null ? stats.min.toFixed(2) : 'N/A'} - ${stats.max !== null ? stats.max.toFixed(2) : 'N/A'}</div>
+                        <div>المفقود: ${stats.missing} قيم</div>
+                      </div>
+                    `;
+                  } else {
+                    statsHtml += `
+                      <div>
+                        <div>المميزات المميزة: ${stats.unique}</div>
+                        <div>المفقود: ${stats.missing} قيم</div>
+                        <div class="mt-1">القيم الأكثر شيوعا:</div>
+                        <ul class="list-disc ml-4">
+                          ${Object.entries(stats.top_values || {}).map(([key, value]) => 
+                            `<li>${key}: ${value}</li>`).join('')}
+                        </ul>
+                      </div>
+                    `;
+                  }
+                  
+                  statsHtml += '</div>';
+                  $(`#${plotContainerId}`).after(statsHtml);
+                }
+              }
+              
+              // Initialize event handlers for the filter controls
+              debugLog("Initializing filter event handlers");
+              initFilterEventHandlers();
+              
+              // Initialize reset buttons
+              initResetButtons();
+              
+              // Initialize tab switching functionality
+              initTabSwitching();
+              
+              // Initialize download buttons
+              initDownloadButtons();
+              
+              // Initialize compare buttons
+              initCompareButtons();
+              
+              // Force Plotly to properly render all plots
+              debugLog("Forcing Plotly to render all plots");
+              setTimeout(function() {
+                // More reliable way to find Plotly divs
+                document.querySelectorAll('[data-plotly-plot], [class*="plotly-graph-div"]').forEach(function(plotDiv) {
+                  try {
+                    if (window.Plotly) {
+                      window.Plotly.redraw(plotDiv);
+                      debugLog(`Refreshed plot: ${plotDiv.id || 'unnamed'}`);
+                    }
+                  } catch (e) {
+                    debugLog(`Error refreshing plot: ${e.message}`);
+                  }
+                });
+              }, 500);
+              
+            } else {
+              debugLog("No plots were returned in the response");
+              // No plots returned
+              $('#dynamic-plots-container').html(`
+                <div class="col-span-full text-center py-8 bg-gray-50 rounded-lg">
+                    <p class="text-gray-500">لا يوجد رسوم بيانية متاحة للاختيارات المحددة</p>
+                  <pre class="text-xs mt-4 bg-gray-100 p-2 rounded">${JSON.stringify(response, null, 2)}</pre>
+                </div>
+              `);
+            }
+          },
+          error: function(xhr, status, error) {
+            debugLog(`AJAX error: ${status}, ${error}`);
+            
+            $('#dynamic-plots-container').html(`
+              <div class="col-span-full text-center py-8 bg-red-50 rounded-lg">
+                <p class="text-red-500">خطأ في تحميل الرسوم: ${error || 'خطأ غير معروف'}</p>
+                <details class="mt-4 text-left">
+                  <summary class="cursor-pointer text-sm">تفاصيل تقنية</summary>
+                  <pre class="text-xs bg-gray-100 p-2 mt-2 overflow-x-auto">${xhr.responseText || 'لا يوجد تفاصيل'}</pre>
+                </details>
+              </div>
+            `);
+          }
+        });
+      });
+
+      // Also ensure Plotly is loaded
+      if (typeof Plotly === 'undefined') {
+        debugLog("Plotly not found, loading it dynamically");
+        var script = document.createElement('script');
+        script.src = 'https://cdn.plot.ly/plotly-2.18.2.min.js';
+        script.onload = function() {
+          debugLog("Plotly loaded dynamically");
         };
+        document.head.appendChild(script);
+      } else {
+        debugLog("Plotly is already loaded");
+      }
+    });
+
+    // Function to refresh all Plotly plots
+    function refreshPlots() {
+      console.log("Refreshing all plots");
+      document.querySelectorAll('[data-plotly-plot], [class*="plotly-graph-div"]').forEach(function(plotDiv) {
+        if (window.Plotly) {
+          try {
+            window.Plotly.redraw(plotDiv);
+            console.log("Refreshed plot:", plotDiv.id || 'unnamed');
+          } catch (e) {
+            console.error("Error refreshing plot:", e);
+          }
+        } else {
+          console.log("Plotly library not available for refresh");
+        }
+      });
+    }
+
+    // Tab
+    $('.tab').off('click').on('click', function() {
+      const tabId = $(this).data('tab');
+      const container = $(this).closest('.tab-container');
+      const targetColumn = $(this).closest('.analysis-card').data('column');
+      
+      debugLog(`Tab clicked: ${tabId} for column ${targetColumn}`);
+      
+      // Remove active class from all tabs
+      container.find('.tab').removeClass('active');
+      container.find('.tab-pane').addClass('hidden');
+      
+      // Add active class to current tab
+      $(this).addClass('active');
+      const tabPane = $(`#tab-${tabId}`);
+      tabPane.removeClass('hidden');
+      
+      debugLog(`Activated tab-${tabId}, visible: ${!tabPane.hasClass('hidden')}`);
+      
+      // Special handling for filter tab to load values for filter panels
+      if (tabId === `filter-${targetColumn}`) {
+        // Check if the filter mode is already set
+        const filterMode = $(`#filter-mode-${targetColumn}`).val();
+        
+        if (filterMode === 'self') {
+          // Make sure the filter values are loaded
+          loadColumnValues(targetColumn, targetColumn);
+          
+          // Make sure the panel is visible
+          $(`#filter-by-self-${targetColumn}`).removeClass('hidden');
+          $(`#filter-by-other-${targetColumn}`).addClass('hidden');
+          $(`#compare-by-${targetColumn}`).addClass('hidden');
+        } else if (filterMode === 'other') {
+          $(`#filter-by-self-${targetColumn}`).addClass('hidden');
+          $(`#filter-by-other-${targetColumn}`).removeClass('hidden');
+          $(`#compare-by-${targetColumn}`).addClass('hidden');
+        } else if (filterMode === 'compare') {
+          $(`#filter-by-self-${targetColumn}`).addClass('hidden');
+          $(`#filter-by-other-${targetColumn}`).addClass('hidden');
+          $(`#compare-by-${targetColumn}`).removeClass('hidden');
+        }
+      }
     });
   </script>
   
   <!-- Add this just before the closing </body> tag -->
   <script>
     $(document).ready(function() {
-        // Store original plots
-        $('.plot-container').each(function() {
-            $(this).data('original-plot', $(this).html());
-        });
-
+        
         // Handle adding new filter rows
         $('#add-filter').click(function() {
             const filterRow = `
                 <div class="filter-row">
                     <select class="global-filter-column">
-                        <option value="">Select Column</option>
-                        {% for col in overview.columns %}
+                        <option value="">اختر العمود</option>
+                        {% for col in columns %}
                             <option value="{{ col }}">{{ col }}</option>
                         {% endfor %}
                     </select>
                     <select class="global-filter-values" multiple>
                     </select>
-                    <button class="btn btn-secondary remove-filter">Remove</button>
+                    <button class="btn btn-secondary remove-filter">ازالة</button>
                 </div>
             `;
             $('#global-filters').append(filterRow);
@@ -547,6 +1229,38 @@
             }
         });
 
+        // Handle compare column change
+        $(document).on('change', '.compare-column', function() {
+          const target = $(this).data('target');
+          const compareColumn = $(this).val();
+          const plotTypeSelect = $(`#plot-type-${target}`);
+          
+          if (compareColumn) {
+            // Get column types and allowed plot types
+            $.get("{% url 'get_column_types_compare' %}", {
+              target: target,
+              compare_column: compareColumn
+            }, function(data) {
+              // Clear existing options
+              plotTypeSelect.empty();
+              
+              // Add plot types based on column combination
+              data.allowed_plots.forEach(plot => {
+                plotTypeSelect.append($('<option>', {
+                  value: plot.value,
+                  text: plot.label
+                }));
+              });
+              
+              // Show plot type selector
+              $(`#tab-compare-${target} .plot-type-selector`).removeClass('hidden');
+            });
+          } else {
+            $(`#tab-compare-${target} .plot-type-selector`).addClass('hidden');
+          }
+        });
+
+        // test
         // Handle apply filters button
         $('#apply-filters').click(function() {
             const filters = [];
@@ -774,113 +1488,10 @@
     }
   </script>
 
-  <style>
-    /* Modal styles */
-    .modal-content {
-        max-height: 85vh;
-        width: 95%;  /* Increased from default */
-        max-width: 1200px;  /* Increased for larger screens */
-        margin: 0 auto;
-    }
-    
-    #modalBody {
-        scrollbar-width: thin;
-        scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    /* Fix for plot container width */
-    .plot-container {
-        width: 100% !important;  /* Force full width */
-        max-width: 100% !important;
-        min-height: 400px;
-    }
-    
-    /* Fix for plotly specific elements */
-    .js-plotly-plot, .plot-container .plotly {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-    
-    .main-svg {
-        width: 100% !important;
-    }
-    
-    /* Ensure tables are responsive */
-    .overflow-x-auto {
-        max-width: 100%;
-        margin: 1rem 0;
-    }
-    
-    /* Prevent body scroll when modal is open */
-    body.modal-open {
-        overflow: hidden;
-    }
-  </style>
 
   <!-- Add this JavaScript -->
   <script>
-  let originalFile = null;  // Global variable to store the file
-
-  $(document).ready(function() {
-      // Store the file when it's uploaded
-      
-       originalFile ="donations.csv";
-      $('#downloadReport').click(function() {
-          console.log('Download button clicked');
-          
-          const formData = new FormData();
-          formData.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
-          
-          $.ajax({
-              url: "{% url 'generate_report' %}",
-              type: 'POST',
-              data: formData,
-              processData: false,
-              contentType: false,
-              xhrFields: {
-                  responseType: 'blob'
-              },
-              beforeSend: function() {
-                  console.log('Sending request for PDF generation...');
-              },
-              success: function(response) {
-                  console.log('PDF generated successfully');
-                  const pdfBlob = new Blob([response], { type: 'application/pdf' });
-                  const url = window.URL.createObjectURL(pdfBlob);
-                  const a = document.createElement('a');
-                  a.href = url;
-                  a.download = 'donor_analysis_report.pdf';
-                  document.body.appendChild(a);
-                  a.click();
-                  window.URL.revokeObjectURL(url);
-                  document.body.removeChild(a);
-              },
-              error: function(xhr, status, error) {
-                  console.error('Error details:', {
-                      status: status,
-                      error: error,
-                      response: xhr.responseText,
-                      headers: xhr.getAllResponseHeaders()
-                  });
-                  
-                  try {
-                      const errorResponse = JSON.parse(xhr.responseText);
-                      alert(errorResponse.error || 'Error generating PDF report.');
-                  } catch (e) {
-                      console.error('Error parsing response:', e);
-                      alert('Error generating PDF report. Please check console for details.');
-                  }
-              }
-          });
-      });
-  });
-  </script>
-
-
- <script>
-    // Modern Dashboard UI Enhancements
+  // Modern Dashboard UI Enhancements
 
   document.addEventListener('DOMContentLoaded', function() {
     // Add modern UI enhancements
@@ -900,9 +1511,6 @@
     
     // Add file upload enhancement
     enhanceFileUpload();
-    
-   
-   
   });
 
   // Function to enhance UI elements
@@ -1152,89 +1760,1111 @@
     });
   }
 
-  // Function to set up dark mode toggle
-  function setupDarkModeToggle() {
-    // Create dark mode toggle button
-    const toggleContainer = document.createElement('div');
-    toggleContainer.className = 'dark-mode-toggle';
-    toggleContainer.innerHTML = `
-      <input type="checkbox" id="dark-mode-toggle">
-      <label for="dark-mode-toggle">
-        <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-        <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-      </label>
-    `;
-    
-    // Insert the toggle at the top of the page
-    const container = document.querySelector('.container');
-    if (container) {
-      container.insertBefore(toggleContainer, container.firstChild);
-    }
-    
-    // Add dark mode toggle functionality
-    const darkModeToggle = document.getElementById('dark-mode-toggle');
-    if (darkModeToggle) {
-      // Check for saved user preference
-      const isDarkMode = localStorage.getItem('darkMode') === 'true';
-      
-      // Set initial state
-      if (isDarkMode) {
-        document.body.classList.add('dark-mode');
-        darkModeToggle.checked = true;
-      }
-      
-      // Add toggle handler
-      darkModeToggle.addEventListener('change', function() {
-        if (this.checked) {
-          document.body.classList.add('dark-mode');
-          localStorage.setItem('darkMode', 'true');
-        } else {
-          document.body.classList.remove('dark-mode');
-          localStorage.setItem('darkMode', 'false');
+  // Add a function to handle reset plot button clicks
+  function initResetButtons() {
+    $('.reset-plot').off('click').on('click', function() {
+      const column = $(this).data('target');
+      resetPlot(column);
+    });
+  }
+
+  // Function to handle tab switching
+  function initTabSwitching() {
+    $('.tab').each(function() {
+      $(this).off('click').on('click', function() {
+        const tabId = $(this).data('tab');
+        const container = $(this).closest('.tab-container');
+        const targetColumn = $(this).closest('.analysis-card').data('column');
+        
+        debugLog(`Tab clicked: ${tabId} for column ${targetColumn}`);
+        
+        // Remove active class from all tabs
+        container.find('.tab').removeClass('active');
+        
+        // Hide all tab panes
+        container.find('.tab-pane').addClass('hidden');
+        
+        // Add active class to current tab
+        $(this).addClass('active');
+        
+        // Show the current tab pane - ensure it's visible by both removing hidden and setting display
+        const tabPane = $(`#tab-${tabId}`);
+        tabPane.removeClass('hidden');
+        tabPane.css('display', 'block');
+        
+        debugLog(`Activated tab-${tabId}, visible: ${!tabPane.hasClass('hidden') && tabPane.css('display') !== 'none'}`);
+        
+        // Special handling for filter tab
+        // In your tab click handler, replace the filter mode section with:
+        if (tabId.startsWith('filter-')) {
+            const filterMode = $(`#filter-mode-${columnName}`).val();
+            debugLog(`Filter mode for ${columnName}: ${filterMode}`);
+            
+            if (filterMode === 'self') {
+                // Load values for self-filtering
+                loadColumnValues(columnName, columnName);
+                $(`#filter-by-self-${columnName}`).removeClass('hidden');
+                $(`#filter-by-other-${columnName}`).addClass('hidden');
+            } else if (filterMode === 'other') {
+                $(`#filter-by-self-${columnName}`).addClass('hidden');
+                $(`#filter-by-other-${columnName}`).removeClass('hidden');
+            }
         }
         
-        // Force plotly to redraw charts
-        setTimeout(() => {
-          window.dispatchEvent(new Event('resize'));
-        }, 100);
+        return false; // Prevent default action
       });
+    });
+  }
+
+  // Function to initialize download plot buttons
+  function initDownloadButtons() {
+    $('.download-plot').off('click').on('click', function() {
+      const target = $(this).data('target');
+      const plotDiv = document.querySelector(`#plot-container-${target} [class*="plotly-graph-div"]`);
+      
+      if (plotDiv && window.Plotly) {
+        Plotly.downloadImage(plotDiv, {
+          format: 'png',
+          filename: `${target}-plot`,
+          height: 600,
+          width: 800
+        });
+      }
+    });
+  }
+
+  // Function to initialize compare buttons
+// Initialize compare buttons
+  function initCompareButtons() {
+    $('.apply-compare').off('click').on('click', function() {
+      const target = $(this).data('target');
+      const compareColumn = $(`#compare-column-${target}`).val();
+      const colorColumn = $(`#color-column-${target}`).val();
+      
+      if (!compareColumn) {
+        alert('Please select a column to compare with.');
+        return;
+      }
+      
+      // Show loading indicator
+      const plotContainer = $(`#plot-container-${target}`);
+      plotContainer.html(`<div class="flex justify-center items-center h-full">
+        <div class="spinner"></div>
+        <p class="ml-2">Generating optimal visualization...</p>
+      </div>`);
+      const plotType = $(`#plot-type-${target}`).val();
+      debugLog(`Applying compare filter for ${target} and ${compareColumn} with plot type ${plotType}`);
+      // AJAX call to create comparison plot
+      $.get("{% url 'compare_columns' %}", {
+        target: target,
+        compare_column: compareColumn,
+        plot_type: plotType,
+      })
+      .done(function(data) {
+        if (data.plot_html) {
+          // Update the plot
+          plotContainer.html(data.plot_html);
+          
+          // Update row count if available
+          if (data.row_count !== undefined) {
+            $(`#row-count-${target}`).text(`Showing ${data.row_count} rows`);
+          }
+          
+          // Refresh the plot
+          setTimeout(function() {
+            const plotDiv = document.querySelector(`#plot-container-${target} [class*="plotly-graph-div"]`);
+            if (plotDiv && window.Plotly) {
+              try {
+                window.Plotly.redraw(plotDiv);
+                debugLog(`Refreshed comparison plot for ${target}`);
+              } catch (e) {
+                debugLog(`Error refreshing comparison plot: ${e.message}`);
+              }
+            }
+          }, 100);
+        } else if (data.error) {
+          debugLog(`Error in comparison: ${data.error}`);
+          plotContainer.html(`<div class="p-4 text-red-500">
+            <p>Error: ${data.error}</p>
+          </div>`);
+        }
+      })
+      .fail(function(xhr, status, error) {
+        debugLog(`Error generating comparison plot: ${error}`);
+        plotContainer.html(`<div class="p-4 text-red-500">
+          <p>Error generating comparison plot: ${error || 'Unknown error'}</p>
+        </div>`);
+      });
+    });
+  }
+
+</script>
+
+
+
+{% comment %} <script>
+// Add this to your existing JavaScript
+function savePlotsForPdf() {
+    // Find all plotly plot divs
+    const plotDivs = document.querySelectorAll('[id^="plotly-"]');
+    
+    if (plotDivs.length === 0) {
+        console.log("No plots found to save");
+        return;
     }
+    
+    console.log(`Found ${plotDivs.length} plots to save`);
+    
+    // Save each plot
+    plotDivs.forEach((div, index) => {
+        // Get the plot ID
+        const plotId = div.id;
+        
+        // Get the plot title if available
+        let title = "";
+        try {
+            const plotData = div._fullData || [];
+            if (plotData.length > 0 && plotData[0].title) {
+                title = plotData[0].title;
+            }
+        } catch (e) {
+            console.warn("Could not extract plot title", e);
+        }
+        
+        
+        const plotHtml = ```
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8" />
+            <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        </head>
+        <body>
+            <div id="plot-div" style="width: 800px; height: 500px;"></div>
+            
+            <!-- Data storage for PDF extraction -->
+            <div id="plot-data" style="display:none;">
+                ${JSON.stringify(Plotly.toJSON(div))}
+            </div>
+            
+            <script>
+                var plotData = JSON.parse(document.getElementById('plot-data').textContent);
+                Plotly.newPlot('plot-div', plotData.data, plotData.layout);
+            </script>
+        </body>
+        </html>
+        ```;
+        
+        // Send to server
+        const formData = new FormData();
+        formData.append('html', plotHtml);
+        formData.append('plot_id', plotId);
+        formData.append('title', title);
+        
+        fetch('/eda/save_client_plot/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log(`Saved plot ${index+1} to ${data.path}`);
+            } else {
+                console.error(`Error saving plot ${index+1}:`, data.error);
+            }
+        })
+        .catch(error => {
+            console.error(`Error sending plot ${index+1} to server:`, error);
+        });
+    });
+}
+
+// Add a button to save plots or call automatically
+document.addEventListener('DOMContentLoaded', function() {
+    // Add a save button to the interface
+    const controlPanel = document.querySelector('.control-panel');
+    if (controlPanel) {
+        const saveButton = document.createElement('button');
+        saveButton.textContent = 'Save Plots for PDF';
+        saveButton.className = 'btn btn-info';
+        saveButton.onclick = savePlotsForPdf;
+        
+        // Add button to the control panel
+        controlPanel.appendChild(saveButton);
+    }
+    
+    // Or automatically save when plots are generated
+    // Call savePlotsForPdf whenever new plots are rendered
+    // This requires knowledge of when your plots are fully rendered
+});
+</script> {% endcomment %}
+
+<script>
+  // Check if Plotly is loaded properly
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM content loaded, Plotly available:", typeof Plotly !== 'undefined');
+    
+    // If Plotly isn't available, load it
+    if (typeof Plotly === 'undefined') {
+      console.log("Plotly not found, loading dynamically");
+      var script = document.createElement('script');
+      script.src = 'https://cdn.plot.ly/plotly-latest.min.js';
+      script.onload = function() {
+        console.log("Plotly loaded dynamically");
+      };
+      document.head.appendChild(script);
+    }
+    
+    // Fix tab switching issues
+    setTimeout(function() {
+      // Override any existing tab handlers
+      $('.tab').off('click');
+      
+      $('.tab').on('click', function() {
+        const tabId = $(this).data('tab');
+        const container = $(this).closest('.tab-container');
+        const card = $(this).closest('.analysis-card');
+        
+        // Get the column name from the card
+        const columnName = card.data('column');
+        console.log(`Tab clicked: ${tabId} for column ${columnName}`);
+        
+        // Remove active class from all tabs in this container
+        container.find('.tab').removeClass('active');
+        
+        // Hide all tab panes in this container - use multiple CSS properties to ensure hiding
+        card.find('.tab-pane').each(function() {
+          $(this).addClass('hidden');
+          $(this).css({
+            'display': 'none',
+            'visibility': 'hidden',
+            'opacity': 0
+          });
+        });
+        
+        // Add active class to this tab
+        $(this).addClass('active');
+        
+        // Show the selected tab pane - use multiple CSS properties to ensure visibility
+        const paneId = `#tab-${tabId}`;
+        const pane = card.find(paneId);
+        pane.removeClass('hidden');
+        pane.css({
+          'display': 'block',
+          'visibility': 'visible',
+          'opacity': 1
+        });
+        console.log(`Set ${paneId} to visible`);
+        
+        // Special handling for filter tab
+        if (tabId.startsWith('filter-')) {
+          const filterMode = $(`#filter-mode-${columnName}`).val();
+          console.log(`Filter mode: ${filterMode}`);
+          
+          // Handle filter panels visibility
+          if (filterMode === 'self') {
+            $(`#filter-by-self-${columnName}`).removeClass('hidden').show();
+            $(`#filter-by-other-${columnName}`).addClass('hidden').hide();
+          } else if (filterMode === 'other') {
+            $(`#filter-by-self-${columnName}`).addClass('hidden').hide();
+            $(`#filter-by-other-${columnName}`).removeClass('hidden').show();
+          }
+        }else if (tabId.startsWith('compare-')) {
+          // Show/hide color selector based on column types
+          const compareColumn = $(`#compare-column-${targetColumn}`).val();
+          if (compareColumn) {
+            // Get column types
+            $.get("{% url 'get_column_types' %}", {
+              target: targetColumn,
+              compare_column: compareColumn
+            }, function(data) {
+              // Only show color selector if categorical data exists
+              const showColor = data.column_types.target === 'categorical' || 
+                              data.column_types.compare === 'categorical';
+              $(`#tab-compare-${targetColumn} .advanced-options`).toggleClass('hidden', !showColor);
+            });
+          }
+        }
+        
+        // Fix Plotly plots if needed
+        setTimeout(function() {
+          refreshPlots();
+        }, 100);
+        
+        return false;
+      });
+      
+      // Initialize - show all filter tabs on start
+      $('.tab[data-tab^="filter-"]').each(function() {
+        const column = $(this).closest('.analysis-card').data('column');
+        $(`#tab-filter-${column}`).removeClass('hidden').css('display', 'block');
+      });
+      
+    }, 500);
+  });
+  
+  // Function to refresh all Plotly plots
+  function refreshPlots() {
+    console.log("Refreshing all plots");
+    document.querySelectorAll('[data-plotly-plot], [class*="plotly-graph-div"]').forEach(function(plotDiv) {
+      if (window.Plotly) {
+        try {
+          window.Plotly.redraw(plotDiv);
+          console.log("Refreshed plot:", plotDiv.id || 'unnamed');
+        } catch (e) {
+          console.error("Error refreshing plot:", e);
+        }
+      } else {
+        console.log("Plotly library not available for refresh");
+      }
+    });
   }
 </script>
 
+<!-- Add this script block just before the closing </body> tag -->
+<script>
+  // Main function to generate and display AI Insights
+  function generateAndDisplayInsights(isRefresh = false) {
+    // If refreshing, show loading state on the button
+    const generateBtn = document.getElementById('generateAIInsights');
+    const originalBtnText = generateBtn.innerHTML;
+    
+    if (isRefresh) {
+      generateBtn.innerHTML = `
+        <svg class="animate-spin h-5 w-5 text-white inline mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg> Refreshing...`;
+      generateBtn.disabled = true;
+    }
+    
+    // Call the API to generate insights
+    fetch('{% url "get_dataset_insights" %}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: JSON.stringify({})
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.status === 'success') {
+        // Get the insights container and clear it
+        const insightsContainer = document.querySelector('.insights-grid');
+        insightsContainer.innerHTML = ''; // Remove all existing insights
+        
+        // Define different categories for insights with different colors
+        const categories = [
+          { name: 'Data Quality', color: 'blue' },
+          { name: 'Distribution', color: 'green' },
+          { name: 'Correlation', color: 'purple' },
+          { name: 'Trend', color: 'yellow' },
+          { name: 'Business', color: 'red' }
+        ];
+        
+        // Parse bullet points from the response
+        const bulletPoints = data.insights.split('\n')
+          .map(line => line.trim())
+          .filter(line => line.startsWith('•') || line.startsWith('-') || line.startsWith('* '))
+          .map(line => line.replace(/^[•\-\*]\s*/, '').trim());
+        
+        if (bulletPoints.length === 0) {
+          // If no bullet points found, try to find any non-empty lines
+          const allLines = data.insights.split('\n')
+            .map(line => line.trim())
+            .filter(line => line.length > 0);
+          
+          // Add whole paragraphs as single insights if bullet points aren't found
+          allLines.forEach((line, index) => {
+            if (line.length > 30) { // Only add substantial lines
+              bulletPoints.push(line);
+            }
+          });
+        }
+        
+        // If still no insights, show a message
+        if (bulletPoints.length === 0) {
+          insightsContainer.innerHTML = `
+            <div class="col-span-full text-center py-8 bg-gray-50 rounded-lg">
+              <p class="text-gray-500">No insights could be generated for this dataset.</p>
+            </div>
+          `;
+          
+          // Reset button if refreshing
+          if (isRefresh && generateBtn) {
+            generateBtn.innerHTML = originalBtnText;
+            generateBtn.disabled = false;
+          }
+          
+          return;
+        }
+        
+        // Limit to only 9 insights maximum - select them smartly
+        let selectedInsights = [];
+        
+        if (bulletPoints.length <= 9) {
+          // If we have 9 or fewer insights, use all of them
+          selectedInsights = bulletPoints;
+        } else {
+          // Ensure we get a balanced selection from different categories if possible
+          
+          // First, categorize insights
+          const categorizedInsights = {
+            dataQuality: [],
+            distribution: [],
+            correlation: [],
+            trend: [],
+            business: []
+          };
+          
+          bulletPoints.forEach(insight => {
+            const lowerInsight = insight.toLowerCase();
+            
+            if (lowerInsight.includes('missing') || lowerInsight.includes('outlier') || lowerInsight.includes('quality')) {
+              categorizedInsights.dataQuality.push(insight);
+            } else if (lowerInsight.includes('average') || lowerInsight.includes('median') || lowerInsight.includes('distribution')) {
+              categorizedInsights.distribution.push(insight);
+            } else if (lowerInsight.includes('correlation') || lowerInsight.includes('related') || lowerInsight.includes('association')) {
+              categorizedInsights.correlation.push(insight);
+            } else if (lowerInsight.includes('increase') || lowerInsight.includes('decrease') || lowerInsight.includes('trend') ||
+                      lowerInsight.includes('time') || lowerInsight.includes('date') || lowerInsight.includes('month')) {
+              categorizedInsights.trend.push(insight);
+            } else if (lowerInsight.includes('recommend') || lowerInsight.includes('opportunity') || lowerInsight.includes('strategy')) {
+              categorizedInsights.business.push(insight);
+            } else {
+              // If can't categorize, put in distribution as default
+              categorizedInsights.distribution.push(insight);
+            }
+          });
+          
+          // Determine how many insights to take from each category
+          // Try to balance across categories, prioritizing business insights
+          const categoryOrder = ['business', 'dataQuality', 'correlation', 'trend', 'distribution'];
+          const target = Math.min(9, bulletPoints.length);
+          let remaining = target;
+          
+          // First pass: try to get at least 1 from each non-empty category
+          for (const category of categoryOrder) {
+            if (categorizedInsights[category].length > 0 && remaining > 0) {
+              selectedInsights.push(categorizedInsights[category][0]);
+              categorizedInsights[category].shift(); // Remove the one we just added
+              remaining--;
+            }
+          }
+          
+          // Second pass: distribute remaining slots proportionally
+          if (remaining > 0) {
+            // Count how many insights remain in all categories
+            const totalRemaining = Object.values(categorizedInsights)
+              .reduce((sum, arr) => sum + arr.length, 0);
+            
+            if (totalRemaining > 0) {
+              // Distribute remaining slots across categories based on their size
+              for (const category of categoryOrder) {
+                const share = Math.floor((categorizedInsights[category].length / totalRemaining) * remaining);
+                for (let i = 0; i < share && categorizedInsights[category].length > 0; i++) {
+                  selectedInsights.push(categorizedInsights[category][0]);
+                  categorizedInsights[category].shift();
+                  remaining--;
+                }
+              }
+            }
+          }
+          
+          // Third pass: fill any remaining slots with whatever insights are left
+          if (remaining > 0) {
+            for (const category of categoryOrder) {
+              while (remaining > 0 && categorizedInsights[category].length > 0) {
+                selectedInsights.push(categorizedInsights[category][0]);
+                categorizedInsights[category].shift();
+                remaining--;
+              }
+            }
+          }
+        }
+        
+        // Add the selected insights to the grid
+        selectedInsights.forEach((insight, index) => {
+          // Determine category based on content
+          let categoryIndex = index % categories.length;
+          
+          // Try to determine a better category
+          const lowerInsight = insight.toLowerCase();
+          if (lowerInsight.includes('missing') || lowerInsight.includes('outlier') || lowerInsight.includes('quality')) {
+            categoryIndex = 0; // Data Quality
+          } else if (lowerInsight.includes('average') || lowerInsight.includes('median') || lowerInsight.includes('distribution')) {
+            categoryIndex = 1; // Distribution
+          } else if (lowerInsight.includes('correlation') || lowerInsight.includes('related') || lowerInsight.includes('association')) {
+            categoryIndex = 2; // Correlation
+          } else if (lowerInsight.includes('increase') || lowerInsight.includes('decrease') || lowerInsight.includes('trend') ||
+                    lowerInsight.includes('time') || lowerInsight.includes('date') || lowerInsight.includes('month')) {
+            categoryIndex = 3; // Trend
+          } else if (lowerInsight.includes('recommend') || lowerInsight.includes('opportunity') || lowerInsight.includes('strategy')) {
+            categoryIndex = 4; // Business
+          }
+          
+          const category = categories[categoryIndex];
+          
+          // Determine severity based on wording
+          let severity = 'medium';
+          if (lowerInsight.includes('critical') || lowerInsight.includes('significant') || 
+              lowerInsight.includes('major') || lowerInsight.includes('important') ||
+              lowerInsight.includes('high ')) {
+            severity = 'high';
+          } else if (lowerInsight.includes('minor') || lowerInsight.includes('slight') || 
+                    lowerInsight.includes('small') || lowerInsight.includes('low ')) {
+            severity = 'low';
+          }
+          
+          // Create the card with appropriate styling
+          const card = document.createElement('div');
+          card.className = `insight-card cursor-pointer bg-white rounded-lg border p-4 hover:shadow-lg transition-all duration-200 border-${category.color}-400 bg-${category.color}-50`;
+          card.dataset.severity = severity;
+          
+          card.innerHTML = `
+            <div class="flex justify-between items-start mb-2">
+              <span class="text-sm font-semibold px-2 py-1 rounded bg-${category.color}-200 text-${category.color}-800">
+                ${category.name}
+              </span>
+              <span class="text-sm font-semibold px-2 py-1 rounded 
+                ${severity === 'high' ? 'bg-red-200 text-red-800' : 
+                 severity === 'medium' ? 'bg-yellow-200 text-yellow-800' : 
+                 'bg-blue-200 text-blue-800'}">
+                ${severity.charAt(0).toUpperCase() + severity.slice(1)} Priority
+              </span>
+            </div>
+            <p class="text-gray-700 text-sm mt-2">${insight}</p>
+            
+            <!-- Store the insight data -->
+            <div class="hidden insight-data">${JSON.stringify({
+              type: `${category.name.toLowerCase()}_insight`,
+              message: insight,
+              severity: severity,
+              category: category.name
+            })}</div>
+          `;
+          
+          insightsContainer.appendChild(card);
+        });
+        
+        // Initialize click handlers for insight cards
+        document.querySelectorAll('.insight-card').forEach(card => {
+          card.addEventListener('click', function() {
+            try {
+              const insightDataString = $(this).find('.insight-data').text();
+              const insightData = JSON.parse(insightDataString);
+              
+              // Check if the modal exists, if not create it
+              let modal = document.getElementById('insightModal');
+              if (!modal) {
+                modal = createInsightModal();
+              }
+              
+              // Populate and show modal
+              document.getElementById('modalTitle').textContent = insightData.category + ' INSIGHT';
+              document.getElementById('modalBody').innerHTML = generateModalContent(insightData);
+              modal.classList.remove('hidden');
+              document.body.classList.add('modal-open');
+              
+              // Resize plots if any
+              setTimeout(function() {
+                if (window.Plotly) {
+                  document.querySelectorAll('.js-plotly-plot').forEach(plot => {
+                    if (plot._fullLayout) {
+                      Plotly.Plots.resize(plot);
+                    }
+                  });
+                }
+              }, 100);
+            } catch (error) {
+              console.error('Error processing insight:', error);
+            }
+          });
+        });
+        
+        // Initialize filter buttons
+        document.querySelectorAll('.severity-filter').forEach(button => {
+          button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            document.querySelectorAll('.severity-filter').forEach(btn => {
+              btn.classList.remove('active');
+              if (btn.classList.contains('bg-gray-300')) {
+                btn.classList.remove('bg-gray-300');
+                btn.classList.add('bg-gray-200');
+              }
+            });
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            if (this.classList.contains('bg-gray-200')) {
+              this.classList.remove('bg-gray-200');
+              this.classList.add('bg-gray-300');
+            }
+            
+            // Filter the insights
+            const severity = this.getAttribute('data-severity');
+            document.querySelectorAll('.insight-card').forEach(card => {
+              if (severity === 'all' || card.dataset.severity === severity) {
+                card.classList.remove('hidden');
+              } else {
+                card.classList.add('hidden');
+              }
+            });
+          });
+        });
+      } else {
+        // Handle API error
+        document.querySelector('.insights-grid').innerHTML = `
+          <div class="col-span-full text-center py-8 bg-gray-50 rounded-lg">
+            <p class="text-red-500">Error generating insights: ${data.message || 'Unknown error'}</p>
+            <button class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" onclick="generateAndDisplayInsights(true)">
+              Try Again
+            </button>
+          </div>
+        `;
+      }
+      
+      // If refreshing, reset the button
+      if (isRefresh && generateBtn) {
+        generateBtn.innerHTML = originalBtnText;
+        generateBtn.disabled = false;
+      }
+    })
+    .catch(error => {
+      console.error('Error generating AI insights:', error);
+      document.querySelector('.insights-grid').innerHTML = `
+        <div class="col-span-full text-center py-8 bg-gray-50 rounded-lg">
+          <p class="text-red-500">Failed to connect to the insights service. Please try again.</p>
+          <button class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" onclick="generateAndDisplayInsights(true)">
+            Try Again
+          </button>
+        </div>
+      `;
+      
+      // Reset button if refreshing
+      if (isRefresh && generateBtn) {
+        generateBtn.innerHTML = originalBtnText;
+        generateBtn.disabled = false;
+      }
+    });
+  }
+  
+  // Helper function to generate modal content
+  function generateModalContent(insightData) {
+    return `
+      <div class="insight-modal-content">
+        <p class="text-lg mb-4">${insightData.message}</p>
+        <div class="mt-4 p-4 bg-gray-100 rounded-lg">
+          <h3 class="font-semibold mb-2">Why This Matters:</h3>
+          <p>This ${insightData.category.toLowerCase()} insight helps you understand patterns in your data and can inform your decision-making process.</p>
+          
+          <h3 class="font-semibold mt-4 mb-2">Recommended Action:</h3>
+          <p>
+            ${insightData.severity === 'high' 
+              ? 'This is a high priority insight that requires immediate attention.' 
+              : insightData.severity === 'medium'
+                ? 'Consider addressing this insight in your analysis and planning.'
+                : 'Keep this insight in mind for future reference.'}
+          </p>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Helper function to create modal if it doesn't exist
+  function createInsightModal() {
+    const modal = document.createElement('div');
+    modal.id = 'insightModal';
+    modal.className = 'fixed inset-0 z-50 overflow-y-auto hidden';
+    modal.setAttribute('aria-labelledby', 'modal-title');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    
+    modal.innerHTML = `
+      <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div class="sm:flex sm:items-start">
+              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modalTitle">
+                  Insight Details
+                </h3>
+                <div class="mt-2" id="modalBody">
+                  <p class="text-sm text-gray-500">جاري تحميل التفاصيل...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm modal-close">
+              اغلاق
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Add event listener to close button
+    modal.querySelector('.modal-close').addEventListener('click', function() {
+      modal.classList.add('hidden');
+      document.body.classList.remove('modal-open');
+    });
+    
+    // Close modal when clicking outside
+    modal.addEventListener('click', function(event) {
+      if (event.target === modal) {
+        modal.classList.add('hidden');
+        document.body.classList.remove('modal-open');
+      }
+    });
+    
+    return modal;
+  }
+  
+  // Initialize everything when the page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    // Generate insights automatically when page loads
+    generateAndDisplayInsights();
+    
+    // Setup refresh button
+    const generateInsightsBtn = document.getElementById('generateAIInsights');
+    if (generateInsightsBtn) {
+      generateInsightsBtn.addEventListener('click', function() {
+        generateAndDisplayInsights(true);
+      });
+    }
+  });
+</script>
 <style>
-  .enhanced-header {
-    transition: transform 0.3s ease-in-out;
-  }
-
-  * Component-specific styles for EDA Dashboard */
-
-  /* Enhanced Header with Gradient */
-  .enhanced-header h1 {
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-size: 2.75rem;
-    font-weight: 800;
-  }
-
-  /* Card Enhancements */
-  .enhanced-card {
-    position: relative;
+  /* Add any additional styles you need */
+  .modal-open {
     overflow: hidden;
   }
-
-  .enhanced-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-}
-
   
+  .severity-filter.active {
+    font-weight: 600;
+  }
 </style>
 
+<!-- Chat bot -->
+<div id="analysisChatContainer" class="fixed bottom-4 right-4 z-[1000]">
+  <!-- Chat toggle button -->
+  <button id="analysisChatToggle" class="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg flex items-center justify-center">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+  </button>
+  
+  <!-- Chat window (hidden by default) -->
+  <div id="analysisChatWindow" class="hidden fixed bottom-16 right-4 bg-white rounded-lg shadow-xl w-96 h-[450px] flex flex-col overflow-hidden border border-gray-200 z-[1001]">
+    <!-- Chat header -->
+    <div class="bg-blue-600 text-white p-4 flex justify-between items-center">
+      <h3 class="font-medium">مساعد التحليل البيانات</h3>
+      <button id="analysisCloseChat" class="text-white hover:text-gray-200">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    
+    <!-- Chat messages -->
+    <div id="analysisChatMessages" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
+    
+    <!-- Chat input -->
+    <div class="border-t border-gray-200 p-4 flex">
+      <input id="analysisChatInput" type="text" placeholder="Ask about your data..." class="flex-1 border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <button id="analysisSendMessage" class="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Completely separate chat script -->
+<script>
+  // Wait for document to be fully loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Chat script loading...');
+    
+    // Get chat elements with unique IDs
+    const chatToggle = document.getElementById('analysisChatToggle');
+    const chatWindow = document.getElementById('analysisChatWindow');
+    const closeChat = document.getElementById('analysisCloseChat');
+    const chatMessages = document.getElementById('analysisChatMessages');
+    const chatInput = document.getElementById('analysisChatInput');
+    const sendMessage = document.getElementById('analysisSendMessage');
+    
+    console.log('Chat elements:', {
+      chatToggle: !!chatToggle,
+      chatWindow: !!chatWindow,
+      closeChat: !!closeChat,
+      chatMessages: !!chatMessages,
+      chatInput: !!chatInput,
+      sendMessage: !!sendMessage
+    });
+    
+    // Toggle chat window
+    if (chatToggle) {
+      chatToggle.addEventListener('click', function(e) {
+        console.log('Chat toggle clicked');
+        e.preventDefault();
+        
+        // Force display for debugging
+        if (chatWindow.classList.contains('hidden')) {
+          console.log('Showing chat window');
+          chatWindow.classList.remove('hidden');
+          // Force visible as backup
+          chatWindow.style.display = 'flex';
+        } else {
+          console.log('Hiding chat window');
+          chatWindow.classList.add('hidden');
+          // Force hidden as backup
+          chatWindow.style.display = 'none';
+        }
+        
+        // If opening the chat for the first time, add welcome message
+        if (!chatWindow.classList.contains('hidden') && chatMessages.children.length === 0) {
+          console.log('Adding welcome message');
+          addAnalysisMessage('assistant', 'مرحبا بك في مساعد التحليل البياني للبيانات. سأساعدك في تحليل وفهم البيانات الخاصة بك.');
+        }
+        
+        // Focus the input when chat is opened
+        if (!chatWindow.classList.contains('hidden')) {
+          chatInput.focus();
+        }
+      });
+    }
+    
+    // Close chat window
+    if (closeChat) {
+      closeChat.addEventListener('click', function(e) {
+        console.log('Close chat clicked');
+        e.preventDefault();
+        chatWindow.classList.add('hidden');
+        chatWindow.style.display = 'none';
+      });
+    }
+    
+    // Send message function
+    function sendAnalysisMessageHandler() {
+      const message = chatInput.value.trim();
+      if (message.length === 0) return;
+      
+      console.log('Sending message:', message);
+      
+      // Add user message to chat
+      addAnalysisMessage('user', message);
+      
+      // Clear input
+      chatInput.value = '';
+      
+      // Show typing indicator
+      const typingIndicator = document.createElement('div');
+      typingIndicator.className = 'message assistant-message flex items-start space-x-2 typing-indicator';
+      typingIndicator.innerHTML = `
+        <div class="bg-gray-100 text-gray-800 p-3 rounded-lg rounded-tl-none max-w-xs">
+          <div class="dot-flashing"></div>
+        </div>
+      `;
+      chatMessages.appendChild(typingIndicator);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      
+      // Send to API
+      fetch('{% url "analysis_chat_api" %}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({
+          message: message
+        })
+      })
+      .then(response => {
+        console.log('API response received');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Remove typing indicator
+        if (typingIndicator.parentNode) {
+          chatMessages.removeChild(typingIndicator);
+        }
+        
+        console.log('Message response:', data);
+        
+        // Add assistant response
+        if (data.status === 'success' && data.response) {
+          addAnalysisMessage('assistant', data.response);
+        } else {
+          throw new Error(data.message || 'Unknown error');
+        }
+      })
+      .catch(error => {
+        console.error('Error in chat:', error);
+        
+        // Remove typing indicator
+        if (typingIndicator.parentNode) {
+          chatMessages.removeChild(typingIndicator);
+        }
+        
+        // Show error message
+        addAnalysisMessage('error', 'Sorry, there was an error processing your request. Please try again later.');
+      });
+    }
+    
+    // Add a message to the chat
+    function addAnalysisMessage(type, content) {
+      console.log(`Adding ${type} message:`, content);
+      
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}-message flex items-start space-x-2 mb-4`;
+      
+      if (type === 'user') {
+        messageDiv.innerHTML = `
+          <div class="bg-blue-100 text-blue-800 p-3 rounded-lg rounded-tr-none max-w-xs ml-auto">
+            ${formatAnalysisMessage(content)}
+          </div>
+        `;
+      } else if (type === 'assistant') {
+        messageDiv.innerHTML = `
+          <div class="bg-gray-100 text-gray-800 p-3 rounded-lg rounded-tl-none max-w-xs">
+            ${formatAnalysisMessage(content)}
+          </div>
+        `;
+      } else if (type === 'error') {
+        messageDiv.innerHTML = `
+          <div class="bg-red-100 text-red-800 p-3 rounded-lg rounded-tl-none max-w-xs">
+            ${formatAnalysisMessage(content)}
+          </div>
+        `;
+      }
+      
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    // Format message with Markdown-like features
+    function formatAnalysisMessage(message) {
+      if (!message) return 'No response received';
+      
+      // Replace newlines with <br>
+      let formatted = message.replace(/\n/g, '<br>');
+      
+      // Format bold text
+      formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      
+      // Format italic text
+      formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
+      
+      // Format code
+      formatted = formatted.replace(/`(.*?)`/g, '<code>$1</code>');
+      
+      return formatted;
+    }
+    
+    // Event listeners for sending messages
+    if (sendMessage) {
+      sendMessage.addEventListener('click', function(e) {
+        console.log('Send button clicked');
+        e.preventDefault();
+        sendAnalysisMessageHandler();
+      });
+    }
+    
+    if (chatInput) {
+      chatInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+          console.log('Enter key pressed in input');
+          event.preventDefault();
+          sendAnalysisMessageHandler();
+        }
+      });
+    }
+    
+    console.log('Chat script loaded successfully');
+  });
+</script>
+
+<style>
+  /* Ensure chat elements are on top */
+  #analysisChatContainer {
+    z-index: 9999 !important;
+  }
+  
+  #analysisChatWindow {
+    z-index: 10000 !important;
+  }
+  
+  /* Typing indicator */
+  .dot-flashing {
+    position: relative;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #9ca3af;
+    color: #9ca3af;
+    animation: dot-flashing 1s infinite alternate;
+    animation-delay: 0.5s;
+  }
+  
+  .dot-flashing::before, .dot-flashing::after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    top: 0;
+  }
+  
+  .dot-flashing::before {
+    left: -15px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #9ca3af;
+    animation: dot-flashing 1s infinite alternate;
+    animation-delay: 0s;
+  }
+  
+  .dot-flashing::after {
+    left: 15px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #9ca3af;
+    animation: dot-flashing 1s infinite alternate;
+    animation-delay: 1s;
+  }
+  
+  @keyframes dot-flashing {
+    0% { background-color: #9ca3af; }
+    50%, 100% { background-color: #e5e7eb; }
+  }
+</style>
+<style>
+  /* Between Styling */
+  .between-input {
+    display: none;
+    width: 100%;
+  }
+  .between-input input {
+    flex: 1;
+  }
+  .numeric-input {
+    width: 100%;
+  }
+  /* Temporary debug CSS */
+  {% comment %} .categorical-values {
+    display: block !important;
+  } {% endcomment %}
+</style>
 
 </body>
 </html>

@@ -1,14 +1,17 @@
 # forms.py
 from django import forms
+from django.core.validators import FileExtensionValidator
 
 class CsvUploadForm(forms.Form):
     csv_file = forms.FileField(
-        label='Select CSV File',
-        help_text='Max file size: 10MB. Only CSV files are accepted.',
-        widget=forms.FileInput(attrs={
-            'class': 'form-control',
-            'accept': '.csv'
-        })
+        label="CSV File",
+        help_text="Upload a CSV file for analysis",
+        validators=[FileExtensionValidator(allowed_extensions=['csv'])]
+    )
+    report_name = forms.CharField(
+        required=False,
+        label="Report Name",
+        max_length=100
     )
 
 class AnalysisConfigForm(forms.Form):
