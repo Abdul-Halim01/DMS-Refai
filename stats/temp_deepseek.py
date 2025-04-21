@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 #api_key="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",
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key="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",
+    api_key="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",
 )
 
 
@@ -217,15 +217,11 @@ Answer in Arabic.
 
 @csrf_exempt
 def analysis_chat_api(request):
-    """API endpoint for processing chat messages in the analysis page"""
+    """API endpoint for processing chat messages in the analysis page with simplified, user-friendly responses"""
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             user_message = data.get('message', '')
-            
-            # Add instruction to avoid code unless explicitly asked
-            if "كود" not in user_message and "برمجة" not in user_message and "code" not in user_message.lower():
-                user_message += " (لا تعطي كود برمجي، فقط اشرح باللغة العربية)"
 
             # Use a separate conversation history for analysis page
             analysis_conversation = request.session.get('analysis_conversation', [])
@@ -234,11 +230,14 @@ def analysis_chat_api(request):
             # Get the dataset data from session
             data_json = request.session.get('csv_data')
             if not data_json:
-                response_prefix = "لا يوجد مجموعة بيانات حالية للتحليل. "
-                system_prompt = """أنت مساعد محلل بيانات ذكي.
-                حالياً لا تتوفر بيانات للتحليل.
-                يُرجى إعلام المستخدم أنه يحتاج إلى تحميل البيانات أولاً.
-                التزم باللغة العربية فقط في الردود.
+                response_prefix = ""
+                system_prompt = """أنت محلل بيانات مساعد ودود وبسيط.
+                لا توجد بيانات متاحة للتحليل حاليًا.
+                أخبر المستخدم بضرورة الذهاب إلى لوحة التحكم وتحميل البيانات أولاً.
+                استخدم لغة بسيطة ومباشرة كأنك تتحدث إلى صديق.
+                تجنب المصطلحات التقنية واشرح الأمور بطريقة سهلة الفهم.
+                كن مرحًا وودودًا في إجاباتك.
+                احرص على أن تكون ردودك قصيرة وواضحة.
                 """
             else:
                 df = pd.read_json(io.StringIO(data_json), orient='split')
@@ -253,27 +252,25 @@ def analysis_chat_api(request):
                     "categorical_stats": summary_stats.get('categorical', {})
                 }
 
-                system_prompt = f"""أنت مساعد متخصص في تحليل البيانات.
-                مهمتك هي مساعدة المستخدم في فهم وتحليل بياناته.
-
-                نظرة عامة على البيانات:
-                - عدد الصفوف: {dataset_info['row_count']}
-                - الأعمدة: {', '.join(dataset_info['column_names'])}
-
-                قواعد مهمة:
-                1. الردود يجب أن تكون باللغة العربية فقط
-                2. لا تعطي أي كود برمجي إلا إذا طُلب منك ذلك صراحةً
-                3. ركز على الشرح البسيط والواضح
-                4. قدم رؤى عملية من البيانات
-                5. تجنب المصطلحات الفنية المعقدة
-
-                أنواع المساعدة التي يمكنك تقديمها:
-                - شرح أنماط البيانات
-                - تفسير الإحصائيات
-                - تحليل العلاقات بين المتغيرات
-                - الإجابة على أسئلة التحليل
+                system_prompt = f"""أنت محلل بيانات مساعد ودود وبسيط.
+                
+                لديك بيانات تحتوي على {dataset_info['row_count']} سجل وتتضمن البيانات التالية: {', '.join(dataset_info['column_names'])}.
+                
+                مهمتك هي:
+                - مساعدة المستخدم على فهم البيانات بلغة بسيطة وواضحة
+                - تجنب المصطلحات التقنية المعقدة والتفاصيل الإحصائية الثقيلة
+                - التركيز على المعلومات المفيدة للمستخدم العادي
+                - استخدام أمثلة من الحياة اليومية لتوضيح الأفكار
+                - رد على الأسئلة بطريقة محادثة ودية وقصيرة
+                
+                عند وصف التحليلات:
+                - قل "حوالي 75% من البيانات..." بدلاً من "الربيع الثالث (75%) للبيانات..."
+                - قل "الأسعار تتراوح بين X وY" بدلاً من "نطاق القيم لعمود السعر هو X إلى Y"
+                - قل "معظم العملاء يفضلون..." بدلاً من "التحليل يشير إلى ميل إحصائي نحو..."
+                
+                كن مباشرًا وودودًا وبسيطًا في تعبيرك، كأنك تتحدث مع صديق.
+                أجب بلغة عربية سلسة وواضحة.
                 """
-
                 response_prefix = ""
 
             messages = [
@@ -281,34 +278,28 @@ def analysis_chat_api(request):
                 *analysis_conversation
             ]
             
-            # Make the API call directly using the client
             completion = client.chat.completions.create(
-                model="deepseek/deepseek-r1-zero:free",
+                extra_body={},
                 messages=messages,
+                model="deepseek/deepseek-r1-zero:free"
             )
             
             response = completion.choices[0].message.content
-            
-            # Clean response from code blocks and ensure Arabic
             full_response = response_prefix + response
-            full_response = full_response.replace('```python', '').replace('```', '').strip()
             full_response = full_response.replace('\\boxed{', '').replace('}\n', '\n').strip('}')
             
-            # If response still contains code, regenerate with stricter instructions
-            if 'import ' in full_response or 'def ' in full_response or 'plt.' in full_response:
-                messages.append({
-                    "role": "user", 
-                    "content": "أعد صياغة الإجابة بدون أي كود برمجي، فقط اشرح النتائج باللغة العربية بشكل واضح وبسيط"
-                })
-                completion = client.chat.completions.create(
-                    model="deepseek/deepseek-r1-zero:free",
-                    messages=messages,
-                    temperature=0.7,
-                    max_tokens=1000
-                )
-                full_response = completion.choices[0].message.content
-                full_response = full_response.replace('```python', '').replace('```', '').strip()
-
+            # Remove technical markers and improve readability
+            full_response = full_response.replace('text ', '')  # Remove 'text' prefix
+            
+            # Remove numbered technical bullet points format if present
+            import re
+            full_response = re.sub(r'^\d+\.\s+\*\*[^:]+:\*\*\s+-', '•', full_response, flags=re.MULTILINE)
+            full_response = re.sub(r'^\d+\.\s+\*\*[^:]+:\*\*', '•', full_response, flags=re.MULTILINE)
+            
+            # Clean up potential technical formatting
+            full_response = full_response.replace('**', '')  # Remove bold markers
+            full_response = re.sub(r'`([^`]+)`', r'\1', full_response)  # Remove code markers
+            
             analysis_conversation.append({"role": "assistant", "content": full_response})
 
             # Store the conversation in the session

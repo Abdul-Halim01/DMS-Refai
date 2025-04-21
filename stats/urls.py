@@ -3,7 +3,7 @@ from .views import (analyze_csv, get_unique_values, filter_plot,
                    apply_global_filters, reset_filters, get_column_types, get_selected_plots, get_column_values, 
                    compare_columns, get_column_type, get_column_types_compare)
 
-from .deepseek_api import chat_api, get_dataset_insights, analysis_chat_api
+from .deepseek_api import get_dataset_insights, analysis_chat_api
 from form_builder.views import ListForms, FormDetailView, CreateFormView, CreateRecordView, DeleteRecordView, UpdateRecordView, FormsActionView
 from .views import AnalysisView, SaveAnalysisView, DeleteAnalysisView, analyze_form_view, home
 
@@ -18,7 +18,6 @@ urlpatterns = [
     path('get_selected_plots/', get_selected_plots, name='get_selected_plots'),
     path('get_column_values/', get_column_values, name='get_column_values'),
     path('compare_columns/', compare_columns, name='compare_columns'),
-    path('api/chat/', chat_api, name='chat_api'),
     path('get_dataset_insights/', get_dataset_insights, name='get_dataset_insights'),
     path('analysis_chat_api/', analysis_chat_api, name='analysis_chat_api'),
     path('get_column_types_compare/', get_column_types_compare, name='get_column_types_compare'),
