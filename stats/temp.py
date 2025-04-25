@@ -219,3 +219,28 @@ def generate_summary_report(df):
         'insights': generate_all_insights(df)
     }
     return summary
+
+# Reuse your existing plot generation logic
+                    # if pd.api.types.is_numeric_dtype(df[col]):
+                    #     # For numeric columns                      
+                    #     fig = px.histogram(df[col], title=f"Distribution of {col}")
+                    #     fig.update_layout(
+                    #         title=f"Distribution of {col}",
+                    #         xaxis_title=col,
+                    #         yaxis_title="Count",
+                    #         template="simple_white"
+                    #     )
+                    # else:
+                    #     # For categorical columns
+                    #     value_counts = df[col].value_counts().head(10)
+                    #     fig = px.bar(
+                    #         x=value_counts.index.astype(str), 
+                    #         y=value_counts.values,
+                    #         title=f"Top 10 values in {col}"
+                    #     )
+                    #     fig.update_layout(
+                    #         xaxis_title=col,
+                    #         yaxis_title="Count",
+                    #         template="simple_white"
+                    #     )
+                    

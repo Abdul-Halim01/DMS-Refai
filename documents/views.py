@@ -8,9 +8,7 @@ from .models import Document, DocumentGroup
 from .forms import DocumentUploadForm, DocumentEditForm
 import mimetypes
 import json
-from documents.documentsAI import countent_descraption as fu
 from django.views import generic
-
 
 
 login_required_m =  method_decorator(login_required(login_url='login') , name="dispatch")
@@ -128,88 +126,6 @@ class DownloadDocumentView(View):
 
 
 
-
-@login_required_m
-class DocumentUploadView(View):
-
-    def post(self, request):
-        form = DocumentUploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            document = form.save(commit=False)
-            document.uploaded_by = request.user
-          
-            desc = ""
-            text = ""
-            deta = ""
-            # Handle different file types
-        # pdf 
-            if document.file.name.endswith(('pdf')):
-                text = fu.extract_text_from_pdf(document.file)
-                document.content = text
-                deta = fu.details_document(document.file)
-                document.details = deta
-
-        # word 
-            elif document.file.name.endswith(('doc', 'docx')):
-                text = fu.extract_text_from_word(document.file)
-                document.content = text
-                deta = fu.details_document(document.file)
-                document.details = deta
-
-        # Powerpoint
-            elif document.file.name.endswith(('ppt', 'pptx')):
-                text = fu.extract_text_from_powerpoint(document.file)
-                document.content = text
-                deta = fu.details_document(document.file)
-                document.details = deta
-
-
-        # Excel
-            elif document.file.name.endswith(('csv',  'xlsx')):
-                text = fu.extract_text_from_excel(document.file)
-                document.content = text
-                deta = fu.details_excel(document.file)
-                document.details = deta
-
-         
-        # txt 
-            elif document.file.name.endswith(('txt')):
-                text = fu.extract_text_from_text(document.file)
-                document.content = text
-                deta = fu.details_document(document.file)
-                document.details = deta
-
-
-        # Audio
-            elif document.file.name.endswith(('mp3', 'wav', 'ogg', 'm4a')):
-                text = fu.extract_text_from_audio(document.file)
-                document.content = text
-                deta = fu.details_audio(document.file)
-                document.details = deta
-
-            
-        # Video
-            elif document.file.name.endswith(('mp4', 'mkv', 'avi')):
-                document.save()
-                text = fu.extract_text_from_video(document.file)
-                document.content = text 
-                deta = fu.details_video(document.file)
-                document.details = deta
-
-        # Image
-            elif document.file.name.endswith(('jpg', 'jpeg', 'png','PNG', 'gif')):
-                desc = fu.extract_text_from_image(document.file)
-                document.description = desc
-                deta = fu.details_image(document.file)
-                document.details = deta
-            else:
-                # Handle unsupported file types
-                return render(request, 'documents/upload.html', {'form': form, 'error': 'Unsupported file type'})
-
-            document.save()
-            return redirect('document_list')
-        
-        return render(request, 'documents/upload.html', {'form': form})
 
 
 

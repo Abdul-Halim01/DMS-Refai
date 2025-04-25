@@ -14,16 +14,26 @@ from django.contrib.auth import get_user_model
 import datetime
 from django.http import HttpResponse
 from .resources import EmployeeResource , HolidayResource , AbsenceResource , RecruitmentResource
-from utility.mixins import HRCriteriaAddMixin , HRCriteriaEditMixin , HRCriteriaDeleteMixin
 from django.views.generic import ListView , DeleteView , CreateView , UpdateView
 from utility.helper import change_format , reverse_format
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import user_passes_test
 
 User = get_user_model()
 
+# Permission check functions
+def can_add_hr_criteria(user):
+    return user.has_perm('hr_tool.add_hrcriteria')
 
+def can_delete_hr_criteria(user):
+    return user.has_perm('hr_tool.delete_hrcriteria')
 
-class MainHR(HRCriteriaAddMixin, View):
-    def get(slef,request):
+def can_edit_hr_criteria(user):
+    return user.has_perm('hr_tool.change_hrcriteria')
+
+@method_decorator(user_passes_test(can_add_hr_criteria), name='dispatch')
+class MainHR(View):
+    def get(self, request):
         total_holidays = Holiday.objects.count()
         total_absences = Absence.objects.count()
         total_employees = Employee.objects.count()
@@ -34,7 +44,18 @@ class MainHR(HRCriteriaAddMixin, View):
         total_skills = Skill.objects.count()
         total_departments = Department.objects.count()
         total_positions = Position.objects.count()
-        return render(request , 'hr_tool/HR.html' , {'total_holidays' : total_holidays , 'total_absences' : total_absences , 'total_employees' : total_employees , 'active_employees' : active_employees , 'approved_holidays' : approved_holidays , 'total_recruiters' : total_recruiters , 'total_goals' : total_goals , 'total_skills' : total_skills , 'total_departments' : total_departments , 'total_positions' : total_positions})
+        return render(request , 'hr_tool/HR.html' , {
+            'total_holidays' : total_holidays,
+            'total_absences' : total_absences,
+            'total_employees' : total_employees,
+            'active_employees' : active_employees,
+            'approved_holidays' : approved_holidays,
+            'total_recruiters' : total_recruiters,
+            'total_goals' : total_goals,
+            'total_skills' : total_skills,
+            'total_departments' : total_departments,
+            'total_positions' : total_positions
+        })
 
 
 # @login_required_decorator
@@ -55,6 +76,7 @@ class ListEmployeesView( ListView):
 
 
 
+@method_decorator(user_passes_test(can_add_hr_criteria), name='dispatch')
 class CreateEmployeeView( CreateView):
     model = Employee
     form_class = EmployeeRegistrationForm
@@ -69,6 +91,7 @@ class CreateEmployeeView( CreateView):
 
 
 # @login_required_decorator
+@method_decorator(user_passes_test(can_delete_hr_criteria), name='dispatch')
 class DeleteEmployeeView( DeleteView):
     model = Employee
     template_name = 'hr_tool/employee/delete_employee.html'
@@ -78,6 +101,7 @@ class DeleteEmployeeView( DeleteView):
     
 
 # @login_required_decorator
+@method_decorator(user_passes_test(can_edit_hr_criteria), name='dispatch')
 class UpdateEmployeeView( UpdateView):
     model = Employee
     template_name = 'hr_tool/employee/employee_profile.html'
@@ -109,6 +133,7 @@ class UpdateEmployeeView( UpdateView):
         
 
 
+@method_decorator(user_passes_test(can_delete_hr_criteria), name='dispatch')
 class EmployeesActionView( View):
     def post(self, request):
         selected_items = request.POST.getlist('selected_items')
@@ -169,6 +194,7 @@ class ListHolidaysView( ListView):
 
 
 
+@method_decorator(user_passes_test(can_delete_hr_criteria), name='dispatch')
 class HolidaysActionView( View):
     def post(self,request):
         selected_items = json.loads(request.POST.get('selected_ids', '[]'))
@@ -243,6 +269,7 @@ class ListAbsenceView( ListView):
 
 
 
+@method_decorator(user_passes_test(can_delete_hr_criteria), name='dispatch')
 class AbsenceActionView(View):
     def post(self,request):
         selected_ids = json.loads(request.POST.get('selected_ids', '[]'))
@@ -300,6 +327,7 @@ class ListRecruitersView( ListView):
     
 
 
+@method_decorator(user_passes_test(can_delete_hr_criteria), name='dispatch')
 class RecruitersActionView( View):
     def post(self,request):
         selected_ids = json.loads(request.POST.get('selected_ids'))
@@ -387,8 +415,8 @@ class DeleteGoalView( DeleteView):
     context_object_name = 'goal'
 
 
+@method_decorator(user_passes_test(lambda u: u.is_superuser or can_delete_hr_criteria(u)), name='dispatch')
 class GoalsActionView( View):
-    @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def post(self,request):
         selected_items = json.loads(request.POST.get('selected_ids'))
         goals = WorkGoal.objects.filter(id__in=selected_items)
@@ -435,8 +463,8 @@ class DeleteSkillView( DeleteView):
 
 
 
+@method_decorator(user_passes_test(lambda u: u.is_superuser or can_delete_hr_criteria(u)), name='dispatch')
 class SkillsActionView( View):
-    @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def post(self,request):
         selected_items = json.loads(request.POST.get('selected_ids'))
         skills = Skill.objects.filter(id__in=selected_items)
@@ -487,6 +515,7 @@ class DeleteDepartmentView(DeleteView):
     success_url = '/hr/departments/'
     context_object_name = 'department'
 
+@method_decorator(user_passes_test(can_delete_hr_criteria), name='dispatch')
 class DepartmentsActionView( View):
     def post(self,request):
         selected_items = json.loads(request.POST.get('selected_ids'))
@@ -522,6 +551,7 @@ class DeletePositionView( DeleteView):
     context_object_name = 'position'
 
 
+@method_decorator(user_passes_test(can_delete_hr_criteria), name='dispatch')
 class PositionsActionView( View):
     def post(self,request):
         selected_items = json.loads(request.POST.get('selected_ids'))
@@ -529,14 +559,6 @@ class PositionsActionView( View):
         if request.POST.get('action') == 'delete':
             positions.delete()
         return redirect('positions_list')   
-
-
-
-    
-    
-
-
-
 
 
 

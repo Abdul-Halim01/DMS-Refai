@@ -1,0 +1,1489 @@
+{% load dict_extras %}
+{% load static %}
+{% load json_filters %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>EDA Analysis Report</title>
+  <!-- Load Plotly and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+ 
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- Add modern CSS framework -->
+
+  <style>
+    /* Enhanced styling */
+    .analysis-card {
+      transition: all 0.3s ease;
+    }
+    
+    .analysis-card:hover {
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .plot-controls {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    
+    .plot-tools {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .tool-button {
+      background: #f1f5f9;
+      border: none;
+      border-radius: 4px;
+      padding: 0.25rem 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .tool-button:hover {
+      background: #e2e8f0;
+    }
+    
+    .tool-button svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .filter-panel {
+      border-left: 3px solid #e2e8f0;
+      padding-left: 1rem;
+      margin-top: 0.5rem;
+    }
+    
+    .stats-panel {
+      font-size: 0.8rem;
+      padding: 0.5rem;
+      background-color: #f8fafc;
+      border-radius: 0.25rem;
+      margin-bottom: 1rem;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 0.5rem;
+    }
+    
+    .stat-item {
+      padding: 0.5rem;
+      background: white;
+      border-radius: 0.25rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    
+    .loader {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #3498db;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      cursor: help;
+    }
+
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 200px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -100px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.75rem;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    .select2-container {
+      width: 100% !important;
+    }
+    
+    .tab-container {
+      margin-top: 1rem;
+    }
+    
+    .tab-header {
+      display: flex;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .tab {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    
+    .tab.active {
+      border-bottom: 2px solid #3b82f6;
+      font-weight: 500;
+    }
+    
+    .tab-content {
+      display: none;
+      padding: 1rem 0;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .plot-fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255,255,255,0.95);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+    }
+    
+    .fullscreen-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .fullscreen-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    .fullscreen-content {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    /* Add after your existing styles */
+    .plot-container {
+      min-height: 400px;
+      position: relative;
+    }
+    
+    [class*="plotly-graph-div"] {
+      min-height: 350px !important;
+      width: 100% !important;
+      background-color: #f9fafb;
+    }
+    
+    /* Fix tab content */
+    .tab-pane {
+      display: none;
+    }
+    
+    .tab-pane:not(.hidden) {
+      display: block !important;
+    }
+    
+    /* Fix filter panels */
+    .filter-panel {
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: #f8fafc;
+      border-radius: 0.375rem;
+      border: 1px solid #e2e8f0;
+    }
+    
+    /* Add this to your existing styles */
+    .spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border-left-color: #09f;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Add these improved styles to fix plot display issues */
+    .plot-container {
+      min-height: 400px !important;
+      height: 400px !important;
+      width: 100% !important;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    
+    /* Style for the plotly graph divs */
+    [class*="plotly-graph-div"] {
+      min-height: 350px !important;
+      width: 100% !important;
+      background-color: #f9fafb;
+    }
+  </style>
+</head>
+<body>
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold text-gray-800 mb-6">Data Analysis</h1>
+  
+  <!-- File overview stats at the top -->
+  <div class="overview-stats bg-white shadow-lg rounded-lg p-6 mb-8">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Dataset Overview</h2>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="stat-card bg-blue-50 p-4 rounded-lg">
+        <h3 class="text-sm text-blue-800 font-medium">Rows</h3>
+        <p class="text-2xl font-bold text-blue-900">{{ overview.row_count }}</p>
+      </div>
+      <div class="stat-card bg-green-50 p-4 rounded-lg">
+        <h3 class="text-sm text-green-800 font-medium">Columns</h3>
+        <p class="text-2xl font-bold text-green-900">{{ overview.column_count }}</p>
+      </div>
+      <div class="stat-card bg-purple-50 p-4 rounded-lg">
+        <h3 class="text-sm text-purple-800 font-medium">Numeric Columns</h3>
+        <p class="text-2xl font-bold text-purple-900">{{ overview.numeric_count }}</p>
+      </div>
+      <div class="stat-card bg-yellow-50 p-4 rounded-lg">
+        <h3 class="text-sm text-yellow-800 font-medium">Categorical Columns</h3>
+        <p class="text-2xl font-bold text-yellow-900">{{ overview.categorical_count }}</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Column Selector section -->
+  <section class="column-selector bg-white shadow-lg rounded-lg p-6 mb-8">
+    <div class="selector-header mb-4">
+      <h2 class="text-xl font-bold text-gray-800">Select Columns to Analyze</h2>
+      <p class="text-gray-600 text-sm mt-1">Choose columns to visualize and analyze</p>
+    </div>
+    
+    <div class="selector-content flex flex-col md:flex-row md:items-end gap-4">
+      <div class="column-dropdown flex-grow">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          Columns <span class="text-xs text-gray-500">(Max 4 recommended)</span>
+        </label>
+        <select id="column-picker" class="column-select w-full p-2 border rounded-md" multiple>
+          {% for col in columns %}
+            <option value="{{ col }}">{{ col }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      
+      <div class="column-actions flex gap-2">
+        <button id="load-selected-columns" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center">
+          <span id="load-button-text">Analyze Selected</span>
+          <span id="load-spinner" class="ml-2 hidden">
+            <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </span>
+        </button>
+        <div class="tooltip">
+          <button id="show-correlation" class="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600">
+            Correlation Matrix
+          </button>
+          <span class="tooltiptext">Generate correlation heatmap for numeric columns</span>
+        </div>
+      </div>
+    </div>
+    
+    <div id="selection-warning" class="mt-3 text-yellow-600 hidden">
+      <svg class="inline-block w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+      </svg>
+      Please select no more than 4 columns for optimal performance.
+    </div>
+  </section>
+  
+  <!-- Quick Insights Panel -->
+  <section id="quick-insights" class="bg-white shadow-lg rounded-lg p-6 mb-8 hidden">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Quick Insights</h2>
+    <div id="insights-content" class="text-gray-700 text-sm space-y-2"></div>
+  </section>
+  
+  <!-- Dynamic plots container -->
+  <div id="dynamic-plots-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Plots will be injected here -->
+  </div>
+  
+  <!-- Fullscreen plot container (hidden by default) -->
+  <div id="fullscreen-plot" class="hidden">
+    <div class="fullscreen-header">
+      <h2 id="fullscreen-title" class="text-xl font-bold"></h2>
+      <button id="fullscreen-close" class="fullscreen-close">&times;</button>
+    </div>
+    <div id="fullscreen-content" class="fullscreen-content"></div>
+  </div>
+  
+  <!-- Correlation matrix modal (hidden by default) -->
+  <div id="correlation-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2 max-h-90vh overflow-y-auto">
+      <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+        <h3 class="text-lg font-semibold">Correlation Matrix</h3>
+        <button id="close-correlation" class="text-gray-500 hover:text-gray-700">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div id="correlation-content" class="p-4">
+        <!-- Correlation plot will go here -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- Debug Output (hidden by default) -->
+  <div id="debug-output" class="bg-gray-100 p-4 mt-8 rounded-lg text-xs font-mono overflow-auto" style="max-height: 200px; display: none;">
+    <div class="flex justify-between items-center mb-2">
+      <h3 class="font-bold">Debug Log:</h3>
+      <button id="clear-debug" class="text-xs text-gray-500 hover:text-gray-700">Clear</button>
+    </div>
+    <pre id="debug-log"></pre>
+  </div>
+</div>
+</body>
+<!-- JavaScript -->
+
+
+<script>
+// Helper function to generate column options
+function generateColumnOptions(currentColumn) {
+  let options = '';
+  {% for col in columns %}
+  if ("{{ col }}" !== currentColumn) {
+    options += `<option value="{{ col }}">{{ col }}</option>`;
+  }
+  {% endfor %}
+  return options;
+}
+
+// Utility debug logging function that also updates the DOM
+function debugLog(message) {
+  const timestamp = new Date().toISOString().substring(11, 23);
+  const logMessage = `[${timestamp}] ${message}`;
+  console.log(logMessage);
+  
+  // Also add to debug output on page
+  const debugLog = document.getElementById('debug-log');
+  if (debugLog) {
+    debugLog.textContent = logMessage + '\n' + debugLog.textContent;
+  }
+}
+
+// Show the debug panel
+function showDebugPanel() {
+  document.getElementById('debug-output').style.display = 'block';
+}
+
+// Generate basic statistics for a column
+function getColumnStats(data, column) {
+  if (!data || !data[column]) return {};
+  
+  const stats = data[column];
+  return `
+    <div class="stats-panel">
+      <h4 class="font-semibold text-gray-700 mb-2">Column Statistics</h4>
+      <div class="stats-grid">
+        ${stats.type === 'numeric' ? `
+          <div class="stat-item">
+            <div class="text-xs text-gray-500">Min</div>
+            <div class="font-medium">${stats.min}</div>
+          </div>
+          <div class="stat-item">
+            <div class="text-xs text-gray-500">Max</div>
+            <div class="font-medium">${stats.max}</div>
+          </div>
+          <div class="stat-item">
+            <div class="text-xs text-gray-500">Mean</div>
+            <div class="font-medium">${stats.mean}</div>
+          </div>
+          <div class="stat-item">
+            <div class="text-xs text-gray-500">Median</div>
+            <div class="font-medium">${stats.median}</div>
+          </div>
+        ` : `
+          <div class="stat-item">
+            <div class="text-xs text-gray-500">Unique Values</div>
+            <div class="font-medium">${stats.unique_count}</div>
+          </div>
+          <div class="stat-item">
+            <div class="text-xs text-gray-500">Most Common</div>
+            <div class="font-medium">${stats.most_common}</div>
+          </div>
+        `}
+        <div class="stat-item">
+          <div class="text-xs text-gray-500">Missing</div>
+          <div class="font-medium">${stats.missing_count} (${stats.missing_percent}%)</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Initialize filter event handlers
+function initFilterEventHandlers() {
+  debugLog("Setting up filter event handlers");
+  
+  // Filter mode change handler
+  $('.filter-mode').off('change').on('change', function() {
+    const target = $(this).data('target');
+    const mode = $(this).val();
+    debugLog(`Filter mode changed for ${target} to ${mode}`);
+    
+    // Hide all filter panels first
+    $(`#filter-by-self-${target}`).addClass('hidden');
+    $(`#filter-by-other-${target}`).addClass('hidden');
+    $(`#compare-by-${target}`).addClass('hidden');
+    
+    // Show the appropriate panel based on mode
+    if (mode === 'self') {
+      debugLog(`Loading self filter panel for ${target}`);
+      $(`#filter-by-self-${target}`).removeClass('hidden');
+      // Load values for self-filtering
+      debugLog(`Loading values for self-filtering of ${target}`);
+      loadColumnValues(target, target);
+    } else if (mode === 'other') {
+      $(`#filter-by-other-${target}`).removeClass('hidden');
+    } else if (mode === 'compare') {
+      $(`#compare-by-${target}`).removeClass('hidden');
+    }
+  });
+  
+  // Filter column change handler for "Filter by Other Column"
+  $('.filter-column').off('change').on('change', function() {
+    const target = $(this).data('target');
+    const column = $(this).val();
+    debugLog(`Filter column for ${target} changed to ${column}`);
+    
+    if (column) {
+      // Load values for the selected filter column
+      loadColumnValues(column, target);
+    }
+  });
+  
+  // Compare column change handler
+  $('.compare-column').off('change').on('change', function() {
+    const target = $(this).data('target');
+    const compareColumn = $(this).val();
+    debugLog(`Compare column for ${target} changed to ${compareColumn}`);
+    
+    if (compareColumn) {
+      // AJAX call to get column types for plot options
+      $.get("{% url 'get_column_types' %}", {
+        target: target,
+        compare_column: compareColumn
+      }, function(data) {
+        updatePlotOptions(target, compareColumn, data.column_types);
+      });
+    } else {
+      $(`#compare-by-${target} .plot-type-selector`).addClass('hidden');
+      $(`#compare-by-${target} .plot-options`).addClass('hidden');
+    }
+  });
+  
+  // Filter application button handler
+  $('.apply-filter').off('click').on('click', function() {
+    const target = $(this).data('target');
+    const mode = $(`#filter-mode-${target}`).val();
+    debugLog(`Applying filter for ${target} with mode ${mode}`);
+    
+    // Show loading indicator
+    $(`#filter-spinner-${target}`).removeClass('hidden');
+    
+    if (mode === 'self') {
+      // Filter by self values
+      const filterValues = $(`#filter-values-${target}`).val() || [];
+      if (filterValues.length === 0) {
+        alert('Please select at least one value to filter by.');
+        $(`#filter-spinner-${target}`).addClass('hidden');
+        return;
+      }
+      
+      // AJAX call to filter plot
+      $.get("{% url 'filter_plot' %}", {
+        target: target,
+        mode: 'self',
+        filter_values: filterValues
+      }, function(data) {
+        updatePlotWithFilteredData(target, data);
+        $(`#filter-spinner-${target}`).addClass('hidden');
+      }).fail(function() {
+        $(`#filter-spinner-${target}`).addClass('hidden');
+        alert('Error applying filter. Please try again.');
+      });
+    } else if (mode === 'other') {
+      // Filter by another column
+      const filterColumn = $(`#filter-column-${target}`).val();
+      const filterValues = $(`#filter-values-${target}`).val() || [];
+      
+      if (!filterColumn) {
+        alert('Please select a column to filter by.');
+        $(`#filter-spinner-${target}`).addClass('hidden');
+        return;
+      }
+      
+      if (filterValues.length === 0) {
+        alert('Please select at least one value to filter by.');
+        $(`#filter-spinner-${target}`).addClass('hidden');
+        return;
+      }
+      
+      // AJAX call to filter plot
+      $.get("{% url 'filter_plot' %}", {
+        target: target,
+        mode: 'other',
+        filter_column: filterColumn,
+        filter_values: filterValues
+      }, function(data) {
+        updatePlotWithFilteredData(target, data);
+        $(`#filter-spinner-${target}`).addClass('hidden');
+      }).fail(function() {
+        $(`#filter-spinner-${target}`).addClass('hidden');
+        alert('Error applying filter. Please try again.');
+      });
+    } else if (mode === 'compare') {
+      // Compare with another column
+      const compareColumn = $(`#compare-column-${target}`).val();
+      const plotType = $(`#plot-type-${target}`).val();
+      const aggMethod = $(`#agg-method-${target}`).val();
+      const colorColumn = $(`#color-column-${target}`).val();
+      
+      if (!compareColumn) {
+        alert('Please select a column to compare with.');
+        $(`#filter-spinner-${target}`).addClass('hidden');
+        return;
+      }
+      
+      if (!plotType) {
+        alert('Please select a plot type.');
+        $(`#filter-spinner-${target}`).addClass('hidden');
+        return;
+      }
+      
+      // AJAX call to create comparison plot
+      $.get("{% url 'compare_columns' %}", {
+        target: target,
+        compare_column: compareColumn,
+        plot_type: plotType,
+        agg_method: aggMethod,
+        color_column: colorColumn
+      }, function(data) {
+        updatePlotWithFilteredData(target, data);
+        $(`#filter-spinner-${target}`).addClass('hidden');
+      }).fail(function() {
+        $(`#filter-spinner-${target}`).addClass('hidden');
+        alert('Error creating comparison plot. Please try again.');
+      });
+    }
+  });
+  
+  // Initialize select2 for better dropdown UI
+  $('.filter-values').select2({
+    placeholder: 'Select values',
+    allowClear: true,
+    closeOnSelect: false
+  });
+  
+  // Tab switching
+  $('.tab').off('click').on('click', function() {
+    const tabId = $(this).data('tab');
+    const container = $(this).closest('.tab-container');
+    const targetColumn = $(this).closest('.analysis-card').data('column');
+    
+    debugLog(`Tab clicked: ${tabId} for column ${targetColumn}`);
+    
+    // Remove active class from all tabs
+    container.find('.tab').removeClass('active');
+    container.find('.tab-pane').addClass('hidden');
+    
+    // Add active class to current tab
+    $(this).addClass('active');
+    const tabPane = $(`#tab-${tabId}`);
+    tabPane.removeClass('hidden');
+    
+    debugLog(`Activated tab-${tabId}, visible: ${!tabPane.hasClass('hidden')}`);
+    
+    // Special handling for filter tab to load values for filter panels
+    if (tabId === `filter-${targetColumn}`) {
+      // Check if the filter mode is already set
+      const filterMode = $(`#filter-mode-${targetColumn}`).val();
+      
+      if (filterMode === 'self') {
+        // Make sure the filter values are loaded
+        loadColumnValues(targetColumn, targetColumn);
+        
+        // Make sure the panel is visible
+        $(`#filter-by-self-${targetColumn}`).removeClass('hidden');
+        $(`#filter-by-other-${targetColumn}`).addClass('hidden');
+      } else if (filterMode === 'other') {
+        $(`#filter-by-self-${targetColumn}`).addClass('hidden');
+        $(`#filter-by-other-${targetColumn}`).removeClass('hidden');
+      }
+    }
+  });
+  
+  // Download plot as PNG
+  $('.download-plot').off('click').on('click', function() {
+    const target = $(this).data('target');
+    const plotDiv = document.querySelector(`#plot-container-${target} [class*="plotly-graph-div"]`);
+    
+    if (plotDiv && window.Plotly) {
+      Plotly.downloadImage(plotDiv, {
+        format: 'png',
+        filename: `${target}-plot`,
+        height: 600,
+        width: 800
+      });
+    }
+  });
+  
+  // Enter fullscreen mode
+  $('.fullscreen-plot').off('click').on('click', function() {
+    const target = $(this).data('target');
+    const plotContainer = $(`#plot-container-${target}`);
+    const plotDiv = plotContainer.find('[class*="plotly-graph-div"]')[0];
+    
+    if (plotDiv) {
+      // Clone the plot for fullscreen view
+      $('#fullscreen-title').text(`${target} - Full View`);
+      
+      const fullscreenPlot = plotDiv.cloneNode(true);
+      fullscreenPlot.style.width = '100%';
+      fullscreenPlot.style.height = '100%';
+      
+      $('#fullscreen-content').empty().append(fullscreenPlot);
+      $('#fullscreen-plot').removeClass('hidden').addClass('plot-fullscreen');
+      
+      // Resize the plot to fit fullscreen
+      if (window.Plotly) {
+        Plotly.react(fullscreenPlot, fullscreenPlot.data, fullscreenPlot.layout);
+      }
+    }
+  });
+  
+  // Close fullscreen mode
+  $('#fullscreen-close').off('click').on('click', function() {
+    $('#fullscreen-plot').addClass('hidden').removeClass('plot-fullscreen');
+  });
+}
+
+// Add this new helper function to load column values
+function loadColumnValues(column, targetId) {
+  debugLog(`Loading values for column ${column} into target ${targetId}`);
+  
+  // Show loading indicator
+  $(`#filter-values-${targetId}`).prop('disabled', true)
+    .html('<option value="">Loading values...</option>');
+  
+  // AJAX call to get unique values for the selected column
+  $.get("{% url 'get_column_values' %}", {
+    column: column
+  })
+  .done(function(data) {
+    debugLog(`Received ${data.values ? data.values.length : 0} values for ${column}`);
+    
+    if (data.values && data.values.length > 0) {
+      const select = $(`#filter-values-${targetId}`);
+      select.empty();
+      
+      // Add options for each unique value
+      data.values.forEach(function(value) {
+        select.append(`<option value="${value}">${value}</option>`);
+      });
+      
+      // Enable select
+      select.prop('disabled', false);
+      
+      // Re-initialize select2 if available
+      if ($.fn.select2) {
+        select.select2({
+          placeholder: 'Select values',
+          allowClear: true,
+          closeOnSelect: false
+        });
+      }
+    } else {
+      debugLog(`No values returned for column ${column}`);
+      $(`#filter-values-${targetId}`).empty()
+        .html('<option value="">No values available</option>')
+        .prop('disabled', true);
+    }
+  })
+  .fail(function(xhr, status, error) {
+    debugLog(`Error loading column values: ${error}`);
+    $(`#filter-values-${targetId}`).empty()
+      .html('<option value="">Error loading values</option>')
+      .prop('disabled', true);
+  });
+}
+
+// Add this function to update plot with filtered data
+function updatePlotWithFilteredData(target, data) {
+  if (data.plot_html) {
+    // Update the plot
+    $(`#plot-container-${target}`).html(data.plot_html);
+    
+    // Update row count if available
+    if (data.row_count !== undefined) {
+      $(`#row-count-${target}`).text(`Showing ${data.row_count} rows`);
+    }
+    
+    // Refresh the plot
+    setTimeout(function() {
+      const plotDiv = document.querySelector(`#plot-container-${target} [class*="plotly-graph-div"]`);
+      if (plotDiv && window.Plotly) {
+        try {
+          window.Plotly.redraw(plotDiv);
+          debugLog(`Refreshed filtered plot for ${target}`);
+        } catch (e) {
+          debugLog(`Error refreshing filtered plot: ${e.message}`);
+        }
+      }
+    }, 100);
+  } else if (data.error) {
+    debugLog(`Error in filter: ${data.error}`);
+    alert(`Error: ${data.error}`);
+  }
+}
+
+// Update plot options based on column types
+function updatePlotOptions(target, compareColumn, columnTypes) {
+  const plotTypeSelect = $(`#plot-type-${target}`);
+  plotTypeSelect.empty();
+  
+  // Determine available plot types based on column data types
+  if (columnTypes.target === 'numeric' && columnTypes.compare === 'numeric') {
+    // Both numeric - offer scatter plot
+    plotTypeSelect.append(`<option value="scatter">Scatter Plot</option>`);
+    plotTypeSelect.append(`<option value="heatmap">Heatmap</option>`);
+    plotTypeSelect.append(`<option value="box">Box Plot</option>`);
+    plotTypeSelect.append(`<option value="hexbin">Hexbin Plot</option>`);
+  } else if (columnTypes.target === 'numeric' && columnTypes.compare === 'categorical') {
+    // Numeric vs categorical - offer box plot
+    plotTypeSelect.append(`<option value="box">Box Plot</option>`);
+    plotTypeSelect.append(`<option value="violin">Violin Plot</option>`);
+    plotTypeSelect.append(`<option value="bar">Bar Chart</option>`);
+  } else if (columnTypes.target === 'categorical' && columnTypes.compare === 'categorical') {
+    // Both categorical - offer heatmap
+    plotTypeSelect.append(`<option value="heatmap">Heatmap</option>`);
+    plotTypeSelect.append(`<option value="bar">Grouped Bar Chart</option>`);
+    plotTypeSelect.append(`<option value="treemap">Treemap</option>`);
+  } else {
+    // Categorical vs numeric - offer bar chart
+    plotTypeSelect.append(`<option value="bar">Bar Chart</option>`);
+    plotTypeSelect.append(`<option value="box">Box Plot</option>`);
+  }
+  
+  // Show plot type selector
+  $(`#compare-by-${target} .plot-type-selector`).removeClass('hidden');
+  
+  // Set up plot type change handler
+  plotTypeSelect.off('change').on('change', function() {
+    const plotType = $(this).val();
+    const options = $(`#compare-by-${target} .plot-options`);
+    
+    // Show/hide specific options based on plot type
+    options.removeClass('hidden');
+    
+    if (plotType === 'bar' || plotType === 'box') {
+      $(`#compare-by-${target} .aggregation-method`).removeClass('hidden');
+      $(`#compare-by-${target} .color-by`).removeClass('hidden');
+    } else {
+      $(`#compare-by-${target} .aggregation-method`).addClass('hidden');
+      $(`#compare-by-${target} .color-by`).removeClass('hidden');
+    }
+    
+    if (plotType === 'treemap') {
+      $(`#compare-by-${target} .size-by`).removeClass('hidden');
+    } else {
+      $(`#compare-by-${target} .size-by`).addClass('hidden');
+    }
+  });
+}
+
+// Updated reset function that works with both JSON and HTML data
+function resetPlot(column) {
+  debugLog(`Resetting plot for ${column}`);
+  
+  const plotContainerId = `plot-container-${column.replace(/[^a-zA-Z0-9]/g, '_')}`;
+  const plotContainer = document.getElementById(plotContainerId);
+  const originalPlotData = $(plotContainer).data('original-plot-data');
+  const originalHtml = $(plotContainer).data('original-html');
+  
+  try {
+    if (originalPlotData) {
+      // First try using the JSON data
+      const plotJson = JSON.parse(originalPlotData);
+      Plotly.newPlot(plotContainerId, plotJson.data, plotJson.layout, {responsive: true});
+      debugLog(`Reset plot for ${column} using JSON data`);
+    } else if (originalHtml) {
+      // Fall back to HTML if no JSON data
+      $(plotContainer).html(originalHtml);
+      debugLog(`Reset plot for ${column} using HTML`);
+    } else {
+      throw new Error("No original plot data found");
+    }
+    
+    // Reset UI elements
+    $(`#filter-mode-${column}`).val('none');
+    $(`#filter-by-self-${column}`).addClass('hidden');
+    $(`#filter-by-other-${column}`).addClass('hidden');
+    $(`#transform-type-${column}`).val('none');
+    $(`#row-count-${column}`).text('');
+    
+    // Reset tabs
+    $(`.tab[data-tab="filter-${column}"]`).addClass('active');
+    $(`.tab[data-tab="transform-${column}"]`).removeClass('active');
+    $(`.tab[data-tab="export-${column}"]`).removeClass('active');
+    
+    $(`#tab-filter-${column}`).removeClass('hidden');
+    $(`#tab-transform-${column}`).addClass('hidden');
+    $(`#tab-export-${column}`).addClass('hidden');
+    
+  } catch (e) {
+    debugLog(`Error resetting plot for ${column}: ${e.message}`);
+    $(plotContainer).html(`
+      <div class="p-4 text-red-500">
+        <p>Error resetting plot: ${e.message}</p>
+        <p class="text-sm mt-2">Please try refreshing the page.</p>
+      </div>
+    `);
+  }
+}
+
+// Generate insights for displayed plots
+function generateInsights(columns, data) {
+  if (!data || !data.stats) return [];
+  
+  const insights = [];
+  
+  // Check for missing values
+  columns.forEach(col => {
+    const stats = data.stats[col];
+    if (stats && stats.missing_percent > 10) {
+      insights.push(`<div class="insight-item"><strong>${col}</strong> has ${stats.missing_percent}% missing values, which might affect analysis.</div>`);
+    }
+  });
+  
+  // Check for outliers in numeric columns
+  columns.forEach(col => {
+    const stats = data.stats[col];
+    if (stats && stats.type === 'numeric' && stats.has_outliers) {
+      insights.push(`<div class="insight-item"><strong>${col}</strong> contains outliers that may skew results.</div>`);
+    }
+  });
+  
+  // Check for high correlation between numeric columns
+  if (data.correlations) {
+    Object.entries(data.correlations).forEach(([col1, others]) => {
+      Object.entries(others).forEach(([col2, value]) => {
+        if (Math.abs(value) > 0.8 && col1 !== col2 && columns.includes(col1) && columns.includes(col2)) {
+          insights.push(`<div class="insight-item"><strong>${col1}</strong> and <strong>${col2}</strong> have a strong correlation (${value.toFixed(2)}).</div>`);
+        }
+      });
+    });
+  }
+  
+  return insights;
+}
+
+// Show correlation matrix
+function showCorrelationMatrix() {
+  debugLog("Generating correlation matrix");
+  $('#correlation-modal').removeClass('hidden');
+  
+  // AJAX call to get correlation matrix
+  $.get("{% url 'get_correlation_matrix' %}", function(data) {
+    if (data.plot_html) {
+      $('#correlation-content').html(data.plot_html);
+      
+      // Refresh the plot
+      setTimeout(function() {
+        const plotDiv = document.querySelector('#correlation-content [class*="plotly-graph-div"]');
+        if (plotDiv && window.Plotly) {
+          try {
+            window.Plotly.redraw(plotDiv);
+            debugLog("Refreshed correlation plot");
+          } catch (e) {
+            debugLog(`Error refreshing correlation plot: ${e.message}`);
+          }
+        }
+      }, 100);
+    } else {
+      $('#correlation-content').html("<p class='text-center py-8'>No correlation data available.</p>");
+    }
+  }).fail(function(xhr, status, error) {
+    $('#correlation-content').html(`<p class='text-center py-8 text-red-500'>Error: ${error}</p>`);
+  });
+}
+
+// Document ready handler
+$(document).ready(function() {
+  debugLog("Document ready");
+  showDebugPanel();
+  
+  // Initialize Select2 for better dropdown experience
+  if ($.fn.select2) {
+    $('.column-select').select2({
+      placeholder: 'Select columns to analyze',
+      allowClear: true,
+      closeOnSelect: false
+    });
+  }
+  
+  // Column selection functionality
+  $('#column-picker').on('change', function() {
+    const selectedColumns = $(this).val() || [];
+    debugLog(`Column selection changed: ${selectedColumns.join(', ')}`);
+    
+    // Show warning if more than 4 columns are selected
+    if (selectedColumns.length > 4) {
+      $('#selection-warning').removeClass('hidden');
+    } else {
+      $('#selection-warning').addClass('hidden');
+    }
+  });
+  
+  // Load selected columns button
+  $('#load-selected-columns').on('click', function() {
+    debugLog("Load button clicked");
+    const selectedColumns = $('#column-picker').val() || [];
+    debugLog(`Selected columns: ${selectedColumns.join(', ')}`);
+    
+    // Enforce maximum of 4 columns
+    if (selectedColumns.length > 4) {
+      alert('Please select a maximum of 4 columns for optimal performance.');
+      return;
+    }
+    
+    if (selectedColumns.length === 0) {
+      alert('Please select at least one column to display.');
+      return;
+    }
+    
+    // Show loading indicator
+    $('#dynamic-plots-container').html(`
+      <div class="col-span-full text-center py-8 bg-gray-50 rounded-lg">
+        <div class="loader"></div>
+        <p class="text-gray-500">
+          Loading plots, please wait...
+        </p>
+      </div>
+    `);
+    
+    // AJAX request to get plots for selected columns
+    $.ajax({
+      url: "{% url 'get_selected_plots' %}",
+      method: 'GET',
+      data: {
+        'columns[]': selectedColumns,
+        'csrfmiddlewaretoken': $('[name=csrfmiddlewaretoken]').val()
+      },
+      beforeSend: function(xhr) {
+        debugLog("Sending AJAX request");
+      },
+      success: function(response) {
+        debugLog("AJAX success response received");
+        
+        // Clear container
+        $('#dynamic-plots-container').empty();
+        
+        if (response.plots && Object.keys(response.plots).length > 0) {
+          debugLog(`Received ${Object.keys(response.plots).length} plots`);
+          
+          // Set grid columns based on number of plots
+          const gridClass = selectedColumns.length === 1 ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2';
+          $('#dynamic-plots-container').addClass(gridClass);
+          
+          // Add insights panel if available
+          if (response.stats) {
+            const insights = generateInsights(selectedColumns, response);
+            if (insights.length > 0) {
+              const insightsPanel = `
+                <div class="col-span-full bg-blue-50 p-4 rounded-lg mb-6">
+                  <h3 class="text-lg font-semibold text-blue-800 mb-2">Insights</h3>
+                  <div class="insights-container">
+                    ${insights.join('')}
+                  </div>
+                </div>
+              `;
+              $('#dynamic-plots-container').append(insightsPanel);
+            }
+          }
+          
+          // Add each plot to the container
+          for (const [column, plotData] of Object.entries(response.plots)) {
+            debugLog(`Adding plot for column: ${column}`);
+            
+            // Create a unique ID for this plot container
+            const plotContainerId = `plot-container-${column.replace(/[^a-zA-Z0-9]/g, '_')}`;
+            
+            // Create the plot card
+            const plotCard = `
+              <div class="analysis-card bg-white shadow-lg rounded-lg overflow-hidden mb-6" data-column="${column}">
+                <div class="card-header bg-gray-50 px-6 py-4">
+                  <h3 class="text-lg font-semibold text-gray-800">${column}</h3>
+                </div>
+                <div class="card-content p-6">
+                  <!-- Plot Container -->
+                  <div class="plot-container mb-4" id="${plotContainerId}" style="min-height:400px;">
+                    <div class="flex justify-center items-center h-full">
+                      <div class="spinner"></div>
+                    </div>
+                  </div>
+                  
+                  <!-- Tab Navigation -->
+                  <div class="tab-container border-t pt-4 mt-4">
+                    <div class="tab-header flex space-x-4 border-b">
+                      <div class="tab active" data-tab="filter-${column}">Filter</div>
+                      <div class="tab" data-tab="transform-${column}">Transform</div>
+                      <div class="tab" data-tab="export-${column}">Export</div>
+                    </div>
+                    
+                    <!-- Filter Tab -->
+                    <div id="tab-filter-${column}" class="tab-pane">
+                      <div class="filter-controls mt-4">
+                        <div class="filter-selector mb-4">
+                          <label class="block text-sm font-medium text-gray-700 mb-2">Filter Options:</label>
+                          <select class="filter-mode w-full p-2 border rounded-md" id="filter-mode-${column}" data-target="${column}">
+                            <option value="none">No Filter</option>
+                            <option value="self">Filter by Value</option>
+                            <option value="other">Filter by Another Column</option>
+                          </select>
+                        </div>
+                        
+                        <!-- Filter by self values -->
+                        <div id="filter-by-self-${column}" class="filter-panel hidden mb-4">
+                          <div class="filter-group mb-3">
+                            <label class="filter-label block text-sm font-medium text-gray-700 mb-2">Filter Values:</label>
+                            <select class="filter-values w-full p-2 border rounded-md" multiple data-target="${column}" id="filter-values-${column}">
+                              <!-- Options will be populated dynamically -->
+                            </select>
+                            <p class="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple values</p>
+                          </div>
+                          
+                          <button class="apply-filter bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-full" data-target="${column}">
+                            Apply Filter
+                          </button>
+                        </div>
+                        
+                        <!-- Filter by other column -->
+                        <div id="filter-by-other-${column}" class="filter-panel hidden mb-4">
+                          <div class="filter-group mb-3">
+                            <label class="filter-label block text-sm font-medium text-gray-700 mb-2">Filter Column:</label>
+                            <select class="filter-column w-full p-2 border rounded-md" data-target="${column}" id="filter-column-${column}">
+                              <option value="">Select Column</option>
+                              ${generateColumnOptions(column)}
+                            </select>
+                          </div>
+                          <div class="filter-values-container mt-3 hidden">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Filter Values:</label>
+                            <select class="other-filter-values w-full p-2 border rounded-md" multiple id="other-filter-values-${column}">
+                              <!-- Will be populated dynamically -->
+                            </select>
+                            <p class="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple values</p>
+                          </div>
+                          
+                          <button class="apply-other-filter bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-full mt-4 hidden" data-target="${column}">
+                            Apply Filter
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Transform Tab -->
+                    <div id="tab-transform-${column}" class="tab-pane hidden">
+                      <div class="transform-controls mt-4">
+                        <div class="transform-selector mb-4">
+                          <label class="block text-sm font-medium text-gray-700 mb-2">Transform Options:</label>
+                          <select class="transform-type w-full p-2 border rounded-md" id="transform-type-${column}" data-target="${column}">
+                            <option value="none">No Transformation</option>
+                            <option value="log">Log Transform</option>
+                            <option value="sqrt">Square Root Transform</option>
+                            <option value="standardize">Standardize (Z-score)</option>
+                            <option value="minmax">Min-Max Scaling</option>
+                            <option value="bin">Binning</option>
+                          </select>
+                        </div>
+                        
+                        <div id="bin-options-${column}" class="hidden mt-3">
+                          <label class="block text-sm font-medium text-gray-700 mb-2">Number of Bins:</label>
+                          <input type="number" id="bin-count-${column}" class="w-full p-2 border rounded-md" value="5" min="2" max="20">
+                        </div>
+                        
+                        <button class="apply-transform bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-full mt-4" data-target="${column}">
+                          Apply Transformation
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <!-- Export Tab -->
+                    <div id="tab-export-${column}" class="tab-pane hidden">
+                      <div class="export-controls mt-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <p class="text-sm font-medium text-gray-700 mb-2">Export Plot:</p>
+                            <div class="flex flex-col space-y-2">
+                              <button class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded text-sm" 
+                                      onclick="downloadPlotImage('${plotContainerId}', 'png')">
+                                Download as PNG
+                              </button>
+                              <button class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded text-sm" 
+                                      onclick="downloadPlotImage('${plotContainerId}', 'svg')">
+                                Download as SVG
+                              </button>
+                            </div>
+                          </div>
+                          <div>
+                            <p class="text-sm font-medium text-gray-700 mb-2">Export Data:</p>
+                            <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-sm w-full" 
+                                    onclick="exportColumnData('${column}')">
+                              Download as CSV
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div id="row-count-${column}" class="text-sm text-gray-500 mt-2"></div>
+                  
+                  <button class="mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded w-full reset-plot" data-target="${column}">
+                    Reset Plot
+                  </button>
+                </div>
+              </div>
+            `;
+            
+            // Add the plot card to the container
+            $('#dynamic-plots-container').append(plotCard);
+            debugLog(`Plot card added for ${column}`);
+            
+            // Store original plot data for reset functionality
+            $(`#${plotContainerId}`).data('original-plot-data', plotData.plot_data);
+            $(`#${plotContainerId}`).data('original-html', plotData.html);
+            
+            // Now render the plot depending on which data we have
+            try {
+              if (plotData.plot_data) {
+                // Remove any existing plot div first to avoid duplication
+                $(`#${plotContainerId}`).empty();
+                
+                // Create a new div for the plot with proper dimensions
+                $(`#${plotContainerId}`).html('<div class="plotly-plot-container" style="width:100%; height:400px;"></div>');
+                const plotlyDiv = $(`#${plotContainerId} .plotly-plot-container`)[0];
+                
+                // Parse and render the plot
+                const plotJson = JSON.parse(plotData.plot_data);
+                Plotly.newPlot(plotlyDiv, plotJson.data, plotJson.layout, {
+                  responsive: true,
+                  displayModeBar: true,
+                  displaylogo: false
+                }).then(function() {
+                  // Remove spinner after plot is fully rendered
+                  $(`#${plotContainerId} .spinner`).remove();
+                  debugLog(`Plot rendered successfully for ${column}`);
+                  
+                  // Force a resize to ensure the plot fits the container
+                  window.dispatchEvent(new Event('resize'));
+                }).catch(function(err) {
+                  debugLog(`Error in Plotly.newPlot promise: ${err.message}`);
+                });
+              } else if (plotData.html) {
+                // Fall back to HTML if no JSON data
+                $(`#${plotContainerId}`).html(plotData.html);
+                // Remove spinner
+                $(`#${plotContainerId} .spinner`).remove();
+                
+                // Fix any height issues
+                setTimeout(function() {
+                  const plotlyDiv = $(`#${plotContainerId} [class*="plotly-graph-div"]`)[0];
+                  if (plotlyDiv) {
+                    plotlyDiv.style.height = '400px';
+                    if (window.Plotly) {
+                      Plotly.relayout(plotlyDiv, {autosize: true});
+                    }
+                  }
+                }, 100);
+                
+                debugLog(`Plot rendered for ${column} using HTML`);
+              } else {
+                throw new Error("No valid plot data found");
+              }
+            } catch (e) {
+              debugLog(`Error rendering plot for ${column}: ${e.message}`);
+              $(`#${plotContainerId}`).html(`
+                <div class="p-4 text-red-500">
+                  <p>Error rendering plot: ${e.message}</p>
+                  <p class="text-sm mt-2">Please try refreshing or selecting different columns.</p>
+                </div>
+              `);
+            }
+            
+            // Add statistics if available
+            if (response.stats && response.stats[column]) {
+              const stats = response.stats[column];
+              let statsHtml = '<div class="stats-panel mt-2 p-3 bg-gray-50 rounded text-sm">';
+              
+              if (stats.type === 'numeric') {
+                statsHtml += `
+                  <div class="grid grid-cols-2 gap-2">
+                    <div>Mean: ${stats.mean ? stats.mean.toFixed(2) : 'N/A'}</div>
+                    <div>Median: ${stats.median ? stats.median.toFixed(2) : 'N/A'}</div>
+                    <div>Std Dev: ${stats.std ? stats.std.toFixed(2) : 'N/A'}</div>
+                    <div>Range: ${stats.min !== null ? stats.min.toFixed(2) : 'N/A'} - ${stats.max !== null ? stats.max.toFixed(2) : 'N/A'}</div>
+                    <div>Missing: ${stats.missing} values</div>
+                  </div>
+                `;
+              } else {
+                statsHtml += `
+                  <div>
+                    <div>Unique Values: ${stats.unique}</div>
+                    <div>Missing: ${stats.missing} values</div>
+                    <div class="mt-1">Top Values:</div>
+                    <ul class="list-disc ml-4">
+                      ${Object.entries(stats.top_values || {}).map(([key, value]) => 
+                        `<li>${key}: ${value}</li>`).join('')}
+                    </ul>
+                  </div>
+                `;
+              }
+              
+              statsHtml += '</div>';
+              $(`#${plotContainerId}`).after(statsHtml);
+            }
+          }
+          
+          // Initialize event handlers for filtering and transformation
+          initFilterEventHandlers();
+          initTransformHandlers();
+          initResetButtons();
+        } else {
+          $('#dynamic-plots-container').html(`
+            <div class="col-span-full text-center py-8 bg-gray-50 rounded-lg">
+              <p class="text-gray-500">No plots available for the selected columns.</p>
+            </div>
+          `);
+        }
+      },
+      error: function(xhr, status, error) {
+        debugLog(`AJAX error: ${status}, ${error}`);
+        
+        $('#dynamic-plots-container').html(`
+          <div class="col-span-full text-center py-8 bg-red-50 rounded-lg">
+            <p class="text-red-500">Error loading plots: ${error || 'Unknown error'}</p>
+            <details class="mt-4 text-left">
+              <summary class="cursor-pointer text-sm">Technical Details</summary>
+              <pre class="text-xs bg-gray-100 p-2 mt-2 overflow-x-auto">${xhr.responseText || 'No response details'}</pre>
+            </details>
+          </div>
+        `);
+      }
+    });
+  });
+
+  // Correlation Matrix button
+  $('#correlation-matrix-btn').on('click', function() {
+    showCorrelationMatrix();
+  });
+  
+  // Modal close button
+  $('.modal-close').on('click', function() {
+    $(this).closest('.modal').addClass('hidden');
+  });
+  
+  // Close modal when clicking outside
+  $('.modal').on('click', function(e) {
+    if (e.target === this) {
+      $(this).addClass('hidden');
+    }
+  });
+
+  // Check if Plotly is loaded, if not load it dynamically
+  if (!window.Plotly) {
+    debugLog("Plotly not found, loading it dynamically");
+    
+    // Create and load Plotly script
+    const script = document.createElement('script');
+    script.src = "https://cdn.plot.ly/plotly-latest.min.js";
+    script.async = true;
+    script.onload = function() {
+      debugLog("Plotly loaded dynamically");
+      
+      // Configure Plotly defaults after loading
+      if (window.Plotly) {
+        Plotly.setPlotConfig({
+          responsive: true,
+          displaylogo: false,
+          modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'select2d']
+        });
+      }
+    };
+    document.head.appendChild(script);
+  }
+  
+  // Try to initialize Select2 for improved dropdowns
+  setTimeout(function() {
+    if ($.fn.select2) {
+      $('.filter-values, .filter-column, .compare-column').select2({
+        width: '100%'
+      });
+    }
+  }, 1000);
+
+  // Add this function after your existing JavaScript
+  function ensureAllPlotsRendered() {
+    debugLog("Ensuring all plots are properly rendered");
+    
+    // Get all plot containers
+    const plotContainers = document.querySelectorAll('.plot-container');
+    
+    plotContainers.forEach(function(container) {
+      const plotDiv = container.querySelector('[class*="plotly-graph-div"]');
+      
+      if (plotDiv && window.Plotly) {
+        // If spinner still exists, remove it
+        const spinner = container.querySelector('.spinner');
+        if (spinner) {
+          spinner.remove();
+        }
+        
+        // Make sure the plot has proper dimensions
+        plotDiv.style.width = '100%';
+        plotDiv.style.height = '400px';
+        
+        // Force a relayout on the plot
+        try {
+          Plotly.relayout(plotDiv, {
+            autosize: true,
+            'xaxis.automargin': true,
+            'yaxis.automargin': true
+          });
+          debugLog(`Resized plot in ${container.id}`);
+        } catch (e) {
+          debugLog(`Error resizing plot in ${container.id}: ${e.message}`);
+        }
+      }
+    });
+  }
+
+  // Call this function in setTimeout after plots are rendered
+  // Add this after your initial plot rendering
+  setTimeout(ensureAllPlotsRendered, 800);
+
+  // Also add window resize handler to keep plots responsive
+  window.addEventListener('resize', function() {
+    // Debounce the resize event 
+    clearTimeout(window.resizeTimeout);
+    window.resizeTimeout = setTimeout(function() {
+      ensureAllPlotsRendered();
+    }, 250);
+  });
+});
+
+// Updated download plot function
+function downloadPlotImage(containerId, format) {
+  const plotDiv = document.getElementById(containerId);
+  if (plotDiv && window.Plotly) {
+    Plotly.toImage(plotDiv, {format: format, width: 800, height: 600}).then(function(dataUrl) {
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = `plot_${containerId}.${format}`;
+      link.click();
+    }).catch(function(err) {
+      debugLog(`Error downloading plot: ${err.message}`);
+      alert('Error downloading plot. Please try again.');
+    });
+  }
+}
+
+// Toggle column info display
+function togglePlotInfo(column) {
+  $(`#column-info-${column}`).toggleClass('hidden');
+}
+
+// Replace the ensurePlotsRender function with this improved version
+function ensurePlotsRender() {
+  debugLog("Ensuring all plots render correctly");
+  
+  // Find all plot containers first
+  const plotContainers = document.querySelectorAll('.plot-container');
+  debugLog(`Found ${plotContainers.length} plot containers to check`);
+  
+  plotContainers.forEach(function(container) {
+    // Check if this container has multiple plot divs (which would be an error)
+    const plotDivs = container.querySelectorAll('[class*="plotly-graph-div"]');
+    
+    if (plotDivs.length > 1) {
+      debugLog(`Container ${container.id} has ${plotDivs.length} plot divs, cleaning up`);
+      // Keep only the last plot div (most likely the correct one)
+      for (let i = 0; i < plotDivs.length - 1; i++) {
+        plotDivs[i].remove();
+      }
+    }
+    
+    // Now work with the remaining plot div
+    const plotDiv = container.querySelector('[class*="plotly-graph-div"]');
+    if (plotDiv && window.Plotly) {
+      // Make sure div has dimensions
+      plotDiv.style.height = plotDiv.style.height || '400px';
+      plotDiv.style.width = plotDiv.style.width || '100%';
+      
+      // Force redraw
+      try {
+        window.Plotly.relayout(plotDiv, {
+          'autosize': true
+        });
+        debugLog(`Plot div ${plotDiv.id} resized and redrawn`);
+      } catch (e) {
+        debugLog(`Error resizing plot: ${e.message}`);
+      }
+    } else if (!plotDiv) {
+      debugLog(`No plot div found in container ${container.id}`);
+    }
+  });
+}
+
+// Add a function to handle reset plot button clicks
+function initResetButtons() {
+  $('.reset-plot').off('click').on('click', function() {
+    const column = $(this).data('target');
+    resetPlot(column);
+  });
+}
+</script>

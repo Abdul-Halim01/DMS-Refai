@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from . import cleanup
 
 
 class EdaAppConfig(AppConfig):
@@ -6,5 +7,4 @@ class EdaAppConfig(AppConfig):
     name = 'stats'
 
     def ready(self):
-        from . import cleanup
         cleanup.cleanup_thread.start()

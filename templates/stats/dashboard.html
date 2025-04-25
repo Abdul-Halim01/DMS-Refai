@@ -1,0 +1,524 @@
+{% extends "base.html" %}
+
+{% block title %}تحليل البيانات{% endblock %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoYaN6X+6V+DQcr5Bv87Z0oWzERfZ1pC1JUZzF+GIUo4yJG" crossorigin="anonymous"></script>
+<div class="page-header">
+    <h1 class="h2">تحليل البيانات</h1>
+    <form method="post" action="{% url 'upload_file' %}">
+    {% csrf_token %}
+    <button id="upload-file-btn" class="btn btn-primary">رفع ملف</button>
+    </form>
+</div>
+
+<!-- File Upload Form (Hidden by default) -->
+<div id="file-upload-section" class="upload-form-container" style="display: none;">
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>رفع ملف البيانات للتحليل</h5>
+        </div>
+        <div class="card-body">
+         <!-- Change your form to this: -->
+            <form id="file-upload-form" enctype="multipart/form-data" method="post" action="{% url 'upload_file' %}">
+                {% csrf_token %}
+                <div class="form-group mb-3">
+                    <label for="id_csv_file">اختر ملف CSV</label>
+                    <input type="file" class="form-control" id="id_csv_file" 
+                        name="csv_file" accept=".csv" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="id_report_name">اسم التقرير (اختياري)</label>
+                    <input type="text" class="form-control" id="id_report_name" 
+                        name="report_name">
+                </div>
+                <button type="submit" class="btn btn-success">رفع وتحليل</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>الاستعلامات المتاحة</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <div class="table-controls">
+                <div class="search-controls">
+                    <input hx-get="{% url 'analysis' %}" type="text" name="q" class="search-input" placeholder="Search by form name..." value="{{ request.GET.q }}"/>
+                </div>
+                <div class="action-controls">
+                    <select id="bulkAction" name="action" class="action-select">
+                        <option value="" selected disabled>اختر العملية</option>
+                        <option value="analyze">تحليل الاستعلامات المختارة</option>
+                    </select>
+                    <button type="button" class="do-action-btn" onclick="executeBulkAction()">تنفيذ العملية</button>
+                </div>
+            </div>
+
+            <form method="post" action="{% url 'analyze_form' %}" id="bulkActionForm">
+                {% csrf_token %}
+                <input type="hidden" name="selected_ids" id="selectedIds">
+                <input type="hidden" name="action" id="selectedAction">
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="select-all"></th>
+                            <th>الاسم</th>
+                            <th>العملية</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for form in forms %}
+                        <tr onclick="clickHandler(event)" data-link="{% url 'form_detail' form.id %}">
+                            <td onclick="event.stopPropagation();">
+                                <input type="checkbox" class="item-checkbox" value="{{ form.id }}">
+                            </td>
+                            <td>{{ form.id }}</td>
+                            <td>{{ form.name }}</td>
+                            <td onclick="event.stopPropagation();">
+                                <div class="action-buttons">
+                                    <form method="POST" action="{% url 'analyze_form' %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="form_id" value="{{ form.id }}">
+                                        <button type="submit" class="analyze-btn">📊 Analyze</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center">لا يوجد استعلامات متاحة للتحليل.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+
+            <div class="pagination-container">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">السابق</a></li>
+                        <li><a href="#" class="page-link">{{ page_obj.number|add:'-1' }}</a></li>
+                    {% endif %}
+                    <li><a href="#" class="page-link active">{{ page_obj.number }}</a></li>
+                    {% if page_obj.has_next %}
+                        <li><a href="#" class="page-link">{{ page_obj.number|add:'1' }}</a></li>
+                        <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">التالي</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% comment %} <!-- Modal for Analysis Results -->
+<div class="modal fade" id="analysisModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">نتائج التحليل</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="analysisModalBody">
+        <!-- Results will be inserted here dynamically -->
+      </div>
+      <div class="modal-footer">
+        <input type="text" id="save-report-name" class="form-control" placeholder="Enter report name">
+        <button class="btn btn-success" id="saveReportBtn">حفظ التقرير</button>
+      </div>
+    </div>
+  </div>
+</div> {% endcomment %}
+
+
+<script>
+    // Toggle file upload form
+    {% comment %} function toggleUploadForm() {
+        const uploadForm = document.getElementById('file-upload-section');
+        if (uploadForm.style.display === 'none') {
+            uploadForm.style.display = 'block';
+        } else {
+            uploadForm.style.display = 'none';
+        }
+    } {% endcomment %}
+    
+    // Handle select all checkbox
+    document.getElementById('select-all').addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('.item-checkbox');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+    
+    // Bulk action execution
+    function executeBulkAction() {
+        const action = document.getElementById('bulkAction').value;
+        if (!action) {
+            alert('Please select an action');
+            return;
+        }
+        
+        const selectedCheckboxes = document.querySelectorAll('.item-checkbox:checked');
+        if (selectedCheckboxes.length === 0) {
+            alert('Please select at least one form');
+            return;
+        }
+        
+        const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+        document.getElementById('selectedIds').value = selectedIds.join(',');
+        document.getElementById('selectedAction').value = action;
+        
+        if (action === 'analyze') {
+            // Redirect to bulk analysis page or open analysis modal
+            analyzeMultipleForms(selectedIds);
+        } else {
+            document.getElementById('bulkActionForm').submit();
+        }
+    }
+    
+    // Click handler for row
+    function clickHandler(event) {
+        const link = event.currentTarget.getAttribute('data-link');
+        if (link) {
+            window.location.href = link;
+        }
+    }
+    
+    // Analyze a single form
+    function analyzeForm(formId) {
+        console.log("formId :", formId);
+        // Show the analysis modal
+        const analysisModal = new bootstrap.Modal(document.getElementById('analysisModal'));
+        analysisModal.show();
+        
+        // Clear any previous results
+        document.getElementById('analysisModalBody').innerHTML = `
+            <div class="text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p>Loading analysis results...</p>
+            </div>
+        `;
+        
+        // Send AJAX request to analyze the form
+        fetch('{% url "analysis" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                form_id: formId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                displayAnalysisResults(data.analysis);
+                
+                // Set up save report button
+                document.getElementById('saveReportBtn').onclick = function() {
+                    saveAnalysisReport(formId, data.analysis);
+                };
+            } else {
+                document.getElementById('analysisModalBody').innerHTML = `
+                    <div class="alert alert-danger">
+                        Error: ${data.error}
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            document.getElementById('analysisModalBody').innerHTML = `
+                <div class="alert alert-danger">
+                    An error occurred during analysis. Please try again.
+                </div>
+            `;
+            console.error('Error:', error);
+        });
+    }
+    
+    // Analyze multiple forms
+    function analyzeMultipleForms(formIds) {
+        // Implement functionality to analyze multiple forms
+        alert('Bulk analysis of multiple forms is not implemented yet');
+    }
+    
+    
+    
+    // Render stats for a column
+    function renderColumnStats(stats) {
+        if (stats.mean !== undefined) {
+            // Numeric column
+            return `
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Mean:</strong> ${stats.mean.toFixed(2)}</p>
+                        <p><strong>Median:</strong> ${stats.median.toFixed(2)}</p>
+                        <p><strong>Std Dev:</strong> ${stats.std.toFixed(2)}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Min:</strong> ${stats.min.toFixed(2)}</p>
+                        <p><strong>Max:</strong> ${stats.max.toFixed(2)}</p>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Categorical column
+            let html = `<p><strong>Unique Values:</strong> ${stats.unique_values}</p>`;
+            html += '<table class="table table-sm"><thead><tr><th>Value</th><th>Count</th></tr></thead><tbody>';
+            
+            const entries = Object.entries(stats.top_values || {});
+            entries.slice(0, 5).forEach(([value, count]) => {
+                html += `<tr><td>${value}</td><td>${count}</td></tr>`;
+            });
+            
+            if (entries.length > 5) {
+                html += `<tr><td colspan="2">(${entries.length - 5} more values...)</td></tr>`;
+            }
+            
+            html += '</tbody></table>';
+            return html;
+        }
+    }
+    
+    // Get color class for correlation value
+    function getCorrelationColorClass(value) {
+        const absValue = Math.abs(value);
+        if (absValue > 0.7) return 'table-danger';
+        if (absValue > 0.5) return 'table-warning';
+        if (absValue > 0.3) return 'table-info';
+        return '';
+    }
+    
+    // Save analysis report
+    function saveAnalysisReport(formId, analysis) {
+        const reportName = document.getElementById('save-report-name').value;
+        if (!reportName) {
+            alert('Please enter a name for the report');
+            return;
+        }
+        
+        fetch('{% url "save_analysis" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                form_id: formId,
+                report_name: reportName,
+                analysis_data: analysis
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Report saved successfully');
+                // Close modal and reload page to show new report
+                bootstrap.Modal.getInstance(document.getElementById('analysisModal')).hide();
+                window.location.reload();
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while saving the report');
+        });
+    }
+    
+    // Delete report
+    function deleteReport(reportId) {
+        if (confirm('Are you sure you want to delete this report?')) {
+                fetch("{% url 'delete_analysis' 0 %}".replace("0", reportId), {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the report');
+            });
+        }
+    }
+    
+    // Handle file upload form submission
+    document.getElementById('file-upload-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const form = this;
+        const formData = new FormData(form);
+        
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            } 
+            else if (!response.ok) {
+                return response.json().then(err => { throw err; });
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error: ' + (error.error || 'Failed to upload file'));
+        });
+        });
+</script>
+
+<style>
+    .upload-form-container {
+        margin-bottom: 20px;
+    }
+    
+    .table-container {
+        background-color: #fff;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    
+    .table-controls {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .search-input {
+        padding: 8px 12px;
+        border-radius: 4px;
+        border: 1px solid #ced4da;
+        width: 100%;
+    }
+    
+    .action-select {
+        padding: 8px 12px;
+        border-radius: 4px;
+        border: 1px solid #ced4da;
+    }
+    
+    .do-action-btn {
+        padding: 8px 12px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .data-table th, .data-table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .data-table thead tr {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #e9ecef;
+    }
+    
+    .data-table tbody tr:hover {
+        background-color: #f8f9fa;
+        cursor: pointer;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+    
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        padding: 15px;
+    }
+    
+    .pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .page-link {
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+        margin-left: -1px;
+        color: #007bff;
+        text-decoration: none;
+    }
+    
+    .page-link.active {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+
+    
+    #upload-btn {
+      background-color: #007bff; /* Bootstrap-like blue */
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    #upload-btn:hover {
+      background-color: #0069d9;
+      transform: translateY(-1px);
+    }
+
+    #upload-btn:active {
+      transform: translateY(1px);
+    }
+    .analyze-btn {
+        background-color: #f8f9fa; /* light grey background */
+        color: #0d6efd; /* Bootstrap primary blue */
+        border: 1px solid #0d6efd;
+        border-radius: 6px;
+        padding: 5px 10px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.2s ease;
+    }
+
+    .analyze-btn:hover {
+        background-color: #0d6efd;
+        color: #fff;
+    }
+
+</style>
+{% endblock %}
